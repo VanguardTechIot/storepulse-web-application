@@ -43,9 +43,9 @@ export const routes: Routes = [
       },
       {
         path: 'devices',
-        loadComponent: () =>
-          import('./resource-asset-management/presentation/views/iot-device-list/iot-device-list').then(
-            (m) => m.IoTDeviceList,
+        loadChildren: () =>
+          import('./resource-asset-management/resource-asset-management.routes').then(
+            (m) => m.RESOURCE_ASSET_MANAGEMENT_ROUTES,
           ),
         data: { titleKey: 'nav.devices' },
       },
