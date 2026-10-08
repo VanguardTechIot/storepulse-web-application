@@ -11,4 +11,10 @@ export interface ResourceAssetRepository {
   listIoTDevices(): Promise<IoTDevice[]>;
   listSensors(): Promise<Sensor[]>;
   listMeters(): Promise<Meter[]>;
+
+  /** Registra un dispositivo nuevo junto con el asset que lo vincula a un resource. */
+  addIoTDevice(device: IoTDevice, asset: Asset): Promise<void>;
+  /** Guarda los cambios de un dispositivo existente (desactivar, reactivar). */
+  saveIoTDevice(device: IoTDevice): Promise<void>;
+  findIoTDeviceBySerialNumber(serialNumber: string): Promise<IoTDevice | null>;
 }

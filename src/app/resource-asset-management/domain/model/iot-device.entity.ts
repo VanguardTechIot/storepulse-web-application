@@ -50,4 +50,30 @@ export class IoTDevice implements BaseEntity {
     );
   }
 
+  /** Stops data reception; the location is left without monitoring until reactivated. */
+  deactivate(reason: string): IoTDevice {
+    return this.withStatus('INACTIVE', reason);
+  }
+
+  reactivate(): IoTDevice {
+    return this.withStatus('ACTIVE', null);
+  }
+
+  private withStatus(status: AssetStatus, deactivationReason: string | null): IoTDevice {
+    return new IoTDevice(
+      this.id,
+      this.assetId,
+      this.serialNumber,
+      this.manufacturer,
+      this.firmwareVersion,
+      status,
+      this.type,
+      this.connectivity,
+      this.lastReportAt,
+      this.supplyVoltage,
+      this.bufferedEvents,
+      deactivationReason,
+    );
+  }
+
 }
