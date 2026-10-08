@@ -119,7 +119,7 @@ export class ResourceAssetStore {
       'ACTIVE',
       type,
       'CONNECTED',
-      new Date().toISOString(),
+      new Date(),
     );
     await this.repository.addIoTDevice(device, asset);
     await this.load();

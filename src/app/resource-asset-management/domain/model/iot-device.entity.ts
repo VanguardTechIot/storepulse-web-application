@@ -28,7 +28,7 @@ export class IoTDevice implements BaseEntity {
     readonly status: AssetStatus,
     readonly type: IoTDeviceType = 'INTRUSION_NODE',
     readonly connectivity: ConnectivityStatus = 'CONNECTED',
-    readonly lastReportAt: string | null = null,
+    readonly lastReportAt: Date | null = null,
     readonly supplyVoltage: number | null = null,
     readonly bufferedEvents: number = 0,
     readonly deactivationReason: string | null = null,
@@ -75,5 +75,4 @@ export class IoTDevice implements BaseEntity {
       deactivationReason,
     );
   }
-
 }
