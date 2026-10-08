@@ -1,0 +1,28 @@
+<app-authentication-layout>
+  <span class="auth-icon" aria-hidden="true"><mat-icon>apartment</mat-icon></span>
+  <h1>{{ 'iam.welcome.title' | translate }}</h1>
+  <p class="auth-subtitle">{{ 'iam.welcome.subtitle' | translate }}</p>
+
+  <a matButton="filled" class="auth-cta" [routerLink]="iamNav.signIn()">
+    {{ 'iam.welcome.sign-in' | translate }}
+    <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+  </a>
+  <a matButton="outlined" class="auth-cta" [routerLink]="iamNav.signUp()">
+    <mat-icon aria-hidden="true">apartment</mat-icon>
+    {{ 'iam.welcome.sign-up' | translate }}
+  </a>
+
+  <div class="divider">
+    <mat-divider />
+    <span>{{ 'iam.welcome.tenant-question' | translate }}</span>
+    <mat-divider />
+  </div>
+
+  <mat-card appearance="outlined" class="tenant-card">
+    <mat-card-header>
+      <span mat-card-avatar class="tenant-icon" aria-hidden="true"><mat-icon>mail</mat-icon></span>
+      <mat-card-title>{{ 'iam.welcome.tenant-title' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'iam.welcome.tenant-description' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+</app-authentication-layout>

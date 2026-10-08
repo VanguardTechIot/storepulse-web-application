@@ -1,0 +1,45 @@
+.stepper {
+  --mat-stepper-container-color: transparent;
+  --mat-stepper-header-height: 48px;
+  --mat-stepper-header-label-text-size: 13px;
+  --mat-stepper-header-label-text-weight: 600;
+  --mat-stepper-header-selected-state-label-text-size: 13px;
+  --mat-stepper-header-selected-state-label-text-weight: 600;
+  --mat-stepper-header-selected-state-icon-background-color: var(--sp-cyan-text);
+  --mat-stepper-header-selected-state-icon-foreground-color: #fff;
+  --mat-stepper-header-icon-background-color: var(--sp-border);
+  --mat-stepper-header-icon-foreground-color: var(--sp-muted);
+  --mat-stepper-line-color: var(--sp-border);
+}
+
+.stepper ::ng-deep .mat-horizontal-stepper-header {
+  padding: 0 8px;
+}
+
+.stepper ::ng-deep .mat-horizontal-stepper-header:first-child {
+  padding-left: 0;
+}
+
+.stepper ::ng-deep .mat-horizontal-stepper-header:last-child {
+  padding-right: 0;
+}
+
+.stepper ::ng-deep .mat-horizontal-content-container {
+  padding: 8px 0 0;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.terms {
+  margin-top: 8px;
+}
+
+.terms-error {
+  margin-left: 12px;
+  color: var(--sp-red-text);
+  font-size: 12px;
+}
