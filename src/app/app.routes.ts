@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { MainLayout } from './shared/presentation/views/main-layout/main-layout';
 
 export const routes: Routes = [
+  { path: '', pathMatch: 'full', children: [] },
   {
     path: '',
     component: MainLayout,
