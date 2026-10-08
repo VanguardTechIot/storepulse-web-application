@@ -1,0 +1,63 @@
+:host {
+  display: block;
+}
+
+.photo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-wrap: anywhere;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--sp-text-muted);
+  font-size: 13px;
+}
+
+.role {
+  color: var(--sp-primary);
+  background: var(--sp-primary-soft);
+}
+
+.role .mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+.photo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.photo-form .actions {
+  justify-content: flex-end;
+}
+
+.remove {
+  --mat-button-text-label-text-color: var(--sp-danger);
+}
