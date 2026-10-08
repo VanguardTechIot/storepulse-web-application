@@ -1,1 +1,152 @@
-{}
+{
+  "shared": {
+    "language": {
+      "label": "Language",
+      "codes": { "en-US": "EN", "es-419": "ES" },
+      "names": { "en-US": "English", "es-419": "Spanish (Latin America)" }
+    },
+    "a11y": {
+      "skip-to-content": "Skip to main content"
+    },
+    "nav": {
+      "aria-label": "Main navigation",
+      "label": "Main modules",
+      "scope": "Gallery Management",
+      "toggle": "Open or close the navigation",
+      "home": "Home"
+    },
+    "footer": {
+      "copyright": "VanguardTech © 2026",
+      "terms": "Terms of service",
+      "privacy": "Privacy policy"
+    },
+    "validation": {
+      "required": "This field is required.",
+      "email": "Enter a valid email address."
+    },
+    "home": {
+      "page-title": "Home",
+      "title": "Welcome to StorePulse",
+      "subtitle": "Consolidated view of your commercial gallery.",
+      "empty-title": "Your gallery has no data yet",
+      "empty-description": "The consolidated dashboard will show active incidents, period consumption and disconnected devices once your units and IoT devices are registered."
+    },
+    "not-found": {
+      "page-title": "Page not found",
+      "title": "We couldn't find this page",
+      "description": "The address may be wrong or the page may have moved.",
+      "action": "Go to home"
+    }
+  },
+  "iam": {
+    "showcase": {
+      "eyebrow": "IoT for commercial galleries",
+      "title": "The Smart and Secure Pulse of Your",
+      "title-highlight": "Commercial Gallery",
+      "description": "Monitor every storefront’s security, receive real-time alerts, and issue fair electricity and water bills with IoT sub-metering.",
+      "floor-plan": "Floor plan · Floor 2",
+      "monitoring": "Monitoring",
+      "features": {
+        "security": "Perimeter security",
+        "sub-metering": "Sub-metering",
+        "water": "Water telemetry"
+      }
+    },
+    "roles": {
+      "GALLERY_ADMINISTRATOR": "Gallery administrator",
+      "TENANT": "Tenant"
+    },
+    "fields": {
+      "full-name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "new-password": "New password",
+      "code": "Verification code",
+      "show-password": "Show password",
+      "hide-password": "Hide password"
+    },
+    "password-requirements": {
+      "label": "Password requirements",
+      "minimum-length": "Minimum {{count}} characters",
+      "number": "At least one number",
+      "met": "met",
+      "unmet": "not met"
+    },
+    "welcome": {
+      "page-title": "Welcome",
+      "title": "Welcome to StorePulse",
+      "subtitle": "Web platform for commercial gallery administrators.",
+      "sign-in": "Log In",
+      "sign-up": "Register my gallery",
+      "tenant-question": "Are you a tenant of a storefront?",
+      "tenant-title": "Register with your administrator’s invitation",
+      "tenant-description": "You’ll receive a link by email linked to your storefront. Then use the StorePulse mobile app."
+    },
+    "sign-in": {
+      "page-title": "Log In",
+      "title": "Log In",
+      "subtitle": "Log in with your gallery administrator account.",
+      "no-account": "Don’t you have your gallery registered yet?",
+      "sign-up": "Sign up",
+      "forgot-password": "Forgot your password?",
+      "keep-signed-in": "Keep me signed in",
+      "submit": "Log In",
+      "submitting": "Logging in…",
+      "role-notice": "Access is granted according to your role. Tenants log in from the mobile app and only see information for their unit.",
+      "password-changed": "Your password was changed. Log in with your new password."
+    },
+    "sign-up": {
+      "page-title": "Register administrator",
+      "has-account": "Already have an account?",
+      "sign-in": "Log In",
+      "steps": {
+        "label": "Registration steps",
+        "account": "Account",
+        "gallery": "Gallery",
+        "plan": "Plan"
+      },
+      "title": "Create your administrator account",
+      "subtitle": "With this account, you’ll manage your gallery, its units, and the subscription.",
+      "accept-terms": "I accept the",
+      "accept-terms-required": "You must accept the Terms of service to continue.",
+      "submit": "Create account and continue",
+      "submitting": "Creating account…"
+    },
+    "forgot-password": {
+      "page-title": "Recover password",
+      "back": "Back to Log In",
+      "title": "Recover password",
+      "subtitle": "Enter the email of your administrator account. We’ll send you a 6-digit verification code.",
+      "submit": "Send verification code",
+      "submitting": "Sending code…"
+    },
+    "reset-password": {
+      "page-title": "Recover password",
+      "back": "Back to Log In",
+      "title": "Recover password",
+      "code-sent-to": "We sent a 6-digit verification code to",
+      "code-format": "Enter the 6 digits of the code.",
+      "expires-in": "The code expires in {{time}} (valid for {{minutes}} minutes)",
+      "expired": "The code has expired. Request a new one.",
+      "submit": "Validate code and change password",
+      "submitting": "Changing password…",
+      "not-received": "Didn’t receive the code?",
+      "resend": "Resend code",
+      "resent": "We sent you a new verification code."
+    },
+    "account-menu": {
+      "open": "Open account menu",
+      "sign-out": "Log Out"
+    },
+    "errors": {
+      "invalid-credentials": "The email or password is incorrect.",
+      "account-inactive": "Your account is inactive. Contact StorePulse support.",
+      "role-not-allowed": "This web platform is for gallery administrators. Tenants log in from the StorePulse mobile app.",
+      "email-already-registered": "We couldn’t create the account with this email. Log in or use another email.",
+      "weak-password": "The password does not meet the minimum requirements.",
+      "invalid-reset-code": "The entered code is invalid. Check your email and try again.",
+      "expired-reset-code": "The code has expired. Request a new one.",
+      "unexpected": "We couldn’t connect to StorePulse. Try again in a few moments."
+    }
+  }
+}
