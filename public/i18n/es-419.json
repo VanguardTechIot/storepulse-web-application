@@ -1,1 +1,300 @@
-{}
+{
+  "app": { "name": "StorePulse" },
+  "routeTitles": {
+    "overview": "Monitoreo",
+    "alerts": "Alertas",
+    "alertDetail": "Detalle de alerta",
+    "consumption": "Consumo",
+    "rules": "Reglas de monitoreo",
+    "notFound": "Página no encontrada"
+  },
+  "layout": {
+    "skipToContent": "Saltar al contenido",
+    "language": "Idioma",
+    "navigation": "Navegación principal",
+    "scope": "Gallery Management",
+    "toggleMenu": "Abrir o cerrar el menú",
+    "status": {
+      "alert": "Alerta · {{count}} pendiente(s)",
+      "normal": "Sistema normal"
+    }
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "message": "La dirección solicitada no existe o fue movida.",
+    "action": "Ir al monitoreo"
+  },
+  "common": {
+    "actions": {
+      "close": "Cerrar",
+      "cancel": "Cancelar",
+      "retry": "Reintentar",
+      "refresh": "Actualizar",
+      "viewAlerts": "Ver alertas",
+      "viewDetail": "Ver detalle",
+      "clearFilters": "Limpiar filtros"
+    },
+    "states": {
+      "loading": "Cargando información…",
+      "errorTitle": "No se pudo cargar la información",
+      "errorMessage": "Verifica la conexión con el servidor e inténtalo nuevamente."
+    },
+    "pagination": {
+      "range": "Mostrando {{from}}–{{to}} de {{total}}",
+      "label": "Paginación",
+      "previous": "Página anterior",
+      "next": "Página siguiente"
+    },
+    "duration": {
+      "hours": "{{value}} h",
+      "minutes": "{{value}} min",
+      "seconds": "{{value}} s"
+    }
+  },
+  "monitoring": {
+    "nav": {
+      "section": "Monitoreo",
+      "overview": "Resumen",
+      "alerts": "Alertas",
+      "consumption": "Consumo",
+      "rules": "Reglas de monitoreo",
+      "pendingCount": "{{count}} alertas pendientes"
+    },
+    "measurementTypes": {
+      "TEMPERATURE": "Temperatura",
+      "HUMIDITY": "Humedad",
+      "ELECTRICITY": "Energía",
+      "WATER": "Agua"
+    },
+    "alertStatus": {
+      "ACTIVE": "Pendiente",
+      "ACKNOWLEDGED": "En atención",
+      "RESOLVED": "Resuelta"
+    },
+    "resourceStates": {
+      "NORMAL": "Sin alertas activas",
+      "OPEN_ALERT": "Con alerta activa ({{count}})",
+      "NO_MONITORING": "Sin monitoreo"
+    },
+    "operators": {
+      "GREATER_THAN": "Mayor que",
+      "GREATER_THAN_OR_EQUAL": "Mayor o igual que",
+      "LESS_THAN": "Menor que",
+      "LESS_THAN_OR_EQUAL": "Menor o igual que",
+      "EQUAL": "Igual a"
+    },
+    "fields": {
+      "location": "Ubicación",
+      "device": "Dispositivo",
+      "lastTelemetry": "Última telemetría",
+      "status": "Estado",
+      "floor": "Piso {{floor}}",
+      "measurementType": "Tipo de medición",
+      "recordedAt": "Fecha / hora",
+      "value": "Valor",
+      "evaluation": "Evaluación",
+      "alert": "Alerta",
+      "measurement": "Medición",
+      "detectedAt": "Detectada",
+      "responseTime": "Tiempo hasta confirmar",
+      "threshold": "Umbral",
+      "rule": "Regla de monitoreo",
+      "measuredValue": "Valor medido",
+      "date": "Fecha",
+      "detectionTime": "Hora de detección",
+      "condition": "Condición"
+    },
+    "filters": {
+      "allTypes": "Todos los tipos",
+      "allLocations": "Todas las ubicaciones"
+    },
+    "overview": {
+      "crumb": "Resumen",
+      "title": "Monitoreo de la galería",
+      "subtitle": "Estado de monitoreo de cada ubicación y últimas mediciones recibidas.",
+      "pendingBanner": {
+        "title": "{{count}} alerta(s) pendiente(s) de atención.",
+        "message": "Revisa cada alerta y confirma su atención.",
+        "action": "Ver alertas pendientes"
+      },
+      "acknowledgedBanner": "{{count}} alerta(s) en atención. Registra el resultado de la atención para resolverlas.",
+      "viewAlerts": "Ver alertas",
+      "noOpenAlerts": "No hay alertas activas en la galería.",
+      "lastAlert": "Última alerta registrada: {{date}}.",
+      "noAlertsYet": "Aún no se han registrado alertas.",
+      "kpis": {
+        "monitored": "Ubicaciones monitoreadas",
+        "monitoredHint": "Con dispositivo activo",
+        "pending": "Alertas pendientes",
+        "pendingHint": "Requieren confirmar su atención",
+        "acknowledged": "Alertas en atención",
+        "acknowledgedHint": "Pendientes de registrar resultado",
+        "withoutMonitoring": "Ubicaciones sin monitoreo",
+        "withoutMonitoringHint": "Dispositivo inactivo o en mantenimiento"
+      },
+      "locations": {
+        "title": "Estado por ubicación",
+        "subtitle": "Locales y áreas comunes con su dispositivo y últimas lecturas",
+        "filters": {
+          "ALL": "Todas",
+          "OPEN_ALERT": "Con alerta activa",
+          "NO_MONITORING": "Sin monitoreo"
+        },
+        "empty": "No hay ubicaciones en este estado."
+      },
+      "measurements": {
+        "title": "Mediciones recientes",
+        "subtitle": "Lecturas recibidas de los dispositivos y su evaluación frente a las reglas activas",
+        "empty": "No hay mediciones para los filtros seleccionados.",
+        "exceeds": "Supera umbral · {{rule}}",
+        "withinThreshold": "Dentro del umbral"
+      }
+    },
+    "alerts": {
+      "crumb": "Alertas",
+      "title": "Alertas de monitoreo",
+      "subtitle": "Alertas generadas por las reglas de monitoreo, con su ubicación, fecha, hora y estado de atención.",
+      "statusFilters": {
+        "ALL": "Todas",
+        "ACTIVE": "Pendientes",
+        "ACKNOWLEDGED": "En atención",
+        "RESOLVED": "Resueltas"
+      },
+      "search": "Buscar alerta o ubicación…",
+      "emptyTitle": "No se han registrado alertas",
+      "emptyMessage": "Cuando una medición cumpla la condición de una regla activa, la alerta aparecerá aquí.",
+      "noResultsTitle": "Ninguna alerta coincide con los filtros",
+      "noResultsMessage": "Cambia o limpia los filtros para ver más resultados.",
+      "unknownRule": "Regla no disponible"
+    },
+    "alertDetail": {
+      "title": "Alerta {{code}}",
+      "back": "Volver a alertas",
+      "banner": {
+        "activeTitle": "Alerta pendiente de atención.",
+        "activeMessage": "Detectada el {{date}}. Confirma su atención para registrar el tiempo de reacción.",
+        "acknowledged": "Atención confirmada a las {{time}} ({{elapsed}} después de la detección). Registra el resultado para resolverla.",
+        "resolved": "Alerta resuelta el {{date}}. Tiempo hasta confirmar la atención: {{elapsed}}."
+      },
+      "detailTitle": "Detalle de la alerta",
+      "acknowledge": {
+        "title": "Confirmar atención",
+        "subtitle": "La alerta pasará a En atención y se registrará la fecha y hora de la confirmación.",
+        "action": "Confirmar atención",
+        "confirmTitle": "¿Confirmar la atención de esta alerta?",
+        "confirmMessage": "Se registrará la fecha y hora actuales como momento de confirmación. Esta acción no se puede deshacer.",
+        "success": {
+          "title": "Atención confirmada",
+          "message": "La alerta está en atención y se registró la hora de confirmación."
+        }
+      },
+      "resolve": {
+        "title": "Registrar resultado de la atención",
+        "subtitle": "Al guardar, la alerta pasa a Resuelta y se conserva el tiempo hasta la confirmación.",
+        "noteLabel": "Resultado de la atención",
+        "notePlaceholder": "Describe qué se verificó y cómo se atendió la condición detectada.",
+        "noteHint": "Obligatorio. Queda registrado en el historial de la alerta.",
+        "action": "Marcar como resuelta",
+        "confirmTitle": "¿Marcar la alerta como resuelta?",
+        "confirmMessage": "La alerta se cerrará con el resultado registrado. Esta acción no se puede deshacer.",
+        "errors": {
+          "required": "Ingresa el resultado de la atención.",
+          "maxLength": "El resultado no puede superar {{max}} caracteres."
+        },
+        "success": {
+          "title": "Alerta resuelta",
+          "message": "Se registró el resultado de la atención."
+        }
+      },
+      "result": { "title": "Resultado de la atención" },
+      "timeline": {
+        "title": "Línea de tiempo",
+        "subtitle": "Trazabilidad de la alerta",
+        "detected": "Condición detectada",
+        "acknowledged": "Atención confirmada",
+        "resolved": "Alerta resuelta",
+        "pending": "Pendiente"
+      },
+      "alreadyChanged": {
+        "title": "La alerta ya fue actualizada",
+        "message": "Su estado cambió antes de completar la acción; se mantienen el estado y los tiempos registrados."
+      },
+      "notFound": {
+        "title": "Alerta no encontrada",
+        "message": "La alerta solicitada no existe o ya no está disponible."
+      }
+    },
+    "consumption": {
+      "crumb": "Consumo",
+      "title": "Consumo de servicios",
+      "subtitle": "Consumo consolidado de energía y agua de la galería e historial por ubicación frente a su línea base.",
+      "period": "Periodo",
+      "noData": {
+        "title": "No hay datos disponibles todavía",
+        "message": "Aún no existen mediciones de consumo para {{period}}."
+      },
+      "openPeriod": "Periodo en curso: datos acumulados al {{date}}.",
+      "consolidated": {
+        "ELECTRICITY": "Energía consolidada",
+        "WATER": "Agua consolidada"
+      },
+      "locationsMeasured": "{{count}} ubicación(es) con medición",
+      "noMeasurementsForType": "Sin mediciones en el periodo",
+      "withoutData": "Sin mediciones del periodo",
+      "withoutDataHint": "Ubicaciones con medidor sin datos",
+      "history": {
+        "title": "Historial · {{location}}",
+        "subtitle": "Consumo por periodo ({{unit}})",
+        "legendConsumption": "Consumo",
+        "legendAverage": "Promedio histórico",
+        "empty": "No hay historial de consumo para esta ubicación."
+      },
+      "comparison": {
+        "title": "Comparación del periodo",
+        "accumulated": "Consumo acumulado",
+        "average": "Promedio histórico ({{count}} periodos)",
+        "deviation": "Desviación respecto de la línea base",
+        "noCurrent": "No hay mediciones de esta ubicación en el periodo seleccionado.",
+        "notAvailable": "La comparación aún no está disponible: se requieren al menos {{min}} periodos de historial (faltan {{missing}}).",
+        "dailyRateHint": "Periodo en curso: la desviación compara el consumo promedio diario."
+      },
+      "table": {
+        "title": "Consumo por ubicación",
+        "subtitle": "Selecciona una ubicación para ver su historial",
+        "deviation": "Desv.",
+        "select": "Ver historial de {{location}}",
+        "noMeter": "Sin medidor"
+      },
+      "rowStatus": {
+        "WITH_BASELINE": "Con línea base",
+        "NO_BASELINE": "Comparación aún no disponible",
+        "NO_DATA": "Sin mediciones del periodo"
+      }
+    },
+    "rules": {
+      "crumb": "Reglas",
+      "title": "Reglas de monitoreo",
+      "subtitle": "Condiciones y umbrales con los que se evalúan las mediciones recibidas.",
+      "explanation": "Una medición genera una alerta cuando cumple la condición de una regla activa. Las reglas inactivas no se evalúan.",
+      "tableTitle": "Reglas y umbrales",
+      "enabledCount": "{{enabled}} de {{total}} reglas activas",
+      "empty": "No hay reglas de monitoreo registradas.",
+      "alertsGenerated": "Alertas generadas",
+      "openAlerts": "Alertas abiertas",
+      "createdAt": "Creada",
+      "conditionText": "Valor {{symbol}} {{value}} {{unit}}",
+      "enabled": "Activa",
+      "disabled": "Inactiva",
+      "toggle": {
+        "enabled": "Regla «{{rule}}» activada",
+        "disabled": "Regla «{{rule}}» desactivada",
+        "disableTitle": "¿Desactivar la regla «{{rule}}»?",
+        "enableTitle": "¿Activar la regla «{{rule}}»?",
+        "disableMessage": "Las mediciones de {{type}} dejarán de evaluarse con esta regla y no generará nuevas alertas. Las alertas existentes se conservan.",
+        "enableMessage": "Las nuevas mediciones de {{type}} se evaluarán con esta regla y podrán generar alertas.",
+        "disableAction": "Desactivar regla",
+        "enableAction": "Activar regla"
+      }
+    }
+  }
+}

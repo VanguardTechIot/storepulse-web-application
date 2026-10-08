@@ -1,0 +1,90 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">{{ 'monitoring.nav.section' | translate }} / {{ 'monitoring.rules.crumb' | translate }}</div>
+    <h1>{{ 'monitoring.rules.title' | translate }}</h1>
+    <p>{{ 'monitoring.rules.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn btn-outline" [disabled]="store.isLoading()" (click)="refresh()">
+      <app-icon name="refresh" [size]="16" />{{ 'common.actions.refresh' | translate }}
+    </button>
+  </div>
+</div>
+
+@if (!store.ready()) {
+  <div class="card">
+    <app-view-state [state]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </div>
+} @else {
+  <div class="callout info banner">
+    <app-icon name="sliders" [size]="20" />
+    <span class="grow">{{ 'monitoring.rules.explanation' | translate }}</span>
+  </div>
+
+  <section class="card" aria-labelledby="rules-title">
+    <div class="card-head">
+      <div>
+        <h3 id="rules-title">{{ 'monitoring.rules.tableTitle' | translate }}</h3>
+        <p>{{ 'monitoring.rules.enabledCount' | translate: { enabled: enabledCount(), total: store.rules().length } }}</p>
+      </div>
+    </div>
+    @if (rows().length === 0) {
+      <app-view-state icon="sliders" [title]="'monitoring.rules.empty' | translate" />
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'monitoring.fields.rule' | translate }}</th>
+              <th>{{ 'monitoring.fields.measurementType' | translate }}</th>
+              <th>{{ 'monitoring.fields.condition' | translate }}</th>
+              <th class="t-right">{{ 'monitoring.rules.alertsGenerated' | translate }}</th>
+              <th class="t-right">{{ 'monitoring.rules.openAlerts' | translate }}</th>
+              <th>{{ 'monitoring.rules.createdAt' | translate }}</th>
+              <th>{{ 'monitoring.fields.status' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.rule.id) {
+              <tr [class.row-muted]="!row.rule.enabled">
+                <td><b>{{ row.rule.name }}</b><span class="sub mono">{{ row.rule.id }}</span></td>
+                <td><app-measurement-type-label [type]="row.rule.measurementType" [iconBox]="28" /></td>
+                <td class="mono">
+                  <b>{{ 'monitoring.rules.conditionText' | translate: {
+                    symbol: row.rule.threshold.symbol,
+                    value: (row.rule.threshold.value | localizedNumber: 3),
+                    unit: units[row.rule.measurementType]
+                  } }}</b>
+                  <span class="sub">{{ 'monitoring.operators.' + row.rule.threshold.operator | translate }}</span>
+                </td>
+                <td class="mono t-right">{{ row.total }}</td>
+                <td class="mono t-right" [class.down]="row.open > 0">{{ row.open }}</td>
+                <td class="mono">{{ row.rule.createdAt | localizedDate: 'date' }}</td>
+                <td>
+                  <button type="button" class="switch" role="switch" [attr.aria-checked]="row.rule.enabled"
+                          [attr.aria-label]="row.rule.name" (click)="pendingRule.set(row.rule)">
+                    <span class="toggle" [class.on]="row.rule.enabled"></span>
+                    <span>{{ (row.rule.enabled ? 'monitoring.rules.enabled' : 'monitoring.rules.disabled') | translate }}</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  @if (pendingRule(); as rule) {
+    <app-confirm-dialog
+      [open]="true"
+      [busy]="busy()"
+      [tone]="rule.enabled ? 'danger' : 'primary'"
+      [icon]="rule.enabled ? 'alert' : 'checkcircle'"
+      [title]="(rule.enabled ? 'monitoring.rules.toggle.disableTitle' : 'monitoring.rules.toggle.enableTitle') | translate: { rule: rule.name }"
+      [message]="(rule.enabled ? 'monitoring.rules.toggle.disableMessage' : 'monitoring.rules.toggle.enableMessage') | translate: { type: ('monitoring.measurementTypes.' + rule.measurementType | translate) }"
+      [confirmLabel]="(rule.enabled ? 'monitoring.rules.toggle.disableAction' : 'monitoring.rules.toggle.enableAction') | translate"
+      (confirmed)="confirmToggle()"
+      (cancelled)="pendingRule.set(null)" />
+  }
+}

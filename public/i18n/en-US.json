@@ -1,1 +1,300 @@
-{}
+{
+  "app": { "name": "StorePulse" },
+  "routeTitles": {
+    "overview": "Monitoring",
+    "alerts": "Alerts",
+    "alertDetail": "Alert detail",
+    "consumption": "Consumption",
+    "rules": "Monitoring rules",
+    "notFound": "Page not found"
+  },
+  "layout": {
+    "skipToContent": "Skip to content",
+    "language": "Language",
+    "navigation": "Main navigation",
+    "scope": "Gallery Management",
+    "toggleMenu": "Open or close the menu",
+    "status": {
+      "alert": "Alert · {{count}} pending",
+      "normal": "System normal"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The requested address does not exist or has been moved.",
+    "action": "Go to monitoring"
+  },
+  "common": {
+    "actions": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "retry": "Retry",
+      "refresh": "Refresh",
+      "viewAlerts": "View alerts",
+      "viewDetail": "View detail",
+      "clearFilters": "Clear filters"
+    },
+    "states": {
+      "loading": "Loading information…",
+      "errorTitle": "The information could not be loaded",
+      "errorMessage": "Check the connection to the server and try again."
+    },
+    "pagination": {
+      "range": "Showing {{from}}–{{to}} of {{total}}",
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "duration": {
+      "hours": "{{value}} h",
+      "minutes": "{{value}} min",
+      "seconds": "{{value}} s"
+    }
+  },
+  "monitoring": {
+    "nav": {
+      "section": "Monitoring",
+      "overview": "Overview",
+      "alerts": "Alerts",
+      "consumption": "Consumption",
+      "rules": "Monitoring rules",
+      "pendingCount": "{{count}} pending alerts"
+    },
+    "measurementTypes": {
+      "TEMPERATURE": "Temperature",
+      "HUMIDITY": "Humidity",
+      "ELECTRICITY": "Electricity",
+      "WATER": "Water"
+    },
+    "alertStatus": {
+      "ACTIVE": "Pending",
+      "ACKNOWLEDGED": "Acknowledged",
+      "RESOLVED": "Resolved"
+    },
+    "resourceStates": {
+      "NORMAL": "No active alerts",
+      "OPEN_ALERT": "Active alert ({{count}})",
+      "NO_MONITORING": "Not monitored"
+    },
+    "operators": {
+      "GREATER_THAN": "Greater than",
+      "GREATER_THAN_OR_EQUAL": "Greater than or equal to",
+      "LESS_THAN": "Less than",
+      "LESS_THAN_OR_EQUAL": "Less than or equal to",
+      "EQUAL": "Equal to"
+    },
+    "fields": {
+      "location": "Location",
+      "device": "Device",
+      "lastTelemetry": "Last telemetry",
+      "status": "Status",
+      "floor": "Floor {{floor}}",
+      "measurementType": "Measurement type",
+      "recordedAt": "Date / time",
+      "value": "Value",
+      "evaluation": "Evaluation",
+      "alert": "Alert",
+      "measurement": "Measurement",
+      "detectedAt": "Detected",
+      "responseTime": "Time to acknowledge",
+      "threshold": "Threshold",
+      "rule": "Monitoring rule",
+      "measuredValue": "Measured value",
+      "date": "Date",
+      "detectionTime": "Detection time",
+      "condition": "Condition"
+    },
+    "filters": {
+      "allTypes": "All types",
+      "allLocations": "All locations"
+    },
+    "overview": {
+      "crumb": "Overview",
+      "title": "Gallery monitoring",
+      "subtitle": "Monitoring status of each location and the latest measurements received.",
+      "pendingBanner": {
+        "title": "{{count}} alert(s) pending attention.",
+        "message": "Review each alert and acknowledge it.",
+        "action": "View pending alerts"
+      },
+      "acknowledgedBanner": "{{count}} alert(s) acknowledged. Record the result of the attention to resolve them.",
+      "viewAlerts": "View alerts",
+      "noOpenAlerts": "There are no active alerts in the gallery.",
+      "lastAlert": "Last recorded alert: {{date}}.",
+      "noAlertsYet": "No alerts have been recorded yet.",
+      "kpis": {
+        "monitored": "Monitored locations",
+        "monitoredHint": "With an active device",
+        "pending": "Pending alerts",
+        "pendingHint": "Need to be acknowledged",
+        "acknowledged": "Acknowledged alerts",
+        "acknowledgedHint": "Waiting for a recorded result",
+        "withoutMonitoring": "Locations not monitored",
+        "withoutMonitoringHint": "Device inactive or under maintenance"
+      },
+      "locations": {
+        "title": "Status by location",
+        "subtitle": "Units and common areas with their device and latest readings",
+        "filters": {
+          "ALL": "All",
+          "OPEN_ALERT": "Active alert",
+          "NO_MONITORING": "Not monitored"
+        },
+        "empty": "There are no locations in this status."
+      },
+      "measurements": {
+        "title": "Recent measurements",
+        "subtitle": "Readings received from the devices and their evaluation against the enabled rules",
+        "empty": "There are no measurements for the selected filters.",
+        "exceeds": "Exceeds threshold · {{rule}}",
+        "withinThreshold": "Within threshold"
+      }
+    },
+    "alerts": {
+      "crumb": "Alerts",
+      "title": "Monitoring alerts",
+      "subtitle": "Alerts generated by the monitoring rules, with their location, date, time and attention status.",
+      "statusFilters": {
+        "ALL": "All",
+        "ACTIVE": "Pending",
+        "ACKNOWLEDGED": "Acknowledged",
+        "RESOLVED": "Resolved"
+      },
+      "search": "Search alert or location…",
+      "emptyTitle": "No alerts have been recorded",
+      "emptyMessage": "When a measurement meets the condition of an enabled rule, the alert will appear here.",
+      "noResultsTitle": "No alerts match the filters",
+      "noResultsMessage": "Change or clear the filters to see more results.",
+      "unknownRule": "Rule not available"
+    },
+    "alertDetail": {
+      "title": "Alert {{code}}",
+      "back": "Back to alerts",
+      "banner": {
+        "activeTitle": "Alert pending attention.",
+        "activeMessage": "Detected on {{date}}. Acknowledge it to record the reaction time.",
+        "acknowledged": "Acknowledged at {{time}} ({{elapsed}} after detection). Record the result to resolve it.",
+        "resolved": "Alert resolved on {{date}}. Time to acknowledge: {{elapsed}}."
+      },
+      "detailTitle": "Alert detail",
+      "acknowledge": {
+        "title": "Acknowledge alert",
+        "subtitle": "The alert will move to Acknowledged and the date and time of the acknowledgement will be recorded.",
+        "action": "Acknowledge alert",
+        "confirmTitle": "Acknowledge this alert?",
+        "confirmMessage": "The current date and time will be recorded as the acknowledgement time. This action cannot be undone.",
+        "success": {
+          "title": "Alert acknowledged",
+          "message": "The alert is being attended and the acknowledgement time was recorded."
+        }
+      },
+      "resolve": {
+        "title": "Record the result of the attention",
+        "subtitle": "When saved, the alert moves to Resolved and the time to acknowledge is kept.",
+        "noteLabel": "Result of the attention",
+        "notePlaceholder": "Describe what was verified and how the detected condition was handled.",
+        "noteHint": "Required. It is kept in the alert history.",
+        "action": "Mark as resolved",
+        "confirmTitle": "Mark the alert as resolved?",
+        "confirmMessage": "The alert will be closed with the recorded result. This action cannot be undone.",
+        "errors": {
+          "required": "Enter the result of the attention.",
+          "maxLength": "The result cannot exceed {{max}} characters."
+        },
+        "success": {
+          "title": "Alert resolved",
+          "message": "The result of the attention was recorded."
+        }
+      },
+      "result": { "title": "Result of the attention" },
+      "timeline": {
+        "title": "Timeline",
+        "subtitle": "Alert traceability",
+        "detected": "Condition detected",
+        "acknowledged": "Acknowledged",
+        "resolved": "Resolved",
+        "pending": "Pending"
+      },
+      "alreadyChanged": {
+        "title": "The alert was already updated",
+        "message": "Its status changed before the action completed; the status and recorded times are kept."
+      },
+      "notFound": {
+        "title": "Alert not found",
+        "message": "The requested alert does not exist or is no longer available."
+      }
+    },
+    "consumption": {
+      "crumb": "Consumption",
+      "title": "Utility consumption",
+      "subtitle": "Consolidated electricity and water consumption of the gallery and history per location against its baseline.",
+      "period": "Period",
+      "noData": {
+        "title": "No data available yet",
+        "message": "There are no consumption measurements for {{period}} yet."
+      },
+      "openPeriod": "Current period: accumulated data up to {{date}}.",
+      "consolidated": {
+        "ELECTRICITY": "Consolidated electricity",
+        "WATER": "Consolidated water"
+      },
+      "locationsMeasured": "{{count}} location(s) measured",
+      "noMeasurementsForType": "No measurements in the period",
+      "withoutData": "No measurements in the period",
+      "withoutDataHint": "Metered locations without data",
+      "history": {
+        "title": "History · {{location}}",
+        "subtitle": "Consumption per period ({{unit}})",
+        "legendConsumption": "Consumption",
+        "legendAverage": "Historical average",
+        "empty": "There is no consumption history for this location."
+      },
+      "comparison": {
+        "title": "Period comparison",
+        "accumulated": "Accumulated consumption",
+        "average": "Historical average ({{count}} periods)",
+        "deviation": "Deviation from the baseline",
+        "noCurrent": "There are no measurements for this location in the selected period.",
+        "notAvailable": "The comparison is not available yet: at least {{min}} periods of history are required ({{missing}} missing).",
+        "dailyRateHint": "Current period: the deviation compares the average daily consumption."
+      },
+      "table": {
+        "title": "Consumption by location",
+        "subtitle": "Select a location to see its history",
+        "deviation": "Dev.",
+        "select": "View history of {{location}}",
+        "noMeter": "No meter"
+      },
+      "rowStatus": {
+        "WITH_BASELINE": "With baseline",
+        "NO_BASELINE": "Comparison not available yet",
+        "NO_DATA": "No measurements in the period"
+      }
+    },
+    "rules": {
+      "crumb": "Rules",
+      "title": "Monitoring rules",
+      "subtitle": "Conditions and thresholds used to evaluate the measurements received.",
+      "explanation": "A measurement generates an alert when it meets the condition of an enabled rule. Disabled rules are not evaluated.",
+      "tableTitle": "Rules and thresholds",
+      "enabledCount": "{{enabled}} of {{total}} rules enabled",
+      "empty": "There are no monitoring rules registered.",
+      "alertsGenerated": "Alerts generated",
+      "openAlerts": "Open alerts",
+      "createdAt": "Created",
+      "conditionText": "Value {{symbol}} {{value}} {{unit}}",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "toggle": {
+        "enabled": "Rule “{{rule}}” enabled",
+        "disabled": "Rule “{{rule}}” disabled",
+        "disableTitle": "Disable the rule “{{rule}}”?",
+        "enableTitle": "Enable the rule “{{rule}}”?",
+        "disableMessage": "{{type}} measurements will no longer be evaluated with this rule and it will not generate new alerts. Existing alerts are kept.",
+        "enableMessage": "New {{type}} measurements will be evaluated with this rule and may generate alerts.",
+        "disableAction": "Disable rule",
+        "enableAction": "Enable rule"
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<svg [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="xMidYMid meet" role="img" [attr.aria-label]="label()">
+  @for (line of gridLines(); track $index) {
+    <line [attr.x1]="pad.left" [attr.x2]="width - pad.right" [attr.y1]="line.y" [attr.y2]="line.y"
+          class="grid" [class.base]="$first" />
+    <text [attr.x]="pad.left - 8" [attr.y]="line.y + 4" text-anchor="end" class="axis">
+      {{ line.value | localizedNumber: 1 }}
+    </text>
+  }
+  @for (bar of bars(); track bar.consumption.id) {
+    <rect [attr.x]="bar.x" [attr.y]="bar.y" [attr.width]="bar.width" [attr.height]="bar.height" rx="3"
+          class="bar" [class.selected]="bar.selected">
+      <title>{{ bar.consumption.periodStart | localizedDate: 'monthYear' }} · {{ bar.consumption.totalValue | localizedNumber: 2 }} {{ unit() }}</title>
+    </rect>
+    <text [attr.x]="bar.labelX" [attr.y]="height - 9" text-anchor="middle" class="axis" [class.selected-label]="bar.selected">
+      {{ bar.consumption.periodStart | localizedDate: 'shortMonth' }}
+    </text>
+  }
+  @if (averageY(); as y) {
+    <line [attr.x1]="pad.left" [attr.x2]="width - pad.right" [attr.y1]="y" [attr.y2]="y" class="average" />
+  }
+</svg>

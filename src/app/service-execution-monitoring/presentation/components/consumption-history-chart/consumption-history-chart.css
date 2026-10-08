@@ -1,0 +1,9 @@
+:host { display: block; }
+svg { display: block; width: 100%; height: auto; font-family: var(--font-data); }
+.grid { stroke: var(--border); stroke-dasharray: 3 4; }
+.grid.base { stroke-dasharray: none; }
+.axis { font-size: 11px; fill: var(--muted); }
+.bar { fill: var(--cyan-50); stroke: var(--cyan); stroke-width: 1; }
+.bar.selected { fill: var(--cyan); }
+.selected-label { fill: var(--navy); font-weight: 600; }
+.average { stroke: var(--slate-500); stroke-width: 1.6; stroke-dasharray: 5 4; }
