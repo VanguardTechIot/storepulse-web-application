@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "fullName": "Carmen Mendoza Ríos",
+      "email": "carmen.mendoza@galeriacentral.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "GALLERY_ADMINISTRATOR",
+      "status": "ACTIVE"
+    },
+    {
+      "id": 2,
+      "fullName": "Luis Paredes Soto",
+      "email": "luis.paredes@galeriacentral.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "TENANT",
+      "status": "ACTIVE"
+    }
+  ],
+  "password-recoveries": [
+    {
+      "userId": 1,
+      "code": "820419",
+      "requestedAt": "2026-10-08T18:10:31.024Z",
+      "expiresAt": "2026-10-08T18:25:31.024Z",
+      "used": false,
+      "id": 1
+    }
+  ]
+}
