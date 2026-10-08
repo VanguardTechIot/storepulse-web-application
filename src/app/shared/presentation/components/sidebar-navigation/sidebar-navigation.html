@@ -1,0 +1,29 @@
+<nav class="sidenav" [attr.aria-label]="'layout.navigation' | translate">
+  <a class="brand" routerLink="/monitoring/overview" (click)="navigate.emit()">
+    <span class="brand-mark"><app-icon name="pulse" [size]="20" [strokeWidth]="2.4" /></span>
+    <span class="brand-name">Store<span>Pulse</span></span>
+  </a>
+  <span class="chip-scope"><app-icon name="building" [size]="13" />{{ 'layout.scope' | translate }}</span>
+
+  <div class="nav-label">{{ 'monitoring.nav.section' | translate }}</div>
+  <ul class="nav">
+    @for (item of monitoringItems; track item.path) {
+      <li>
+        <a [routerLink]="item.path" routerLinkActive="active" #rla="routerLinkActive"
+           [attr.aria-current]="rla.isActive ? 'page' : null" (click)="navigate.emit()">
+          <app-icon [name]="item.icon" />
+          {{ item.label | translate }}
+          @if (item.icon === 'bell' && monitoringStore.activeAlertCount() > 0) {
+            <span class="count" [attr.aria-label]="'monitoring.nav.pendingCount' | translate: { count: monitoringStore.activeAlertCount() }">
+              {{ monitoringStore.activeAlertCount() }}
+            </span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="side-foot">
+    <div class="copyright"><span>VanguardTech © {{ year }}</span></div>
+  </div>
+</nav>
