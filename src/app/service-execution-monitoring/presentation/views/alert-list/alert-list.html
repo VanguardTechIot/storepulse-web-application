@@ -1,0 +1,133 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">{{ 'monitoring.nav.section' | translate }} / {{ 'monitoring.alerts.crumb' | translate }}</div>
+    <h1>{{ 'monitoring.alerts.title' | translate }}</h1>
+    <p>{{ 'monitoring.alerts.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn btn-outline" [disabled]="store.isLoading()" (click)="refresh()">
+      <app-icon name="refresh" [size]="16" />{{ 'common.actions.refresh' | translate }}
+    </button>
+  </div>
+</div>
+
+@if (!store.ready()) {
+  <div class="card">
+    <app-view-state [state]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </div>
+} @else {
+  <section class="card" aria-labelledby="alerts-title">
+    <h2 id="alerts-title" class="sr-only">{{ 'monitoring.alerts.title' | translate }}</h2>
+    <div class="toolbar wrap">
+      <div class="tabs" role="tablist">
+        @for (filter of statusFilters; track filter) {
+          <button type="button" role="tab" [class.on]="status() === filter" [attr.aria-selected]="status() === filter"
+                  (click)="setFilter('status', filter)">
+            {{ 'monitoring.alerts.statusFilters.' + filter | translate }} ({{ countFor(filter) }})
+          </button>
+        }
+      </div>
+      <div class="toolbar-filters">
+        <label class="search">
+          <app-icon name="search" [size]="16" />
+          <span class="sr-only">{{ 'monitoring.alerts.search' | translate }}</span>
+          <input type="search" [value]="search()" [placeholder]="'monitoring.alerts.search' | translate"
+                 (input)="setSearch($any($event.target).value)" />
+        </label>
+        <label class="select-field">
+          <span class="sr-only">{{ 'monitoring.fields.measurementType' | translate }}</span>
+          <select class="select" [value]="type()" (change)="setFilter('type', $any($event.target).value)">
+            <option value="">{{ 'monitoring.filters.allTypes' | translate }}</option>
+            @for (t of measurementTypes; track t) {
+              <option [value]="t">{{ 'monitoring.measurementTypes.' + t | translate }}</option>
+            }
+          </select>
+        </label>
+        <label class="select-field">
+          <span class="sr-only">{{ 'monitoring.fields.location' | translate }}</span>
+          <select class="select" [value]="resourceId()" (change)="setFilter('resource', $any($event.target).value)">
+            <option value="">{{ 'monitoring.filters.allLocations' | translate }}</option>
+            @for (resource of store.resources(); track resource.resourceId) {
+              <option [value]="resource.resourceId">{{ resource.name }} · {{ resource.description }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    </div>
+
+    @if (store.alertDetails().length === 0) {
+      <app-view-state icon="shieldok" [title]="'monitoring.alerts.emptyTitle' | translate"
+                      [message]="'monitoring.alerts.emptyMessage' | translate" />
+    } @else if (filtered().length === 0) {
+      <app-view-state icon="search" [title]="'monitoring.alerts.noResultsTitle' | translate"
+                      [message]="'monitoring.alerts.noResultsMessage' | translate">
+        @if (hasFilters()) {
+          <button type="button" class="btn btn-outline btn-sm" (click)="clearFilters()">
+            {{ 'common.actions.clearFilters' | translate }}
+          </button>
+        }
+      </app-view-state>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'monitoring.fields.alert' | translate }}</th>
+              <th>{{ 'monitoring.fields.location' | translate }}</th>
+              <th>{{ 'monitoring.fields.measurement' | translate }}</th>
+              <th>{{ 'monitoring.fields.detectedAt' | translate }}</th>
+              <th>{{ 'monitoring.fields.responseTime' | translate }}</th>
+              <th>{{ 'monitoring.fields.status' | translate }}</th>
+              <th><span class="sr-only">{{ 'common.actions.viewDetail' | translate }}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (details of pagedAlerts(); track details.alert.id) {
+              <tr [class.row-alert]="details.alert.status === 'ACTIVE'">
+                <td>
+                  <span class="cell-with-icon">
+                    @if (details.rule) {
+                      <app-measurement-type-label [type]="details.rule.measurementType" [showLabel]="false" />
+                    }
+                    <span>
+                      <b>{{ details.rule?.name ?? ('monitoring.alerts.unknownRule' | translate) }}</b>
+                      <span class="sub mono">{{ details.alert.id | uppercase }}</span>
+                    </span>
+                  </span>
+                </td>
+                <td>
+                  <b>{{ details.resource?.name ?? '—' }}</b>
+                  <span class="sub">{{ details.resource?.description }}</span>
+                </td>
+                <td class="mono">
+                  @if (details.measurement; as m) {
+                    <b>{{ m.value | localizedNumber: 3 }} {{ m.unit }}</b>
+                  } @else { — }
+                  @if (details.rule; as rule) {
+                    <span class="sub">{{ 'monitoring.fields.threshold' | translate }} {{ rule.threshold.symbol }} {{ rule.threshold.value | localizedNumber: 3 }} {{ units[rule.measurementType] }}</span>
+                  }
+                </td>
+                <td class="mono">
+                  {{ details.alert.createdAt | localizedDate: 'date' }}
+                  <span class="sub">{{ details.alert.createdAt | localizedDate: 'time' }}</span>
+                </td>
+                <td class="mono">{{ details.alert.responseTimeMs | duration }}</td>
+                <td><app-alert-status-badge [status]="details.alert.status" /></td>
+                <td>
+                  <div class="row-actions">
+                    <a class="icon-action" [routerLink]="['/monitoring/alerts', details.alert.id]"
+                       [attr.aria-label]="('common.actions.viewDetail' | translate) + ' ' + (details.alert.id | uppercase)"
+                       [title]="'common.actions.viewDetail' | translate">
+                      <app-icon name="eye" [size]="15" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginator [total]="filtered().length" [pageSize]="pageSize" [(page)]="page" />
+    }
+  </section>
+}

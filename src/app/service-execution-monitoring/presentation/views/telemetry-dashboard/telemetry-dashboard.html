@@ -1,0 +1,213 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">{{ 'monitoring.nav.section' | translate }} / {{ 'monitoring.overview.crumb' | translate }}</div>
+    <h1>{{ 'monitoring.overview.title' | translate }}</h1>
+    <p>{{ 'monitoring.overview.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn btn-outline" [disabled]="store.isLoading()" (click)="refresh()">
+      <app-icon name="refresh" [size]="16" />{{ 'common.actions.refresh' | translate }}
+    </button>
+  </div>
+</div>
+
+@if (!store.ready()) {
+  <div class="card">
+    <app-view-state [state]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </div>
+} @else {
+  @if (store.activeAlertCount() > 0) {
+    <div class="callout danger banner" role="alert">
+      <app-icon name="alert" [size]="20" />
+      <span class="grow">
+        <b>{{ 'monitoring.overview.pendingBanner.title' | translate: { count: store.activeAlertCount() } }}</b>
+        {{ 'monitoring.overview.pendingBanner.message' | translate }}
+      </span>
+      <a class="btn btn-danger btn-sm" routerLink="/monitoring/alerts" [queryParams]="{ status: 'ACTIVE' }">
+        {{ 'monitoring.overview.pendingBanner.action' | translate }}
+      </a>
+    </div>
+  } @else if (store.acknowledgedAlertCount() > 0) {
+    <div class="callout info banner">
+      <app-icon name="clock" [size]="20" />
+      <span class="grow">{{ 'monitoring.overview.acknowledgedBanner' | translate: { count: store.acknowledgedAlertCount() } }}</span>
+      <a class="btn btn-outline btn-sm" routerLink="/monitoring/alerts" [queryParams]="{ status: 'ACKNOWLEDGED' }">
+        {{ 'monitoring.overview.viewAlerts' | translate }}
+      </a>
+    </div>
+  } @else {
+    <div class="callout ok banner">
+      <app-icon name="shieldok" [size]="20" />
+      <span class="grow">
+        <b>{{ 'monitoring.overview.noOpenAlerts' | translate }}</b>
+        @if (store.lastAlert(); as last) {
+          {{ 'monitoring.overview.lastAlert' | translate: { date: (last.alert.createdAt | localizedDate: 'dateTime') } }}
+        } @else {
+          {{ 'monitoring.overview.noAlertsYet' | translate }}
+        }
+      </span>
+    </div>
+  }
+
+  <div class="grid g-4">
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-cyan"><app-icon name="gauge" /></span>{{ 'monitoring.overview.kpis.monitored' | translate }}</div>
+      <div class="val">{{ monitoredCount() }}<small>/ {{ store.resources().length }}</small></div>
+      <div class="delta muted">{{ 'monitoring.overview.kpis.monitoredHint' | translate }}</div>
+    </div>
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-red"><app-icon name="alert" /></span>{{ 'monitoring.overview.kpis.pending' | translate }}</div>
+      <div class="val">{{ store.activeAlertCount() }}</div>
+      <div class="delta" [class.down]="store.activeAlertCount() > 0" [class.muted]="store.activeAlertCount() === 0">
+        {{ 'monitoring.overview.kpis.pendingHint' | translate }}
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-blue"><app-icon name="clock" /></span>{{ 'monitoring.overview.kpis.acknowledged' | translate }}</div>
+      <div class="val">{{ store.acknowledgedAlertCount() }}</div>
+      <div class="delta muted">{{ 'monitoring.overview.kpis.acknowledgedHint' | translate }}</div>
+    </div>
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-violet"><app-icon name="wifioff" /></span>{{ 'monitoring.overview.kpis.withoutMonitoring' | translate }}</div>
+      <div class="val">{{ withoutMonitoringCount() }}</div>
+      <div class="delta muted">{{ 'monitoring.overview.kpis.withoutMonitoringHint' | translate }}</div>
+    </div>
+  </div>
+
+  <section class="card" aria-labelledby="locations-title">
+    <div class="card-head wrap">
+      <div>
+        <h3 id="locations-title">{{ 'monitoring.overview.locations.title' | translate }}</h3>
+        <p>{{ 'monitoring.overview.locations.subtitle' | translate }}</p>
+      </div>
+      <div class="right">
+        <div class="tabs" role="tablist">
+          @for (filter of stateFilters; track filter) {
+            <button type="button" role="tab" [class.on]="stateFilter() === filter" [attr.aria-selected]="stateFilter() === filter"
+                    (click)="stateFilter.set(filter)">
+              {{ 'monitoring.overview.locations.filters.' + filter | translate }} ({{ stateCount(filter) }})
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+    @if (visibleStatuses().length === 0) {
+      <app-view-state icon="shieldok" [title]="'monitoring.overview.locations.empty' | translate" />
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'monitoring.fields.location' | translate }}</th>
+              <th>{{ 'monitoring.fields.device' | translate }}</th>
+              <th>{{ 'monitoring.measurementTypes.TEMPERATURE' | translate }}</th>
+              <th>{{ 'monitoring.measurementTypes.HUMIDITY' | translate }}</th>
+              <th>{{ 'monitoring.fields.lastTelemetry' | translate }}</th>
+              <th>{{ 'monitoring.fields.status' | translate }}</th>
+              <th><span class="sr-only">{{ 'common.actions.viewAlerts' | translate }}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (status of visibleStatuses(); track status.resource.resourceId) {
+              <tr>
+                <td>
+                  <b>{{ status.resource.name }}</b>
+                  <span class="sub">{{ status.resource.description }} · {{ 'monitoring.fields.floor' | translate: { floor: status.resource.floor } }}</span>
+                </td>
+                <td class="mono">{{ status.resource.deviceSerialNumber ?? '—' }}</td>
+                <td class="mono">
+                  @if (status.latest.TEMPERATURE; as m) { {{ m.value | localizedNumber: 1 }} {{ m.unit }} } @else { — }
+                </td>
+                <td class="mono">
+                  @if (status.latest.HUMIDITY; as m) { {{ m.value | localizedNumber: 1 }} {{ m.unit }} } @else { — }
+                </td>
+                <td class="mono">{{ status.lastTelemetryAt | localizedDate: 'dateTime' }}</td>
+                <td>
+                  <span class="badge" [class]="'badge ' + stateTones[status.state]">
+                    {{ 'monitoring.resourceStates.' + status.state | translate: { count: status.openAlerts } }}
+                  </span>
+                </td>
+                <td>
+                  <div class="row-actions">
+                    <a class="icon-action" routerLink="/monitoring/alerts" [queryParams]="{ resource: status.resource.resourceId }"
+                       [attr.aria-label]="('common.actions.viewAlerts' | translate) + ' · ' + status.resource.name"
+                       [title]="'common.actions.viewAlerts' | translate">
+                      <app-icon name="bell" [size]="15" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="card" aria-labelledby="measurements-title">
+    <div class="card-head">
+      <div>
+        <h3 id="measurements-title">{{ 'monitoring.overview.measurements.title' | translate }}</h3>
+        <p>{{ 'monitoring.overview.measurements.subtitle' | translate }}</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <label class="select-field">
+        <span class="sr-only">{{ 'monitoring.fields.measurementType' | translate }}</span>
+        <select class="select" [value]="typeFilter()" (change)="typeFilter.set($any($event.target).value)">
+          <option value="">{{ 'monitoring.filters.allTypes' | translate }}</option>
+          @for (type of measurementTypes; track type) {
+            <option [value]="type">{{ 'monitoring.measurementTypes.' + type | translate }}</option>
+          }
+        </select>
+      </label>
+      <label class="select-field">
+        <span class="sr-only">{{ 'monitoring.fields.location' | translate }}</span>
+        <select class="select" [value]="resourceFilter()" (change)="resourceFilter.set($any($event.target).value)">
+          <option value="">{{ 'monitoring.filters.allLocations' | translate }}</option>
+          @for (resource of store.resources(); track resource.resourceId) {
+            <option [value]="resource.resourceId">{{ resource.name }} · {{ resource.description }}</option>
+          }
+        </select>
+      </label>
+    </div>
+    @if (filteredMeasurements().length === 0) {
+      <app-view-state icon="gauge" [title]="'monitoring.overview.measurements.empty' | translate" />
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'monitoring.fields.recordedAt' | translate }}</th>
+              <th>{{ 'monitoring.fields.location' | translate }}</th>
+              <th>{{ 'monitoring.fields.measurementType' | translate }}</th>
+              <th class="t-right">{{ 'monitoring.fields.value' | translate }}</th>
+              <th>{{ 'monitoring.fields.evaluation' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of pagedMeasurements(); track row.measurement.id) {
+              <tr>
+                <td class="mono">{{ row.measurement.recordedAt | localizedDate: 'dateTime' }}</td>
+                <td>
+                  <b>{{ row.resource?.name ?? '—' }}</b>
+                  <span class="sub mono">{{ row.resource?.deviceSerialNumber }}</span>
+                </td>
+                <td><app-measurement-type-label [type]="row.measurement.type" [iconBox]="28" /></td>
+                <td class="mono t-right"><b>{{ row.measurement.value | localizedNumber: 3 }}</b> {{ row.measurement.unit }}</td>
+                <td>
+                  @if (row.matchedRule; as rule) {
+                    <span class="badge badge--warning">{{ 'monitoring.overview.measurements.exceeds' | translate: { rule: rule.name } }}</span>
+                  } @else {
+                    <span class="badge badge--neutral">{{ 'monitoring.overview.measurements.withinThreshold' | translate }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginator [total]="filteredMeasurements().length" [pageSize]="pageSize" [(page)]="page" />
+    }
+  </section>
+}

@@ -1,0 +1,274 @@
+@if (!store.ready()) {
+  <div class="card">
+    <app-view-state [state]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </div>
+} @else if (details(); as d) {
+  <div class="page-head">
+    <div>
+      <div class="crumbs">
+        {{ 'monitoring.nav.section' | translate }} /
+        <a routerLink="/monitoring/alerts">{{ 'monitoring.alerts.crumb' | translate }}</a> /
+        {{ d.alert.id | uppercase }}
+      </div>
+      <h1>{{ 'monitoring.alertDetail.title' | translate: { code: (d.alert.id | uppercase) } }}</h1>
+      <p>{{ d.rule?.name }} · {{ d.resource?.name }} · {{ d.resource?.description }}</p>
+    </div>
+    <div class="actions">
+      <a routerLink="/monitoring/alerts" class="btn btn-outline">
+        <app-icon name="arrowleft" [size]="16" />{{ 'monitoring.alertDetail.back' | translate }}
+      </a>
+    </div>
+  </div>
+
+  @switch (d.alert.status) {
+    @case ('ACTIVE') {
+      <div class="callout danger banner" role="alert">
+        <app-icon name="alert" [size]="20" />
+        <span class="grow">
+          <b>{{ 'monitoring.alertDetail.banner.activeTitle' | translate }}</b>
+          {{ 'monitoring.alertDetail.banner.activeMessage' | translate: { date: (d.alert.createdAt | localizedDate: 'dateTime') } }}
+        </span>
+        <button type="button" class="btn btn-danger btn-sm" (click)="confirmingAcknowledge.set(true)">
+          <app-icon name="checkcircle" [size]="16" />{{ 'monitoring.alertDetail.acknowledge.action' | translate }}
+        </button>
+      </div>
+    }
+    @case ('ACKNOWLEDGED') {
+      <div class="callout info banner">
+        <app-icon name="clock" [size]="20" />
+        <span class="grow">
+          {{ 'monitoring.alertDetail.banner.acknowledged' | translate: {
+            time: (d.alert.acknowledgedAt | localizedDate: 'time'),
+            elapsed: (d.alert.responseTimeMs | duration)
+          } }}
+        </span>
+      </div>
+    }
+    @case ('RESOLVED') {
+      <div class="callout ok banner">
+        <app-icon name="checkcircle" [size]="20" />
+        <span class="grow">
+          {{ 'monitoring.alertDetail.banner.resolved' | translate: {
+            date: (d.alert.resolvedAt | localizedDate: 'dateTime'),
+            elapsed: (d.alert.responseTimeMs | duration)
+          } }}
+        </span>
+      </div>
+    }
+  }
+
+  <div class="row">
+    <div class="grow stack">
+      <section class="card" aria-labelledby="alert-detail-title">
+        <div class="card-head">
+          <div><h3 id="alert-detail-title">{{ 'monitoring.alertDetail.detailTitle' | translate }}</h3></div>
+          <div class="right"><app-alert-status-badge [status]="d.alert.status" /></div>
+        </div>
+        <div class="card-pad">
+          <div class="kv kv-3">
+            <div>
+              <span>{{ 'monitoring.fields.rule' | translate }}</span>
+              <b>{{ d.rule?.name ?? '—' }}</b>
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.measurementType' | translate }}</span>
+              @if (d.rule) {
+                <b><app-measurement-type-label [type]="d.rule.measurementType" [iconBox]="24" /></b>
+              } @else { <b>—</b> }
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.measuredValue' | translate }}</span>
+              <b class="mono">
+                @if (d.measurement; as m) { {{ m.value | localizedNumber: 3 }} {{ m.unit }} } @else { — }
+              </b>
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.threshold' | translate }}</span>
+              <b class="mono">
+                @if (d.rule; as rule) {
+                  {{ rule.threshold.symbol }} {{ rule.threshold.value | localizedNumber: 3 }} {{ units[rule.measurementType] }}
+                } @else { — }
+              </b>
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.location' | translate }}</span>
+              <b>{{ d.resource?.name ?? '—' }}</b>
+              @if (d.resource; as r) {
+                <span class="sub">{{ r.description }} · {{ 'monitoring.fields.floor' | translate: { floor: r.floor } }} · {{ r.reference }}</span>
+              }
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.device' | translate }}</span>
+              <b class="mono">{{ d.resource?.deviceSerialNumber ?? '—' }}</b>
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.date' | translate }}</span>
+              <b>{{ d.alert.createdAt | localizedDate: 'date' }}</b>
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.detectionTime' | translate }}</span>
+              <b class="mono">{{ d.alert.createdAt | localizedDate: 'time' }}</b>
+            </div>
+            <div>
+              <span>{{ 'monitoring.fields.responseTime' | translate }}</span>
+              <b class="mono">{{ d.alert.responseTimeMs | duration }}</b>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      @switch (d.alert.status) {
+        @case ('ACTIVE') {
+          <section class="card" aria-labelledby="acknowledge-title">
+            <div class="card-head">
+              <div>
+                <h3 id="acknowledge-title">{{ 'monitoring.alertDetail.acknowledge.title' | translate }}</h3>
+                <p>{{ 'monitoring.alertDetail.acknowledge.subtitle' | translate }}</p>
+              </div>
+            </div>
+            <div class="card-pad actions-end">
+              <button type="button" class="btn btn-primary" (click)="confirmingAcknowledge.set(true)">
+                <app-icon name="checkcircle" [size]="16" />{{ 'monitoring.alertDetail.acknowledge.action' | translate }}
+              </button>
+            </div>
+          </section>
+        }
+        @case ('ACKNOWLEDGED') {
+          <section class="card" aria-labelledby="resolve-title">
+            <div class="card-head">
+              <div>
+                <h3 id="resolve-title">{{ 'monitoring.alertDetail.resolve.title' | translate }}</h3>
+                <p>{{ 'monitoring.alertDetail.resolve.subtitle' | translate }}</p>
+              </div>
+            </div>
+            <form class="card-pad stack-sm" novalidate (submit)="$event.preventDefault(); requestResolve()">
+              <div class="field">
+                <label for="resolution-note">
+                  {{ 'monitoring.alertDetail.resolve.noteLabel' | translate }} <span class="req">*</span>
+                </label>
+                <textarea id="resolution-note" class="input textarea" rows="4"
+                          [class.error]="noteTouched() && noteError()"
+                          [attr.aria-invalid]="noteTouched() && !!noteError()"
+                          aria-describedby="resolution-note-help"
+                          [placeholder]="'monitoring.alertDetail.resolve.notePlaceholder' | translate"
+                          [value]="resolutionNote()"
+                          (input)="resolutionNote.set($any($event.target).value)"
+                          (blur)="noteTouched.set(true)"></textarea>
+                <div id="resolution-note-help" class="field-foot">
+                  @if (noteTouched() && noteError(); as error) {
+                    <span class="err"><app-icon name="alert" [size]="14" />{{ error | translate: { max: noteMaxLength } }}</span>
+                  } @else {
+                    <span class="hint">{{ 'monitoring.alertDetail.resolve.noteHint' | translate }}</span>
+                  }
+                  <span class="hint" [class.err]="resolutionNote().trim().length > noteMaxLength">
+                    {{ resolutionNote().trim().length }}/{{ noteMaxLength }}
+                  </span>
+                </div>
+              </div>
+              <div class="actions-end">
+                <button type="submit" class="btn btn-primary">
+                  <app-icon name="check" [size]="16" />{{ 'monitoring.alertDetail.resolve.action' | translate }}
+                </button>
+              </div>
+            </form>
+          </section>
+        }
+        @case ('RESOLVED') {
+          <section class="card" aria-labelledby="result-title">
+            <div class="card-head">
+              <div><h3 id="result-title">{{ 'monitoring.alertDetail.result.title' | translate }}</h3></div>
+            </div>
+            <div class="card-pad">
+              <p class="note">{{ d.alert.resolutionNote || '—' }}</p>
+            </div>
+          </section>
+        }
+      }
+    </div>
+
+    <aside class="card side-card" aria-labelledby="timeline-title">
+      <div class="card-head">
+        <div>
+          <h3 id="timeline-title">{{ 'monitoring.alertDetail.timeline.title' | translate }}</h3>
+          <p>{{ 'monitoring.alertDetail.timeline.subtitle' | translate }}</p>
+        </div>
+      </div>
+      <div class="card-pad">
+        <ol class="timeline">
+          <li class="tl">
+            <span class="dotc ico-red"><app-icon name="alert" [size]="14" /></span>
+            <div>
+              <b>{{ 'monitoring.alertDetail.timeline.detected' | translate }}</b>
+              <small>
+                {{ d.alert.createdAt | localizedDate: 'dateTime' }}
+                @if (d.measurement; as m) { · {{ m.value | localizedNumber: 3 }} {{ m.unit }} }
+              </small>
+            </div>
+          </li>
+          <li class="tl" [class.pending]="!d.alert.acknowledgedAt">
+            <span class="dotc" [class.ico-blue]="d.alert.acknowledgedAt" [class.ico-gray]="!d.alert.acknowledgedAt">
+              <app-icon name="checkcircle" [size]="14" />
+            </span>
+            <div>
+              <b>{{ 'monitoring.alertDetail.timeline.acknowledged' | translate }}</b>
+              <small>
+                @if (d.alert.acknowledgedAt) {
+                  {{ d.alert.acknowledgedAt | localizedDate: 'dateTime' }} · {{ d.alert.responseTimeMs | duration }}
+                } @else {
+                  {{ 'monitoring.alertDetail.timeline.pending' | translate }}
+                }
+              </small>
+            </div>
+          </li>
+          <li class="tl" [class.pending]="!d.alert.resolvedAt">
+            <span class="dotc" [class.ico-green]="d.alert.resolvedAt" [class.ico-gray]="!d.alert.resolvedAt">
+              <app-icon name="shieldok" [size]="14" />
+            </span>
+            <div>
+              <b>{{ 'monitoring.alertDetail.timeline.resolved' | translate }}</b>
+              <small>
+                @if (d.alert.resolvedAt) {
+                  {{ d.alert.resolvedAt | localizedDate: 'dateTime' }}
+                } @else {
+                  {{ 'monitoring.alertDetail.timeline.pending' | translate }}
+                }
+              </small>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+
+  <app-confirm-dialog
+    [open]="confirmingAcknowledge()"
+    [busy]="busy()"
+    [title]="'monitoring.alertDetail.acknowledge.confirmTitle' | translate"
+    [message]="'monitoring.alertDetail.acknowledge.confirmMessage' | translate"
+    [confirmLabel]="'monitoring.alertDetail.acknowledge.action' | translate"
+    (confirmed)="acknowledge()"
+    (cancelled)="confirmingAcknowledge.set(false)" />
+
+  <app-confirm-dialog
+    [open]="confirmingResolve()"
+    [busy]="busy()"
+    icon="shieldok"
+    [title]="'monitoring.alertDetail.resolve.confirmTitle' | translate"
+    [message]="'monitoring.alertDetail.resolve.confirmMessage' | translate"
+    [confirmLabel]="'monitoring.alertDetail.resolve.action' | translate"
+    (confirmed)="resolve()"
+    (cancelled)="confirmingResolve.set(false)">
+    <div class="callout info">
+      <span><b>{{ 'monitoring.alertDetail.resolve.noteLabel' | translate }}:</b> {{ resolutionNote().trim() }}</span>
+    </div>
+  </app-confirm-dialog>
+} @else {
+  <div class="card">
+    <app-view-state icon="search" [title]="'monitoring.alertDetail.notFound.title' | translate"
+                    [message]="'monitoring.alertDetail.notFound.message' | translate">
+      <a routerLink="/monitoring/alerts" class="btn btn-outline btn-sm">
+        <app-icon name="arrowleft" [size]="16" />{{ 'monitoring.alertDetail.back' | translate }}
+      </a>
+    </app-view-state>
+  </div>
+}
