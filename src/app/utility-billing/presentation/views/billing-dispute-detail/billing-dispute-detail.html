@@ -1,0 +1,109 @@
+@if (dispute(); as current) {
+  <header class="page-header">
+    <div>
+      <a class="link" routerLink="/billing/disputes">← {{ 'billing.actions.back' | translate }}</a>
+      <h1 class="page-title">{{ 'billing.dispute.title' | translate }} {{ current.code }}</h1>
+      <p class="page-subtitle">{{ ('billing.reason.' + current.reason) | translate }}</p>
+    </div>
+    <app-billing-status-badge [status]="current.status" kind="dispute" />
+  </header>
+
+  @if (actionError(); as key) {
+    <div class="alert alert--danger">{{ key | translate }}</div>
+  }
+
+  <div class="detail-layout">
+    <div class="stack">
+      <section class="card">
+        <h2 class="card__title">{{ 'billing.dispute.description' | translate }}</h2>
+        <p class="hint" style="margin: 0; color: var(--sp-text)">{{ current.description }}</p>
+      </section>
+
+      <section class="card">
+        <h2 class="card__title">{{ 'billing.dispute.review_title' | translate }}</h2>
+
+        @if (current.status === 'OPEN') {
+          <label class="field">
+            <span class="field__label">{{ 'billing.dispute.review_notes' | translate }}</span>
+            <textarea
+              class="input"
+              rows="4"
+              [(ngModel)]="reviewNotes"
+              [placeholder]="'billing.dispute.review_placeholder' | translate"
+            ></textarea>
+          </label>
+          <button type="button" class="btn btn--primary" [disabled]="busy()" (click)="startReview()">
+            {{ 'billing.dispute.start_review' | translate }}
+          </button>
+        } @else {
+          <p class="hint" style="margin: 0; color: var(--sp-text)">{{ current.reviewNotes ?? '—' }}</p>
+        }
+      </section>
+
+      <section class="card">
+        <h2 class="card__title">{{ 'billing.dispute.resolution_title' | translate }}</h2>
+
+        @if (current.status === 'RESOLVED') {
+          <p class="hint" style="margin: 0; color: var(--sp-text)">{{ current.resolution }}</p>
+          <p class="hint" style="margin: 8px 0 0">
+            {{ 'billing.dispute.resolved_at' | translate }} {{ current.resolvedAt | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+        } @else {
+          <label class="field">
+            <span class="field__label">{{ 'billing.dispute.resolution' | translate }}</span>
+            <textarea
+              class="input"
+              rows="4"
+              [(ngModel)]="resolutionText"
+              [placeholder]="'billing.dispute.resolution_placeholder' | translate"
+            ></textarea>
+          </label>
+          <button type="button" class="btn btn--primary" [disabled]="busy()" (click)="resolve()">
+            {{ 'billing.actions.resolve' | translate }}
+          </button>
+        }
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <h2 class="card__title">{{ 'billing.dispute.linked_bill' | translate }}</h2>
+        @if (bill(); as linked) {
+          <dl class="info-grid" style="grid-template-columns: 1fr">
+            <div>
+              <dt>{{ 'billing.table.code' | translate }}</dt>
+              <dd><a class="link" [routerLink]="['/billing/bills', linked.id]">{{ linked.code }}</a></dd>
+            </div>
+            <div>
+              <dt>{{ 'billing.table.unit' | translate }}</dt>
+              <dd>{{ linked.unitCode }} · {{ linked.unitName }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'billing.table.total' | translate }}</dt>
+              <dd>{{ linked.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</dd>
+            </div>
+          </dl>
+        } @else {
+          <p class="muted">{{ 'billing.detail.not_found' | translate }}</p>
+        }
+      </section>
+
+      <section class="card">
+        <dl class="info-grid" style="grid-template-columns: 1fr">
+          <div>
+            <dt>{{ 'billing.table.tenant' | translate }}</dt>
+            <dd>{{ current.tenantName }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.table.created' | translate }}</dt>
+            <dd>{{ current.createdAt | date: 'dd/MM/yyyy HH:mm' }}</dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  </div>
+} @else if (store.loading()) {
+  <p class="empty">{{ 'billing.common.loading' | translate }}</p>
+} @else {
+  <p class="empty">{{ 'billing.dispute.not_found' | translate }}</p>
+}

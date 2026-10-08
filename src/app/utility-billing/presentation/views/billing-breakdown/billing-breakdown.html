@@ -1,0 +1,59 @@
+@if (bill(); as current) {
+  <header class="page-header">
+    <div>
+      <a class="link" [routerLink]="['/billing/bills', current.id]">← {{ 'billing.actions.back' | translate }}</a>
+      <h1 class="page-title">{{ 'billing.breakdown.title' | translate }} · {{ current.code }}</h1>
+      <p class="page-subtitle">{{ 'billing.breakdown.subtitle' | translate }}</p>
+    </div>
+  </header>
+
+  @if (exceededCount() > 0) {
+    <div class="alert alert--warning">{{ 'billing.breakdown.alert' | translate }}</div>
+  }
+
+  <section class="card table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ 'billing.table.service' | translate }}</th>
+          <th class="num">{{ 'billing.table.consumption' | translate }}</th>
+          <th class="num">{{ 'billing.table.baseline' | translate }}</th>
+          <th class="num">{{ 'billing.table.variance' | translate }}</th>
+          <th class="num">{{ 'billing.table.rate' | translate }}</th>
+          <th class="num">{{ 'billing.table.amount' | translate }}</th>
+          <th>{{ 'billing.table.status' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of current.items; track item.id) {
+          <tr>
+            <td>{{ ('billing.utility.' + item.utilityType) | translate }}</td>
+            <td class="num">{{ item.consumption | number: '1.0-1' }} {{ item.unitOfMeasure }}</td>
+            <td class="num">{{ item.baseline | number: '1.0-1' }} {{ item.unitOfMeasure }}</td>
+            <td class="num" [class.variance--up]="isAbove(item)" [class.variance--ok]="!isAbove(item)">
+              {{ ratioOf(item) | percent: '1.0-1' }}
+            </td>
+            <td class="num">{{ item.rate | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+            <td class="num">{{ item.amount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+            <td>
+              @if (isAbove(item)) {
+                <span class="badge badge--danger">{{ 'billing.breakdown.exceeded' | translate }}</span>
+              } @else {
+                <span class="badge badge--success">{{ 'billing.breakdown.within' | translate }}</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5">{{ 'billing.breakdown.total' | translate }}</td>
+          <td class="num">{{ current.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+} @else {
+  <p class="empty">{{ 'billing.detail.not_found' | translate }}</p>
+}

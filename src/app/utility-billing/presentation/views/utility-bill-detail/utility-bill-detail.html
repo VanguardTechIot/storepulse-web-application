@@ -1,0 +1,162 @@
+@if (bill(); as current) {
+  <header class="page-header">
+    <div>
+      <a class="link" routerLink="/billing">← {{ 'billing.actions.back' | translate }}</a>
+      <h1 class="page-title">{{ current.code }}</h1>
+      <p class="page-subtitle"><span class="unit-code">{{ current.unitCode }}</span> · {{ current.unitName }}</p>
+    </div>
+    <div class="actions">
+      <app-billing-status-badge [status]="current.status" />
+      <a class="btn" [routerLink]="['/billing/bills', current.id, 'breakdown']">
+        {{ 'billing.actions.breakdown' | translate }}
+      </a>
+    </div>
+  </header>
+
+  @if (actionError(); as key) {
+    <div class="alert alert--danger">{{ key | translate }}</div>
+  }
+
+  <div class="detail-layout">
+    <div class="stack">
+      <section class="card">
+        <dl class="info-grid">
+          <div>
+            <dt>{{ 'billing.detail.tenant' | translate }}</dt>
+            <dd>{{ current.tenantName }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.detail.period' | translate }}</dt>
+            <dd>{{ current.period.start | date: 'dd/MM/yyyy' }} – {{ current.period.end | date: 'dd/MM/yyyy' }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.detail.total' | translate }}</dt>
+            <dd>{{ current.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.detail.completeness' | translate }}</dt>
+            <dd>{{ current.dataCompleteness }} %</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.detail.issued_at' | translate }}</dt>
+            <dd>
+              @if (current.issuedAt) {
+                {{ current.issuedAt | date: 'dd/MM/yyyy' }}
+              } @else {
+                {{ 'billing.detail.pending' | translate }}
+              }
+            </dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.detail.due_date' | translate }}</dt>
+            <dd>
+              @if (current.dueDate) {
+                {{ current.dueDate | date: 'dd/MM/yyyy' }}
+              } @else {
+                {{ 'billing.detail.pending' | translate }}
+              }
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="card table-wrap">
+        <h2 class="card__title" style="padding: 20px 20px 0">{{ 'billing.detail.items' | translate }}</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ 'billing.table.service' | translate }}</th>
+              <th class="num">{{ 'billing.table.consumption' | translate }}</th>
+              <th class="num">{{ 'billing.table.rate' | translate }}</th>
+              <th class="num">{{ 'billing.table.amount' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of current.items; track item.id) {
+              <tr>
+                <td>{{ ('billing.utility.' + item.utilityType) | translate }}</td>
+                <td class="num">{{ item.consumption | number: '1.0-1' }} {{ item.unitOfMeasure }}</td>
+                <td class="num">{{ item.rate | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+                <td class="num">{{ item.amount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">{{ 'billing.detail.total' | translate }}</td>
+              <td class="num">{{ current.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2 class="card__title">{{ 'billing.detail.disputes' | translate }}</h2>
+        @if (disputes().length === 0) {
+          <p class="muted">{{ 'billing.detail.no_disputes' | translate }}</p>
+        } @else {
+          @for (dispute of disputes(); track dispute.id) {
+            <div class="dispute-row">
+              <a class="link" [routerLink]="['/billing/disputes', dispute.id]">{{ dispute.code }}</a>
+              <app-billing-status-badge [status]="dispute.status" kind="dispute" />
+            </div>
+          }
+        }
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <h2 class="card__title">{{ 'billing.detail.timeline' | translate }}</h2>
+        <ol class="timeline">
+          @for (step of steps; track step; let i = $index) {
+            <li [class.is-done]="i < currentIndex()" [class.is-current]="i === currentIndex()">
+              <span class="timeline__dot"></span>
+              {{ ('billing.bill_status.' + step) | translate }}
+            </li>
+          }
+        </ol>
+      </section>
+
+      @switch (current.status) {
+        @case ('DRAFT') {
+          <section class="card">
+            <h2 class="card__title">{{ 'billing.detail.verify_title' | translate }}</h2>
+            <p class="hint">{{ 'billing.detail.verify_hint' | translate }}</p>
+
+            @if (current.dataCompleteness < fullCompleteness) {
+              <div class="alert alert--warning">{{ 'billing.generate.incomplete_warning' | translate }}</div>
+              <label class="checkbox">
+                <input type="checkbox" [(ngModel)]="acceptIncompleteData" />
+                <span>{{ 'billing.verify.accept_incomplete' | translate }}</span>
+              </label>
+            }
+
+            <button type="button" class="btn btn--primary btn--block" [disabled]="busy()" (click)="verify()">
+              {{ 'billing.actions.verify' | translate }}
+            </button>
+          </section>
+        }
+        @case ('DATA_VERIFIED') {
+          <section class="card">
+            <h2 class="card__title">{{ 'billing.detail.issue_title' | translate }}</h2>
+            <p class="hint">{{ 'billing.detail.issue_hint' | translate }}</p>
+            <button type="button" class="btn btn--primary btn--block" [disabled]="busy()" (click)="issue()">
+              {{ 'billing.actions.issue' | translate }}
+            </button>
+          </section>
+        }
+        @default {
+          <section class="card">
+            <h2 class="card__title">{{ 'billing.detail.status_title' | translate }}</h2>
+            <p class="hint">{{ ('billing.detail.' + current.status.toLowerCase() + '_hint') | translate }}</p>
+          </section>
+        }
+      }
+    </div>
+  </div>
+} @else if (store.loading()) {
+  <p class="empty">{{ 'billing.common.loading' | translate }}</p>
+} @else {
+  <p class="empty">{{ 'billing.detail.not_found' | translate }}</p>
+}
