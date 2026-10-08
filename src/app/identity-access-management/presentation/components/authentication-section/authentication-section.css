@@ -1,0 +1,58 @@
+.account-trigger {
+  --mat-button-text-label-text-color: var(--sp-navy);
+  height: 48px;
+  text-align: left;
+}
+
+.account-trigger-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--sp-cyan-50);
+  color: var(--sp-cyan-text);
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-text b,
+.account-text small {
+  display: block;
+  white-space: nowrap;
+}
+
+.account-text b {
+  font-size: 13px;
+}
+
+.account-text small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--sp-muted);
+}
+
+.account-header {
+  --mat-list-list-item-label-text-size: 14px;
+  --mat-list-list-item-supporting-text-size: 12px;
+  --mat-list-list-item-supporting-text-color: var(--sp-muted);
+  padding: 0;
+}
+
+.sign-out {
+  --mat-menu-item-label-text-color: var(--sp-red-text);
+  --mat-menu-item-icon-color: var(--sp-red-text);
+}
+
+@media (max-width: 599.98px) {
+  .account-text {
+    display: none;
+  }
+}
