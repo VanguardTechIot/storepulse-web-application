@@ -1,0 +1,2786 @@
+{
+  "resources": [
+    {
+      "id": "res-a03",
+      "name": "Local A-03",
+      "description": "Calzados Roma",
+      "location": {
+        "address": "Jr. de la Unión 845, Cercado de Lima",
+        "floor": "1",
+        "reference": "Pasillo A"
+      },
+      "status": "ACTIVE"
+    },
+    {
+      "id": "res-a07",
+      "name": "Local A-07",
+      "description": "Perfumería Aroma",
+      "location": {
+        "address": "Jr. de la Unión 845, Cercado de Lima",
+        "floor": "1",
+        "reference": "Pasillo A"
+      },
+      "status": "ACTIVE"
+    },
+    {
+      "id": "res-b09",
+      "name": "Local B-09",
+      "description": "Joyería Inca Gold",
+      "location": {
+        "address": "Jr. de la Unión 845, Cercado de Lima",
+        "floor": "2",
+        "reference": "Pasillo B"
+      },
+      "status": "ACTIVE"
+    },
+    {
+      "id": "res-b12",
+      "name": "Local B-12",
+      "description": "Ópticas Visión",
+      "location": {
+        "address": "Jr. de la Unión 845, Cercado de Lima",
+        "floor": "2",
+        "reference": "Pasillo B"
+      },
+      "status": "ACTIVE"
+    },
+    {
+      "id": "res-c03",
+      "name": "Local C-03",
+      "description": "Comida Rápida Max",
+      "location": {
+        "address": "Jr. de la Unión 845, Cercado de Lima",
+        "floor": "3",
+        "reference": "Patio de comidas"
+      },
+      "status": "ACTIVE"
+    },
+    {
+      "id": "res-c07",
+      "name": "Local C-07",
+      "description": "Librería El Saber",
+      "location": {
+        "address": "Jr. de la Unión 845, Cercado de Lima",
+        "floor": "3",
+        "reference": "Pasillo C"
+      },
+      "status": "MAINTENANCE"
+    },
+    {
+      "id": "res-cn01",
+      "name": "Pasillo norte",
+      "description": "Área común",
+      "location": {
+        "address": "Jr. de la Unión 845, Cercado de Lima",
+        "floor": "1",
+        "reference": "Ingreso norte"
+      },
+      "status": "ACTIVE"
+    }
+  ],
+  "assets": [
+    {
+      "id": "ast-001",
+      "name": "Nodo IoT Local A-03",
+      "type": "IOT_DEVICE",
+      "status": "ACTIVE",
+      "resourceId": "res-a03"
+    },
+    {
+      "id": "ast-002",
+      "name": "Nodo IoT Local A-07",
+      "type": "IOT_DEVICE",
+      "status": "ACTIVE",
+      "resourceId": "res-a07"
+    },
+    {
+      "id": "ast-003",
+      "name": "Nodo IoT Local B-09",
+      "type": "IOT_DEVICE",
+      "status": "ACTIVE",
+      "resourceId": "res-b09"
+    },
+    {
+      "id": "ast-004",
+      "name": "Nodo IoT Local B-12",
+      "type": "IOT_DEVICE",
+      "status": "ACTIVE",
+      "resourceId": "res-b12"
+    },
+    {
+      "id": "ast-005",
+      "name": "Nodo IoT Local C-03",
+      "type": "IOT_DEVICE",
+      "status": "ACTIVE",
+      "resourceId": "res-c03"
+    },
+    {
+      "id": "ast-006",
+      "name": "Nodo IoT Local C-07",
+      "type": "IOT_DEVICE",
+      "status": "MAINTENANCE",
+      "resourceId": "res-c07"
+    },
+    {
+      "id": "ast-007",
+      "name": "Nodo IoT Pasillo norte",
+      "type": "IOT_DEVICE",
+      "status": "ACTIVE",
+      "resourceId": "res-cn01"
+    }
+  ],
+  "iotDevices": [
+    {
+      "id": "dev-001",
+      "assetId": "ast-001",
+      "serialNumber": "SP-ESP32-0431",
+      "manufacturer": "Espressif Systems",
+      "firmwareVersion": "1.4.2",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "dev-002",
+      "assetId": "ast-002",
+      "serialNumber": "SP-ESP32-0438",
+      "manufacturer": "Espressif Systems",
+      "firmwareVersion": "1.4.2",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "dev-003",
+      "assetId": "ast-003",
+      "serialNumber": "SP-ESP32-0447",
+      "manufacturer": "Espressif Systems",
+      "firmwareVersion": "1.4.2",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "dev-004",
+      "assetId": "ast-004",
+      "serialNumber": "SP-ESP32-0452",
+      "manufacturer": "Espressif Systems",
+      "firmwareVersion": "1.4.2",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "dev-005",
+      "assetId": "ast-005",
+      "serialNumber": "SP-ESP32-0463",
+      "manufacturer": "Espressif Systems",
+      "firmwareVersion": "1.4.2",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "dev-006",
+      "assetId": "ast-006",
+      "serialNumber": "SP-ESP32-0467",
+      "manufacturer": "Espressif Systems",
+      "firmwareVersion": "1.4.2",
+      "status": "INACTIVE"
+    },
+    {
+      "id": "dev-007",
+      "assetId": "ast-007",
+      "serialNumber": "SP-ESP32-0401",
+      "manufacturer": "Espressif Systems",
+      "firmwareVersion": "1.4.2",
+      "status": "ACTIVE"
+    }
+  ],
+  "sensors": [
+    {
+      "id": "sen-001-t",
+      "iotDeviceId": "dev-001",
+      "type": "TEMPERATURE",
+      "unit": "°C",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-001-h",
+      "iotDeviceId": "dev-001",
+      "type": "HUMIDITY",
+      "unit": "%",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-002-t",
+      "iotDeviceId": "dev-002",
+      "type": "TEMPERATURE",
+      "unit": "°C",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-002-h",
+      "iotDeviceId": "dev-002",
+      "type": "HUMIDITY",
+      "unit": "%",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-003-t",
+      "iotDeviceId": "dev-003",
+      "type": "TEMPERATURE",
+      "unit": "°C",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-003-h",
+      "iotDeviceId": "dev-003",
+      "type": "HUMIDITY",
+      "unit": "%",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-004-t",
+      "iotDeviceId": "dev-004",
+      "type": "TEMPERATURE",
+      "unit": "°C",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-004-h",
+      "iotDeviceId": "dev-004",
+      "type": "HUMIDITY",
+      "unit": "%",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-005-t",
+      "iotDeviceId": "dev-005",
+      "type": "TEMPERATURE",
+      "unit": "°C",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-005-h",
+      "iotDeviceId": "dev-005",
+      "type": "HUMIDITY",
+      "unit": "%",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-006-t",
+      "iotDeviceId": "dev-006",
+      "type": "TEMPERATURE",
+      "unit": "°C",
+      "status": "INACTIVE"
+    },
+    {
+      "id": "sen-006-h",
+      "iotDeviceId": "dev-006",
+      "type": "HUMIDITY",
+      "unit": "%",
+      "status": "INACTIVE"
+    },
+    {
+      "id": "sen-007-t",
+      "iotDeviceId": "dev-007",
+      "type": "TEMPERATURE",
+      "unit": "°C",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "sen-007-h",
+      "iotDeviceId": "dev-007",
+      "type": "HUMIDITY",
+      "unit": "%",
+      "status": "ACTIVE"
+    }
+  ],
+  "meters": [
+    {
+      "id": "mtr-001-e",
+      "iotDeviceId": "dev-001",
+      "type": "ELECTRICITY",
+      "unit": "kWh",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-002-e",
+      "iotDeviceId": "dev-002",
+      "type": "ELECTRICITY",
+      "unit": "kWh",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-003-e",
+      "iotDeviceId": "dev-003",
+      "type": "ELECTRICITY",
+      "unit": "kWh",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-003-w",
+      "iotDeviceId": "dev-003",
+      "type": "WATER",
+      "unit": "m³",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-004-e",
+      "iotDeviceId": "dev-004",
+      "type": "ELECTRICITY",
+      "unit": "kWh",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-004-w",
+      "iotDeviceId": "dev-004",
+      "type": "WATER",
+      "unit": "m³",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-005-e",
+      "iotDeviceId": "dev-005",
+      "type": "ELECTRICITY",
+      "unit": "kWh",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-005-w",
+      "iotDeviceId": "dev-005",
+      "type": "WATER",
+      "unit": "m³",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "mtr-006-e",
+      "iotDeviceId": "dev-006",
+      "type": "ELECTRICITY",
+      "unit": "kWh",
+      "status": "INACTIVE"
+    }
+  ],
+  "telemetry": [
+    {
+      "id": "tel-00001",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-07T05:00:02Z"
+    },
+    {
+      "id": "tel-00002",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-07T09:00:02Z"
+    },
+    {
+      "id": "tel-00003",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-07T13:00:02Z"
+    },
+    {
+      "id": "tel-00004",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-07T17:00:02Z"
+    },
+    {
+      "id": "tel-00005",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-07T21:00:02Z"
+    },
+    {
+      "id": "tel-00006",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-08T01:00:02Z"
+    },
+    {
+      "id": "tel-00007",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-08T05:00:02Z"
+    },
+    {
+      "id": "tel-00008",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-08T09:00:02Z"
+    },
+    {
+      "id": "tel-00009",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-08T13:00:02Z"
+    },
+    {
+      "id": "tel-00010",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-07T05:00:02Z"
+    },
+    {
+      "id": "tel-00011",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-07T09:00:02Z"
+    },
+    {
+      "id": "tel-00012",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-07T13:00:02Z"
+    },
+    {
+      "id": "tel-00013",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-07T17:00:02Z"
+    },
+    {
+      "id": "tel-00014",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-07T21:00:02Z"
+    },
+    {
+      "id": "tel-00015",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-08T01:00:02Z"
+    },
+    {
+      "id": "tel-00016",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-08T05:00:02Z"
+    },
+    {
+      "id": "tel-00017",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-08T09:00:02Z"
+    },
+    {
+      "id": "tel-00018",
+      "deviceId": "dev-002",
+      "receivedAt": "2026-10-08T13:00:02Z"
+    },
+    {
+      "id": "tel-00019",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-07T05:00:02Z"
+    },
+    {
+      "id": "tel-00020",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-07T09:00:02Z"
+    },
+    {
+      "id": "tel-00021",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-07T13:00:02Z"
+    },
+    {
+      "id": "tel-00022",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-07T17:00:02Z"
+    },
+    {
+      "id": "tel-00023",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-07T21:00:02Z"
+    },
+    {
+      "id": "tel-00024",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-08T01:00:02Z"
+    },
+    {
+      "id": "tel-00025",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-08T05:00:02Z"
+    },
+    {
+      "id": "tel-00026",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-08T09:00:02Z"
+    },
+    {
+      "id": "tel-00027",
+      "deviceId": "dev-003",
+      "receivedAt": "2026-10-08T13:00:02Z"
+    },
+    {
+      "id": "tel-00028",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-07T05:00:02Z"
+    },
+    {
+      "id": "tel-00029",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-07T09:00:02Z"
+    },
+    {
+      "id": "tel-00030",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-07T13:00:02Z"
+    },
+    {
+      "id": "tel-00031",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-07T17:00:02Z"
+    },
+    {
+      "id": "tel-00032",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-07T21:00:02Z"
+    },
+    {
+      "id": "tel-00033",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-08T01:00:02Z"
+    },
+    {
+      "id": "tel-00034",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-08T05:00:02Z"
+    },
+    {
+      "id": "tel-00035",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-08T09:00:02Z"
+    },
+    {
+      "id": "tel-00036",
+      "deviceId": "dev-004",
+      "receivedAt": "2026-10-08T13:00:02Z"
+    },
+    {
+      "id": "tel-00037",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-07T05:00:02Z"
+    },
+    {
+      "id": "tel-00038",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-07T09:00:02Z"
+    },
+    {
+      "id": "tel-00039",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-07T13:00:02Z"
+    },
+    {
+      "id": "tel-00040",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-07T17:00:02Z"
+    },
+    {
+      "id": "tel-00041",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-07T21:00:02Z"
+    },
+    {
+      "id": "tel-00042",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-08T01:00:02Z"
+    },
+    {
+      "id": "tel-00043",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-08T05:00:02Z"
+    },
+    {
+      "id": "tel-00044",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-08T09:00:02Z"
+    },
+    {
+      "id": "tel-00045",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-10-08T13:00:02Z"
+    },
+    {
+      "id": "tel-00046",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-07T05:00:02Z"
+    },
+    {
+      "id": "tel-00047",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-07T09:00:02Z"
+    },
+    {
+      "id": "tel-00048",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-07T13:00:02Z"
+    },
+    {
+      "id": "tel-00049",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-07T17:00:02Z"
+    },
+    {
+      "id": "tel-00050",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-07T21:00:02Z"
+    },
+    {
+      "id": "tel-00051",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-08T01:00:02Z"
+    },
+    {
+      "id": "tel-00052",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-08T05:00:02Z"
+    },
+    {
+      "id": "tel-00053",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-08T09:00:02Z"
+    },
+    {
+      "id": "tel-00054",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-08T13:00:02Z"
+    },
+    {
+      "id": "tel-00055",
+      "deviceId": "dev-006",
+      "receivedAt": "2026-09-28T17:00:02Z"
+    },
+    {
+      "id": "tel-00056",
+      "deviceId": "dev-006",
+      "receivedAt": "2026-09-28T21:00:02Z"
+    },
+    {
+      "id": "tel-00057",
+      "deviceId": "dev-007",
+      "receivedAt": "2026-10-03T11:00:02Z"
+    },
+    {
+      "id": "tel-00058",
+      "deviceId": "dev-001",
+      "receivedAt": "2026-10-02T05:00:02Z"
+    },
+    {
+      "id": "tel-00059",
+      "deviceId": "dev-005",
+      "receivedAt": "2026-09-29T18:00:02Z"
+    }
+  ],
+  "measurements": [
+    {
+      "id": "msr-00001",
+      "telemetryId": "tel-00001",
+      "type": "TEMPERATURE",
+      "value": 22.7,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00002",
+      "telemetryId": "tel-00001",
+      "type": "HUMIDITY",
+      "value": 60.2,
+      "unit": "%",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00003",
+      "telemetryId": "tel-00001",
+      "type": "ELECTRICITY",
+      "value": 0.54,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00004",
+      "telemetryId": "tel-00002",
+      "type": "TEMPERATURE",
+      "value": 23,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00005",
+      "telemetryId": "tel-00002",
+      "type": "HUMIDITY",
+      "value": 62.3,
+      "unit": "%",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00006",
+      "telemetryId": "tel-00002",
+      "type": "ELECTRICITY",
+      "value": 0.4,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00007",
+      "telemetryId": "tel-00003",
+      "type": "TEMPERATURE",
+      "value": 21.9,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00008",
+      "telemetryId": "tel-00003",
+      "type": "HUMIDITY",
+      "value": 56.7,
+      "unit": "%",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00009",
+      "telemetryId": "tel-00003",
+      "type": "ELECTRICITY",
+      "value": 0.32,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00010",
+      "telemetryId": "tel-00004",
+      "type": "TEMPERATURE",
+      "value": 25.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00011",
+      "telemetryId": "tel-00004",
+      "type": "HUMIDITY",
+      "value": 62.1,
+      "unit": "%",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00012",
+      "telemetryId": "tel-00004",
+      "type": "ELECTRICITY",
+      "value": 1.48,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00013",
+      "telemetryId": "tel-00005",
+      "type": "TEMPERATURE",
+      "value": 24.4,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00014",
+      "telemetryId": "tel-00005",
+      "type": "HUMIDITY",
+      "value": 64.8,
+      "unit": "%",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00015",
+      "telemetryId": "tel-00005",
+      "type": "ELECTRICITY",
+      "value": 1.65,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00016",
+      "telemetryId": "tel-00006",
+      "type": "TEMPERATURE",
+      "value": 24.9,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00017",
+      "telemetryId": "tel-00006",
+      "type": "HUMIDITY",
+      "value": 57.4,
+      "unit": "%",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00018",
+      "telemetryId": "tel-00006",
+      "type": "ELECTRICITY",
+      "value": 1.64,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00019",
+      "telemetryId": "tel-00007",
+      "type": "TEMPERATURE",
+      "value": 23,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00020",
+      "telemetryId": "tel-00007",
+      "type": "HUMIDITY",
+      "value": 65.6,
+      "unit": "%",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00021",
+      "telemetryId": "tel-00007",
+      "type": "ELECTRICITY",
+      "value": 3.12,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00022",
+      "telemetryId": "tel-00008",
+      "type": "TEMPERATURE",
+      "value": 22.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00023",
+      "telemetryId": "tel-00008",
+      "type": "HUMIDITY",
+      "value": 61.8,
+      "unit": "%",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00024",
+      "telemetryId": "tel-00008",
+      "type": "ELECTRICITY",
+      "value": 0.24,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00025",
+      "telemetryId": "tel-00009",
+      "type": "TEMPERATURE",
+      "value": 22.6,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00026",
+      "telemetryId": "tel-00009",
+      "type": "HUMIDITY",
+      "value": 63.2,
+      "unit": "%",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00027",
+      "telemetryId": "tel-00009",
+      "type": "ELECTRICITY",
+      "value": 0.31,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00028",
+      "telemetryId": "tel-00010",
+      "type": "TEMPERATURE",
+      "value": 21.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00029",
+      "telemetryId": "tel-00010",
+      "type": "HUMIDITY",
+      "value": 60.9,
+      "unit": "%",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00030",
+      "telemetryId": "tel-00010",
+      "type": "ELECTRICITY",
+      "value": 0.41,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00031",
+      "telemetryId": "tel-00011",
+      "type": "TEMPERATURE",
+      "value": 22.9,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00032",
+      "telemetryId": "tel-00011",
+      "type": "HUMIDITY",
+      "value": 64.2,
+      "unit": "%",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00033",
+      "telemetryId": "tel-00011",
+      "type": "ELECTRICITY",
+      "value": 0.5,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00034",
+      "telemetryId": "tel-00012",
+      "type": "TEMPERATURE",
+      "value": 23.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00035",
+      "telemetryId": "tel-00012",
+      "type": "HUMIDITY",
+      "value": 59.1,
+      "unit": "%",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00036",
+      "telemetryId": "tel-00012",
+      "type": "ELECTRICITY",
+      "value": 0.54,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00037",
+      "telemetryId": "tel-00013",
+      "type": "TEMPERATURE",
+      "value": 25.6,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00038",
+      "telemetryId": "tel-00013",
+      "type": "HUMIDITY",
+      "value": 57.5,
+      "unit": "%",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00039",
+      "telemetryId": "tel-00013",
+      "type": "ELECTRICITY",
+      "value": 1.36,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00040",
+      "telemetryId": "tel-00014",
+      "type": "TEMPERATURE",
+      "value": 24.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00041",
+      "telemetryId": "tel-00014",
+      "type": "HUMIDITY",
+      "value": 55.8,
+      "unit": "%",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00042",
+      "telemetryId": "tel-00014",
+      "type": "ELECTRICITY",
+      "value": 1.68,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00043",
+      "telemetryId": "tel-00015",
+      "type": "TEMPERATURE",
+      "value": 24.7,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00044",
+      "telemetryId": "tel-00015",
+      "type": "HUMIDITY",
+      "value": 61.4,
+      "unit": "%",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00045",
+      "telemetryId": "tel-00015",
+      "type": "ELECTRICITY",
+      "value": 1.61,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00046",
+      "telemetryId": "tel-00016",
+      "type": "TEMPERATURE",
+      "value": 23.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00047",
+      "telemetryId": "tel-00016",
+      "type": "HUMIDITY",
+      "value": 61.3,
+      "unit": "%",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00048",
+      "telemetryId": "tel-00016",
+      "type": "ELECTRICITY",
+      "value": 0.44,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00049",
+      "telemetryId": "tel-00017",
+      "type": "TEMPERATURE",
+      "value": 22.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00050",
+      "telemetryId": "tel-00017",
+      "type": "HUMIDITY",
+      "value": 55,
+      "unit": "%",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00051",
+      "telemetryId": "tel-00017",
+      "type": "ELECTRICITY",
+      "value": 0.54,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00052",
+      "telemetryId": "tel-00018",
+      "type": "TEMPERATURE",
+      "value": 22.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00053",
+      "telemetryId": "tel-00018",
+      "type": "HUMIDITY",
+      "value": 63.8,
+      "unit": "%",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00054",
+      "telemetryId": "tel-00018",
+      "type": "ELECTRICITY",
+      "value": 0.3,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00055",
+      "telemetryId": "tel-00019",
+      "type": "TEMPERATURE",
+      "value": 21.9,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00056",
+      "telemetryId": "tel-00019",
+      "type": "HUMIDITY",
+      "value": 54.3,
+      "unit": "%",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00057",
+      "telemetryId": "tel-00019",
+      "type": "ELECTRICITY",
+      "value": 0.27,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00058",
+      "telemetryId": "tel-00019",
+      "type": "WATER",
+      "value": 0.024,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00059",
+      "telemetryId": "tel-00020",
+      "type": "TEMPERATURE",
+      "value": 22.7,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00060",
+      "telemetryId": "tel-00020",
+      "type": "HUMIDITY",
+      "value": 65.9,
+      "unit": "%",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00061",
+      "telemetryId": "tel-00020",
+      "type": "ELECTRICITY",
+      "value": 0.37,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00062",
+      "telemetryId": "tel-00020",
+      "type": "WATER",
+      "value": 0.025,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00063",
+      "telemetryId": "tel-00021",
+      "type": "TEMPERATURE",
+      "value": 22.4,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00064",
+      "telemetryId": "tel-00021",
+      "type": "HUMIDITY",
+      "value": 61.6,
+      "unit": "%",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00065",
+      "telemetryId": "tel-00021",
+      "type": "ELECTRICITY",
+      "value": 0.37,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00066",
+      "telemetryId": "tel-00021",
+      "type": "WATER",
+      "value": 0.011,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00067",
+      "telemetryId": "tel-00022",
+      "type": "TEMPERATURE",
+      "value": 25.4,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00068",
+      "telemetryId": "tel-00022",
+      "type": "HUMIDITY",
+      "value": 59.2,
+      "unit": "%",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00069",
+      "telemetryId": "tel-00022",
+      "type": "ELECTRICITY",
+      "value": 1.64,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00070",
+      "telemetryId": "tel-00022",
+      "type": "WATER",
+      "value": 0.077,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00071",
+      "telemetryId": "tel-00023",
+      "type": "TEMPERATURE",
+      "value": 25.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00072",
+      "telemetryId": "tel-00023",
+      "type": "HUMIDITY",
+      "value": 60.4,
+      "unit": "%",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00073",
+      "telemetryId": "tel-00023",
+      "type": "ELECTRICITY",
+      "value": 1.62,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00074",
+      "telemetryId": "tel-00023",
+      "type": "WATER",
+      "value": 0.095,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00075",
+      "telemetryId": "tel-00024",
+      "type": "TEMPERATURE",
+      "value": 25,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00076",
+      "telemetryId": "tel-00024",
+      "type": "HUMIDITY",
+      "value": 59,
+      "unit": "%",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00077",
+      "telemetryId": "tel-00024",
+      "type": "ELECTRICITY",
+      "value": 1.43,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00078",
+      "telemetryId": "tel-00024",
+      "type": "WATER",
+      "value": 0.74,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00079",
+      "telemetryId": "tel-00025",
+      "type": "TEMPERATURE",
+      "value": 22.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00080",
+      "telemetryId": "tel-00025",
+      "type": "HUMIDITY",
+      "value": 60.5,
+      "unit": "%",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00081",
+      "telemetryId": "tel-00025",
+      "type": "ELECTRICITY",
+      "value": 0.32,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00082",
+      "telemetryId": "tel-00025",
+      "type": "WATER",
+      "value": 0.05,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00083",
+      "telemetryId": "tel-00026",
+      "type": "TEMPERATURE",
+      "value": 23.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00084",
+      "telemetryId": "tel-00026",
+      "type": "HUMIDITY",
+      "value": 61.1,
+      "unit": "%",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00085",
+      "telemetryId": "tel-00026",
+      "type": "ELECTRICITY",
+      "value": 0.25,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00086",
+      "telemetryId": "tel-00026",
+      "type": "WATER",
+      "value": 0.048,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00087",
+      "telemetryId": "tel-00027",
+      "type": "TEMPERATURE",
+      "value": 22.7,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00088",
+      "telemetryId": "tel-00027",
+      "type": "HUMIDITY",
+      "value": 61.1,
+      "unit": "%",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00089",
+      "telemetryId": "tel-00027",
+      "type": "ELECTRICITY",
+      "value": 0.26,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00090",
+      "telemetryId": "tel-00027",
+      "type": "WATER",
+      "value": 0.014,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00091",
+      "telemetryId": "tel-00028",
+      "type": "TEMPERATURE",
+      "value": 23.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00092",
+      "telemetryId": "tel-00028",
+      "type": "HUMIDITY",
+      "value": 62,
+      "unit": "%",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00093",
+      "telemetryId": "tel-00028",
+      "type": "ELECTRICITY",
+      "value": 0.38,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00094",
+      "telemetryId": "tel-00028",
+      "type": "WATER",
+      "value": 0.041,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00095",
+      "telemetryId": "tel-00029",
+      "type": "TEMPERATURE",
+      "value": 22.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00096",
+      "telemetryId": "tel-00029",
+      "type": "HUMIDITY",
+      "value": 64.4,
+      "unit": "%",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00097",
+      "telemetryId": "tel-00029",
+      "type": "ELECTRICITY",
+      "value": 0.34,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00098",
+      "telemetryId": "tel-00029",
+      "type": "WATER",
+      "value": 0.015,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00099",
+      "telemetryId": "tel-00030",
+      "type": "TEMPERATURE",
+      "value": 22.5,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00100",
+      "telemetryId": "tel-00030",
+      "type": "HUMIDITY",
+      "value": 54.8,
+      "unit": "%",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00101",
+      "telemetryId": "tel-00030",
+      "type": "ELECTRICITY",
+      "value": 0.54,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00102",
+      "telemetryId": "tel-00030",
+      "type": "WATER",
+      "value": 0.024,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00103",
+      "telemetryId": "tel-00031",
+      "type": "TEMPERATURE",
+      "value": 25.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00104",
+      "telemetryId": "tel-00031",
+      "type": "HUMIDITY",
+      "value": 60.1,
+      "unit": "%",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00105",
+      "telemetryId": "tel-00031",
+      "type": "ELECTRICITY",
+      "value": 1.37,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00106",
+      "telemetryId": "tel-00031",
+      "type": "WATER",
+      "value": 0.074,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00107",
+      "telemetryId": "tel-00032",
+      "type": "TEMPERATURE",
+      "value": 25.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00108",
+      "telemetryId": "tel-00032",
+      "type": "HUMIDITY",
+      "value": 59.4,
+      "unit": "%",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00109",
+      "telemetryId": "tel-00032",
+      "type": "ELECTRICITY",
+      "value": 1.68,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00110",
+      "telemetryId": "tel-00032",
+      "type": "WATER",
+      "value": 0.071,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00111",
+      "telemetryId": "tel-00033",
+      "type": "TEMPERATURE",
+      "value": 25.7,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00112",
+      "telemetryId": "tel-00033",
+      "type": "HUMIDITY",
+      "value": 65.2,
+      "unit": "%",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00113",
+      "telemetryId": "tel-00033",
+      "type": "ELECTRICITY",
+      "value": 1.56,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00114",
+      "telemetryId": "tel-00033",
+      "type": "WATER",
+      "value": 0.095,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00115",
+      "telemetryId": "tel-00034",
+      "type": "TEMPERATURE",
+      "value": 22.6,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00116",
+      "telemetryId": "tel-00034",
+      "type": "HUMIDITY",
+      "value": 59.5,
+      "unit": "%",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00117",
+      "telemetryId": "tel-00034",
+      "type": "ELECTRICITY",
+      "value": 0.4,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00118",
+      "telemetryId": "tel-00034",
+      "type": "WATER",
+      "value": 0.019,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00119",
+      "telemetryId": "tel-00035",
+      "type": "TEMPERATURE",
+      "value": 22.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00120",
+      "telemetryId": "tel-00035",
+      "type": "HUMIDITY",
+      "value": 87.4,
+      "unit": "%",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00121",
+      "telemetryId": "tel-00035",
+      "type": "ELECTRICITY",
+      "value": 0.34,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00122",
+      "telemetryId": "tel-00035",
+      "type": "WATER",
+      "value": 0.05,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00123",
+      "telemetryId": "tel-00036",
+      "type": "TEMPERATURE",
+      "value": 22.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00124",
+      "telemetryId": "tel-00036",
+      "type": "HUMIDITY",
+      "value": 56.8,
+      "unit": "%",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00125",
+      "telemetryId": "tel-00036",
+      "type": "ELECTRICITY",
+      "value": 0.47,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00126",
+      "telemetryId": "tel-00036",
+      "type": "WATER",
+      "value": 0.022,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00127",
+      "telemetryId": "tel-00037",
+      "type": "TEMPERATURE",
+      "value": 26.6,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00128",
+      "telemetryId": "tel-00037",
+      "type": "HUMIDITY",
+      "value": 64.6,
+      "unit": "%",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00129",
+      "telemetryId": "tel-00037",
+      "type": "ELECTRICITY",
+      "value": 0.31,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00130",
+      "telemetryId": "tel-00037",
+      "type": "WATER",
+      "value": 0.013,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00131",
+      "telemetryId": "tel-00038",
+      "type": "TEMPERATURE",
+      "value": 26.4,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00132",
+      "telemetryId": "tel-00038",
+      "type": "HUMIDITY",
+      "value": 63.2,
+      "unit": "%",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00133",
+      "telemetryId": "tel-00038",
+      "type": "ELECTRICITY",
+      "value": 0.44,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00134",
+      "telemetryId": "tel-00038",
+      "type": "WATER",
+      "value": 0.02,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00135",
+      "telemetryId": "tel-00039",
+      "type": "TEMPERATURE",
+      "value": 26.7,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00136",
+      "telemetryId": "tel-00039",
+      "type": "HUMIDITY",
+      "value": 65.3,
+      "unit": "%",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00137",
+      "telemetryId": "tel-00039",
+      "type": "ELECTRICITY",
+      "value": 0.28,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00138",
+      "telemetryId": "tel-00039",
+      "type": "WATER",
+      "value": 0.011,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00139",
+      "telemetryId": "tel-00040",
+      "type": "TEMPERATURE",
+      "value": 48.6,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00140",
+      "telemetryId": "tel-00040",
+      "type": "HUMIDITY",
+      "value": 56.2,
+      "unit": "%",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00141",
+      "telemetryId": "tel-00040",
+      "type": "ELECTRICITY",
+      "value": 2.06,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00142",
+      "telemetryId": "tel-00040",
+      "type": "WATER",
+      "value": 0.17,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00143",
+      "telemetryId": "tel-00041",
+      "type": "TEMPERATURE",
+      "value": 29.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00144",
+      "telemetryId": "tel-00041",
+      "type": "HUMIDITY",
+      "value": 57.1,
+      "unit": "%",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00145",
+      "telemetryId": "tel-00041",
+      "type": "ELECTRICITY",
+      "value": 1.92,
+      "unit": "kWh",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00146",
+      "telemetryId": "tel-00041",
+      "type": "WATER",
+      "value": 0.168,
+      "unit": "m³",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00147",
+      "telemetryId": "tel-00042",
+      "type": "TEMPERATURE",
+      "value": 28.4,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00148",
+      "telemetryId": "tel-00042",
+      "type": "HUMIDITY",
+      "value": 54.5,
+      "unit": "%",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00149",
+      "telemetryId": "tel-00042",
+      "type": "ELECTRICITY",
+      "value": 2.19,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00150",
+      "telemetryId": "tel-00042",
+      "type": "WATER",
+      "value": 0.16,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00151",
+      "telemetryId": "tel-00043",
+      "type": "TEMPERATURE",
+      "value": 26.9,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00152",
+      "telemetryId": "tel-00043",
+      "type": "HUMIDITY",
+      "value": 54.9,
+      "unit": "%",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00153",
+      "telemetryId": "tel-00043",
+      "type": "ELECTRICITY",
+      "value": 0.47,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00154",
+      "telemetryId": "tel-00043",
+      "type": "WATER",
+      "value": 0.018,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00155",
+      "telemetryId": "tel-00044",
+      "type": "TEMPERATURE",
+      "value": 26.7,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00156",
+      "telemetryId": "tel-00044",
+      "type": "HUMIDITY",
+      "value": 57.8,
+      "unit": "%",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00157",
+      "telemetryId": "tel-00044",
+      "type": "ELECTRICITY",
+      "value": 0.35,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00158",
+      "telemetryId": "tel-00044",
+      "type": "WATER",
+      "value": 0.032,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00159",
+      "telemetryId": "tel-00045",
+      "type": "TEMPERATURE",
+      "value": 26.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00160",
+      "telemetryId": "tel-00045",
+      "type": "HUMIDITY",
+      "value": 62.3,
+      "unit": "%",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00161",
+      "telemetryId": "tel-00045",
+      "type": "ELECTRICITY",
+      "value": 0.47,
+      "unit": "kWh",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00162",
+      "telemetryId": "tel-00045",
+      "type": "WATER",
+      "value": 0.037,
+      "unit": "m³",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00163",
+      "telemetryId": "tel-00046",
+      "type": "TEMPERATURE",
+      "value": 22.5,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00164",
+      "telemetryId": "tel-00046",
+      "type": "HUMIDITY",
+      "value": 57.7,
+      "unit": "%",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00165",
+      "telemetryId": "tel-00047",
+      "type": "TEMPERATURE",
+      "value": 23.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00166",
+      "telemetryId": "tel-00047",
+      "type": "HUMIDITY",
+      "value": 58.7,
+      "unit": "%",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00167",
+      "telemetryId": "tel-00048",
+      "type": "TEMPERATURE",
+      "value": 23.2,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00168",
+      "telemetryId": "tel-00048",
+      "type": "HUMIDITY",
+      "value": 60.7,
+      "unit": "%",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00169",
+      "telemetryId": "tel-00049",
+      "type": "TEMPERATURE",
+      "value": 25.5,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00170",
+      "telemetryId": "tel-00049",
+      "type": "HUMIDITY",
+      "value": 64,
+      "unit": "%",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00171",
+      "telemetryId": "tel-00050",
+      "type": "TEMPERATURE",
+      "value": 24.8,
+      "unit": "°C",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00172",
+      "telemetryId": "tel-00050",
+      "type": "HUMIDITY",
+      "value": 58.8,
+      "unit": "%",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00173",
+      "telemetryId": "tel-00051",
+      "type": "TEMPERATURE",
+      "value": 25.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00174",
+      "telemetryId": "tel-00051",
+      "type": "HUMIDITY",
+      "value": 61.4,
+      "unit": "%",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00175",
+      "telemetryId": "tel-00052",
+      "type": "TEMPERATURE",
+      "value": 22.9,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00176",
+      "telemetryId": "tel-00052",
+      "type": "HUMIDITY",
+      "value": 54.3,
+      "unit": "%",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00177",
+      "telemetryId": "tel-00053",
+      "type": "TEMPERATURE",
+      "value": 22.3,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00178",
+      "telemetryId": "tel-00053",
+      "type": "HUMIDITY",
+      "value": 56,
+      "unit": "%",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00179",
+      "telemetryId": "tel-00054",
+      "type": "TEMPERATURE",
+      "value": 22.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00180",
+      "telemetryId": "tel-00054",
+      "type": "HUMIDITY",
+      "value": 62.5,
+      "unit": "%",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00181",
+      "telemetryId": "tel-00055",
+      "type": "TEMPERATURE",
+      "value": 25.3,
+      "unit": "°C",
+      "recordedAt": "2026-09-28T17:00:00Z"
+    },
+    {
+      "id": "msr-00182",
+      "telemetryId": "tel-00055",
+      "type": "HUMIDITY",
+      "value": 55.6,
+      "unit": "%",
+      "recordedAt": "2026-09-28T17:00:00Z"
+    },
+    {
+      "id": "msr-00183",
+      "telemetryId": "tel-00055",
+      "type": "ELECTRICITY",
+      "value": 1.41,
+      "unit": "kWh",
+      "recordedAt": "2026-09-28T17:00:00Z"
+    },
+    {
+      "id": "msr-00184",
+      "telemetryId": "tel-00056",
+      "type": "TEMPERATURE",
+      "value": 24.4,
+      "unit": "°C",
+      "recordedAt": "2026-09-28T21:00:00Z"
+    },
+    {
+      "id": "msr-00185",
+      "telemetryId": "tel-00056",
+      "type": "HUMIDITY",
+      "value": 64.1,
+      "unit": "%",
+      "recordedAt": "2026-09-28T21:00:00Z"
+    },
+    {
+      "id": "msr-00186",
+      "telemetryId": "tel-00056",
+      "type": "ELECTRICITY",
+      "value": 1.61,
+      "unit": "kWh",
+      "recordedAt": "2026-09-28T21:00:00Z"
+    },
+    {
+      "id": "msr-00187",
+      "telemetryId": "tel-00057",
+      "type": "TEMPERATURE",
+      "value": 22.4,
+      "unit": "°C",
+      "recordedAt": "2026-10-03T11:00:00Z"
+    },
+    {
+      "id": "msr-00188",
+      "telemetryId": "tel-00057",
+      "type": "HUMIDITY",
+      "value": 89.1,
+      "unit": "%",
+      "recordedAt": "2026-10-03T11:00:00Z"
+    },
+    {
+      "id": "msr-00189",
+      "telemetryId": "tel-00058",
+      "type": "TEMPERATURE",
+      "value": 23.1,
+      "unit": "°C",
+      "recordedAt": "2026-10-02T05:00:00Z"
+    },
+    {
+      "id": "msr-00190",
+      "telemetryId": "tel-00058",
+      "type": "HUMIDITY",
+      "value": 62,
+      "unit": "%",
+      "recordedAt": "2026-10-02T05:00:00Z"
+    },
+    {
+      "id": "msr-00191",
+      "telemetryId": "tel-00058",
+      "type": "ELECTRICITY",
+      "value": 2.94,
+      "unit": "kWh",
+      "recordedAt": "2026-10-02T05:00:00Z"
+    },
+    {
+      "id": "msr-00192",
+      "telemetryId": "tel-00059",
+      "type": "TEMPERATURE",
+      "value": 46.2,
+      "unit": "°C",
+      "recordedAt": "2026-09-29T18:00:00Z"
+    },
+    {
+      "id": "msr-00193",
+      "telemetryId": "tel-00059",
+      "type": "HUMIDITY",
+      "value": 54.4,
+      "unit": "%",
+      "recordedAt": "2026-09-29T18:00:00Z"
+    },
+    {
+      "id": "msr-00194",
+      "telemetryId": "tel-00059",
+      "type": "ELECTRICITY",
+      "value": 2.02,
+      "unit": "kWh",
+      "recordedAt": "2026-09-29T18:00:00Z"
+    },
+    {
+      "id": "msr-00195",
+      "telemetryId": "tel-00059",
+      "type": "WATER",
+      "value": 0.181,
+      "unit": "m³",
+      "recordedAt": "2026-09-29T18:00:00Z"
+    }
+  ],
+  "monitoringRules": [
+    {
+      "id": "rul-001",
+      "name": "Temperatura elevada",
+      "measurementType": "TEMPERATURE",
+      "threshold": {
+        "value": 45,
+        "operator": "GREATER_THAN"
+      },
+      "enabled": true,
+      "createdAt": "2026-04-02T15:00:00Z"
+    },
+    {
+      "id": "rul-002",
+      "name": "Humedad elevada",
+      "measurementType": "HUMIDITY",
+      "threshold": {
+        "value": 85,
+        "operator": "GREATER_THAN_OR_EQUAL"
+      },
+      "enabled": true,
+      "createdAt": "2026-04-02T15:05:00Z"
+    },
+    {
+      "id": "rul-003",
+      "name": "Humedad baja",
+      "measurementType": "HUMIDITY",
+      "threshold": {
+        "value": 20,
+        "operator": "LESS_THAN"
+      },
+      "enabled": false,
+      "createdAt": "2026-04-02T15:08:00Z"
+    },
+    {
+      "id": "rul-004",
+      "name": "Consumo eléctrico elevado por lectura",
+      "measurementType": "ELECTRICITY",
+      "threshold": {
+        "value": 2.5,
+        "operator": "GREATER_THAN"
+      },
+      "enabled": true,
+      "createdAt": "2026-04-02T15:12:00Z"
+    },
+    {
+      "id": "rul-005",
+      "name": "Consumo de agua elevado por lectura",
+      "measurementType": "WATER",
+      "threshold": {
+        "value": 0.5,
+        "operator": "GREATER_THAN"
+      },
+      "enabled": true,
+      "createdAt": "2026-04-02T15:15:00Z"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alr-0418",
+      "ruleId": "rul-002",
+      "measurementId": "msr-00120",
+      "status": "ACTIVE",
+      "createdAt": "2026-10-08T09:00:09Z",
+      "acknowledgedAt": null,
+      "resolvedAt": null,
+      "resolutionNote": null
+    },
+    {
+      "id": "alr-0417",
+      "ruleId": "rul-004",
+      "measurementId": "msr-00021",
+      "status": "ACTIVE",
+      "createdAt": "2026-10-08T05:00:08Z",
+      "acknowledgedAt": null,
+      "resolvedAt": null,
+      "resolutionNote": null
+    },
+    {
+      "id": "alr-0416",
+      "ruleId": "rul-005",
+      "measurementId": "msr-00078",
+      "status": "ACKNOWLEDGED",
+      "createdAt": "2026-10-08T01:00:07Z",
+      "acknowledgedAt": "2026-10-08T01:06:41Z",
+      "resolvedAt": null,
+      "resolutionNote": null
+    },
+    {
+      "id": "alr-0415",
+      "ruleId": "rul-001",
+      "measurementId": "msr-00139",
+      "status": "RESOLVED",
+      "createdAt": "2026-10-07T17:00:06Z",
+      "acknowledgedAt": "2026-10-07T17:02:14Z",
+      "resolvedAt": "2026-10-07T17:24:50Z",
+      "resolutionNote": "Freidora encendida cerca del sensor durante la limpieza de cocina. Se verificó con el inquilino y la temperatura volvió a 26 °C."
+    },
+    {
+      "id": "alr-0414",
+      "ruleId": "rul-002",
+      "measurementId": "msr-00188",
+      "status": "RESOLVED",
+      "createdAt": "2026-10-03T11:00:05Z",
+      "acknowledgedAt": "2026-10-03T11:11:02Z",
+      "resolvedAt": "2026-10-03T11:58:30Z",
+      "resolutionNote": "Filtración en la cubierta del pasillo por lluvia. Se coordinó la reparación con mantenimiento."
+    },
+    {
+      "id": "alr-0413",
+      "ruleId": "rul-004",
+      "measurementId": "msr-00191",
+      "status": "RESOLVED",
+      "createdAt": "2026-10-02T05:00:08Z",
+      "acknowledgedAt": "2026-10-02T05:04:20Z",
+      "resolvedAt": "2026-10-02T14:30:00Z",
+      "resolutionNote": "Vitrina refrigerada dejada encendida fuera del horario de atención. El inquilino la apagó."
+    },
+    {
+      "id": "alr-0412",
+      "ruleId": "rul-001",
+      "measurementId": "msr-00192",
+      "status": "RESOLVED",
+      "createdAt": "2026-09-29T18:00:06Z",
+      "acknowledgedAt": "2026-09-29T18:01:52Z",
+      "resolvedAt": "2026-09-29T18:19:00Z",
+      "resolutionNote": "Horno industrial en uso con la campana extractora apagada. Se encendió la extracción."
+    }
+  ],
+  "consumption": [
+    {
+      "id": "cns-0001",
+      "resourceId": "res-a03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 288.4,
+      "unit": "kWh",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0002",
+      "resourceId": "res-a03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 276.1,
+      "unit": "kWh",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0003",
+      "resourceId": "res-a03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 301.3,
+      "unit": "kWh",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0004",
+      "resourceId": "res-a03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 295,
+      "unit": "kWh",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0005",
+      "resourceId": "res-a03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 302.2,
+      "unit": "kWh",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0006",
+      "resourceId": "res-a03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 82.6,
+      "unit": "kWh",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0007",
+      "resourceId": "res-a07",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 118.7,
+      "unit": "kWh",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0008",
+      "resourceId": "res-a07",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 31.4,
+      "unit": "kWh",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0009",
+      "resourceId": "res-b09",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 151.2,
+      "unit": "kWh",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0010",
+      "resourceId": "res-b09",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 149.8,
+      "unit": "kWh",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0011",
+      "resourceId": "res-b09",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 153.6,
+      "unit": "kWh",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0012",
+      "resourceId": "res-b09",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 150.4,
+      "unit": "kWh",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0013",
+      "resourceId": "res-b09",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 148.9,
+      "unit": "kWh",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0014",
+      "resourceId": "res-b09",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 39.8,
+      "unit": "kWh",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0015",
+      "resourceId": "res-b09",
+      "measurementType": "WATER",
+      "totalValue": 7.1,
+      "unit": "m³",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0016",
+      "resourceId": "res-b09",
+      "measurementType": "WATER",
+      "totalValue": 6.8,
+      "unit": "m³",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0017",
+      "resourceId": "res-b09",
+      "measurementType": "WATER",
+      "totalValue": 7.4,
+      "unit": "m³",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0018",
+      "resourceId": "res-b09",
+      "measurementType": "WATER",
+      "totalValue": 7,
+      "unit": "m³",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0019",
+      "resourceId": "res-b09",
+      "measurementType": "WATER",
+      "totalValue": 7.2,
+      "unit": "m³",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0020",
+      "resourceId": "res-b09",
+      "measurementType": "WATER",
+      "totalValue": 3.1,
+      "unit": "m³",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0021",
+      "resourceId": "res-b12",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 279,
+      "unit": "kWh",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0022",
+      "resourceId": "res-b12",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 281.6,
+      "unit": "kWh",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0023",
+      "resourceId": "res-b12",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 276.3,
+      "unit": "kWh",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0024",
+      "resourceId": "res-b12",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 280.9,
+      "unit": "kWh",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0025",
+      "resourceId": "res-b12",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 279.4,
+      "unit": "kWh",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0026",
+      "resourceId": "res-b12",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 72.3,
+      "unit": "kWh",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0027",
+      "resourceId": "res-b12",
+      "measurementType": "WATER",
+      "totalValue": 3.3,
+      "unit": "m³",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0028",
+      "resourceId": "res-b12",
+      "measurementType": "WATER",
+      "totalValue": 3.1,
+      "unit": "m³",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0029",
+      "resourceId": "res-b12",
+      "measurementType": "WATER",
+      "totalValue": 3.4,
+      "unit": "m³",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0030",
+      "resourceId": "res-b12",
+      "measurementType": "WATER",
+      "totalValue": 3.2,
+      "unit": "m³",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0031",
+      "resourceId": "res-b12",
+      "measurementType": "WATER",
+      "totalValue": 3.3,
+      "unit": "m³",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0032",
+      "resourceId": "res-b12",
+      "measurementType": "WATER",
+      "totalValue": 0.9,
+      "unit": "m³",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0033",
+      "resourceId": "res-c03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 642.7,
+      "unit": "kWh",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0034",
+      "resourceId": "res-c03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 655.1,
+      "unit": "kWh",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0035",
+      "resourceId": "res-c03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 661.8,
+      "unit": "kWh",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0036",
+      "resourceId": "res-c03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 648.2,
+      "unit": "kWh",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0037",
+      "resourceId": "res-c03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 659.5,
+      "unit": "kWh",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0038",
+      "resourceId": "res-c03",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 176.4,
+      "unit": "kWh",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0039",
+      "resourceId": "res-c03",
+      "measurementType": "WATER",
+      "totalValue": 21.4,
+      "unit": "m³",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0040",
+      "resourceId": "res-c03",
+      "measurementType": "WATER",
+      "totalValue": 22,
+      "unit": "m³",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0041",
+      "resourceId": "res-c03",
+      "measurementType": "WATER",
+      "totalValue": 21.7,
+      "unit": "m³",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0042",
+      "resourceId": "res-c03",
+      "measurementType": "WATER",
+      "totalValue": 22.3,
+      "unit": "m³",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0043",
+      "resourceId": "res-c03",
+      "measurementType": "WATER",
+      "totalValue": 21.9,
+      "unit": "m³",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0044",
+      "resourceId": "res-c03",
+      "measurementType": "WATER",
+      "totalValue": 5.8,
+      "unit": "m³",
+      "periodStart": "2026-10-01T05:00:00Z",
+      "periodEnd": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "cns-0045",
+      "resourceId": "res-c07",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 201.5,
+      "unit": "kWh",
+      "periodStart": "2026-05-01T05:00:00Z",
+      "periodEnd": "2026-06-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0046",
+      "resourceId": "res-c07",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 198.2,
+      "unit": "kWh",
+      "periodStart": "2026-06-01T05:00:00Z",
+      "periodEnd": "2026-07-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0047",
+      "resourceId": "res-c07",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 204.9,
+      "unit": "kWh",
+      "periodStart": "2026-07-01T05:00:00Z",
+      "periodEnd": "2026-08-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0048",
+      "resourceId": "res-c07",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 199.7,
+      "unit": "kWh",
+      "periodStart": "2026-08-01T05:00:00Z",
+      "periodEnd": "2026-09-01T05:00:00Z"
+    },
+    {
+      "id": "cns-0049",
+      "resourceId": "res-c07",
+      "measurementType": "ELECTRICITY",
+      "totalValue": 151.3,
+      "unit": "kWh",
+      "periodStart": "2026-09-01T05:00:00Z",
+      "periodEnd": "2026-10-01T05:00:00Z"
+    }
+  ]
+}
