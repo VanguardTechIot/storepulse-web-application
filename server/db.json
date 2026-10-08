@@ -2783,10 +2783,29 @@
       "periodEnd": "2026-10-01T05:00:00Z"
     }
   ],
+  "profiles": [
+    {
+      "id": "usr-001",
+      "userId": "usr-001",
+      "firstName": "Carmen",
+      "lastName": "Mendoza Ríos",
+      "email": "carmen.mendoza@galeriacentral.pe",
+      "phoneNumber": "+51 987 654 321",
+      "photoUrl": null
+    },
+    {
+      "id": "usr-002",
+      "userId": "usr-002",
+      "firstName": "Luis",
+      "lastName": "Paredes Soto",
+      "email": "luis.paredes@galeriacentral.pe",
+      "phoneNumber": null,
+      "photoUrl": null
+    }
+  ],
   "users": [
     {
       "id": "usr-001",
-      "fullName": "Carmen Mendoza Ríos",
       "email": "carmen.mendoza@galeriacentral.pe",
       "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
       "role": "GALLERY_ADMINISTRATOR",
@@ -2794,7 +2813,6 @@
     },
     {
       "id": "usr-002",
-      "fullName": "Luis Paredes Soto",
       "email": "luis.paredes@galeriacentral.pe",
       "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
       "role": "TENANT",
