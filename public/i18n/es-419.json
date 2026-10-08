@@ -454,5 +454,16 @@
   "devices.deactivate.title": "¿Desactivar {{id}}?",
   "devices.deactivate.warning": "Se detendrá la recepción de datos y {{stand}} quedará sin monitoreo hasta que reactives el dispositivo.",
   "devices.deactivate.reason": "Motivo",
-  "devices.deactivate.confirm": "Desactivar dispositivo"
+  "devices.deactivate.confirm": "Desactivar dispositivo",
+  "devices.actions.register": "Registrar dispositivo",
+  "devices.register.title": "Registrar dispositivo IoT",
+  "devices.register.subtitle": "Vincula un nodo a un stand o área común",
+  "devices.register.identifier": "Identificador del dispositivo",
+  "devices.register.identifierHint": "Figura en la etiqueta del equipo y en su certificado de autenticación.",
+  "devices.register.duplicated": "El identificador {{id}} ya está registrado.",
+  "devices.register.type": "Tipo",
+  "devices.register.location": "Stand o área común",
+  "devices.register.selectLocation": "Selecciona una ubicación",
+  "devices.register.notice": "Al confirmar, el dispositivo se autentica con su identificador único y empieza a reportar a la galería.",
+  "devices.register.confirm": "Registrar y vincular"
 }

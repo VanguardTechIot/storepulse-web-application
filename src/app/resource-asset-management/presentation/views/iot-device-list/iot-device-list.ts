@@ -10,6 +10,7 @@ import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localiz
 import { DeviceFilter, DeviceRow, ResourceAssetStore } from '../../../application/resource-asset.store';
 import { IoTDevice } from '../../../domain/model/iot-device.entity';
 import { ConfirmDialog } from '../../../../shared/presentation/components/confirm-dialog/confirm-dialog';
+import { RegisterDeviceDialog } from '../../components/register-device-dialog/register-device-dialog';
 
 type DeviceDisplayStatus = 'ACTIVE' | 'INACTIVE' | 'FAULTY';
 
@@ -27,7 +28,15 @@ const STATUS_TONES: Record<DeviceDisplayStatus, string> = {
 @Component({
   selector: 'app-iot-device-list',
   host: { class: 'monitoring-page' },
-  imports: [Icon, ViewState, Paginator, ConfirmDialog, TranslatePipe, LocalizedDatePipe],
+  imports: [
+    Icon,
+    ViewState,
+    Paginator,
+    ConfirmDialog,
+    TranslatePipe,
+    LocalizedDatePipe,
+    RegisterDeviceDialog,
+  ],
   templateUrl: './iot-device-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -43,6 +52,7 @@ export class IoTDeviceList {
   protected readonly rowToDeactivate = signal<DeviceRow | null>(null);
   protected readonly deactivationReason = signal('');
   protected readonly busy = signal(false);
+  protected readonly registerOpen = signal(false);
 
   constructor() {
     void this.store.load();
