@@ -36,8 +36,19 @@ export const routes: Routes = [
             (m) => m.MONITORING_ROUTES,
           ),
       },
-      { path: 'commercial-units', component: ComingSoon, data: { titleKey: 'nav.commercial_units' } },
-      { path: 'devices', component: ComingSoon, data: { titleKey: 'nav.devices' } },
+      {
+        path: 'commercial-units',
+        component: ComingSoon,
+        data: { titleKey: 'nav.commercial_units' },
+      },
+      {
+        path: 'devices',
+        loadChildren: () =>
+          import('./resource-asset-management/resource-asset-management.routes').then(
+            (m) => m.RESOURCE_ASSET_MANAGEMENT_ROUTES,
+          ),
+        data: { titleKey: 'nav.devices' },
+      },
       { path: 'utility-meters', component: ComingSoon, data: { titleKey: 'nav.utility_meters' } },
       { path: 'security', component: ComingSoon, data: { titleKey: 'nav.security' } },
       { path: 'communication', component: ComingSoon, data: { titleKey: 'nav.communication' } },

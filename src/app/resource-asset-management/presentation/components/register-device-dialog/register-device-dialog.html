@@ -1,0 +1,55 @@
+﻿<app-confirm-dialog
+  [open]="open()"
+  [title]="'devices.register.title' | translate"
+  [message]="'devices.register.subtitle' | translate"
+  [confirmLabel]="'devices.register.confirm' | translate"
+  icon="chip"
+  [busy]="busy()"
+  (confirmed)="register()"
+  (cancelled)="close()"
+>
+  <label class="field">
+    <span>{{ 'devices.register.identifier' | translate }} *</span>
+    <input class="input" type="text" placeholder="SP-ESP32-0000"
+           [class.error]="serialMissing() || duplicated()"
+           [value]="serialNumber()" (input)="setSerialNumber($any($event.target).value)" />
+    <span class="hint">{{ 'devices.register.identifierHint' | translate }}</span>
+    @if (duplicated()) {
+      <span class="err" role="alert">
+        <app-icon name="alert" [size]="14" />
+        {{ 'devices.register.duplicated' | translate: { id: serialNumber().trim().toUpperCase() } }}
+      </span>
+    } @else if (serialMissing()) {
+      <span class="err" role="alert">{{ 'common.validation.required' | translate }}</span>
+    }
+  </label>
+
+  <label class="field">
+    <span>{{ 'devices.register.type' | translate }} *</span>
+    <select class="select" (change)="setType($any($event.target).value)">
+      @for (option of types; track option) {
+        <option [value]="option" [selected]="option === type()">{{ 'devices.types.' + option | translate }}</option>
+      }
+    </select>
+  </label>
+
+  <label class="field">
+    <span>{{ 'devices.register.location' | translate }} *</span>
+    <select class="select" [class.error]="resourceMissing()" (change)="resourceId.set($any($event.target).value)">
+      <option value="" [selected]="!resourceId()">{{ 'devices.register.selectLocation' | translate }}</option>
+      @for (resource of store.resources(); track resource.id) {
+        <option [value]="resource.id" [selected]="resource.id === resourceId()">
+          {{ resource.name }} · {{ resource.description }}
+        </option>
+      }
+    </select>
+    @if (resourceMissing()) {
+      <span class="err" role="alert">{{ 'common.validation.required' | translate }}</span>
+    }
+  </label>
+
+  <div class="callout info">
+    <app-icon name="shieldok" />
+    <span>{{ 'devices.register.notice' | translate }}</span>
+  </div>
+</app-confirm-dialog>

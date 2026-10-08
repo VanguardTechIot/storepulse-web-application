@@ -3,6 +3,7 @@ import { Location, ResourceStatus } from '../domain/model/resource.entity';
 import { AssetStatus, AssetType } from '../domain/model/asset.entity';
 import { SensorType } from '../domain/model/sensor.entity';
 import { MeterType } from '../domain/model/meter.entity';
+import { ConnectivityStatus, IoTDeviceType } from '../domain/model/iot-device.entity';
 
 export interface ResourceResource extends BaseResource {
   name: string;
@@ -24,6 +25,12 @@ export interface IoTDeviceResource extends BaseResource {
   manufacturer: string;
   firmwareVersion: string;
   status: AssetStatus;
+  type: IoTDeviceType;
+  connectivity: ConnectivityStatus;
+  lastReportAt: string | null;
+  supplyVoltage: number | null;
+  bufferedEvents: number;
+  deactivationReason: string | null;
 }
 
 export interface SensorResource extends BaseResource {

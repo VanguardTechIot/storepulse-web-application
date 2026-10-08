@@ -34,7 +34,20 @@ export class AssetAssembler implements BaseAssembler<Asset, AssetResource> {
 
 export class IoTDeviceAssembler implements BaseAssembler<IoTDevice, IoTDeviceResource> {
   toEntityFromResource(r: IoTDeviceResource): IoTDevice {
-    return new IoTDevice(r.id, r.assetId, r.serialNumber, r.manufacturer, r.firmwareVersion, r.status);
+    return new IoTDevice(
+      r.id,
+      r.assetId,
+      r.serialNumber,
+      r.manufacturer,
+      r.firmwareVersion,
+      r.status,
+      r.type,
+      r.connectivity,
+      r.lastReportAt ? new Date(r.lastReportAt) : null,
+      r.supplyVoltage,
+      r.bufferedEvents,
+      r.deactivationReason,
+    );
   }
 
   toResourceFromEntity(e: IoTDevice): IoTDeviceResource {
@@ -45,6 +58,12 @@ export class IoTDeviceAssembler implements BaseAssembler<IoTDevice, IoTDeviceRes
       manufacturer: e.manufacturer,
       firmwareVersion: e.firmwareVersion,
       status: e.status,
+      type: e.type,
+      connectivity: e.connectivity,
+      lastReportAt: e.lastReportAt?.toISOString() ?? null,
+      supplyVoltage: e.supplyVoltage,
+      bufferedEvents: e.bufferedEvents,
+      deactivationReason: e.deactivationReason,
     };
   }
 }
