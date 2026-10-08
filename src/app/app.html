@@ -7,6 +7,7 @@
 <!-- * * * * * * * to get started with your project! * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
+@if (isInitialScreen()) {
 <style>
   :host {
     --bright-blue: oklch(51.01% 0.274 263.83);
@@ -234,6 +235,8 @@
       </svg>
       <h1>Hello, {{ title() }}</h1>
       <p>Congratulations! Your app is running. 🎉</p>
+      <!-- Temporary access during collaborative development; not the final dashboard. -->
+      <a class="btn btn-primary" style="align-self: flex-start" routerLink="/monitoring/overview">Go to Monitoring</a>
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>
     <div class="right-side">
@@ -331,6 +334,7 @@
     </div>
   </div>
 </main>
+}
 
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
