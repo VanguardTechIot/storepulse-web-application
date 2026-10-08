@@ -13,13 +13,13 @@
     </mat-chip-set>
     <h2>
       {{ 'iam.showcase.title' | translate }}
-      <span>{{ 'iam.showcase.title-highlight' | translate }}</span>
+      <span>{{ 'iam.showcase.title_highlight' | translate }}</span>
     </h2>
     <p>{{ 'iam.showcase.description' | translate }}</p>
 
     <mat-card class="auth-console" aria-hidden="true">
       <mat-card-header class="auth-console-head">
-        <mat-card-subtitle>{{ 'iam.showcase.floor-plan' | translate }}</mat-card-subtitle>
+        <mat-card-subtitle>{{ 'iam.showcase.floor_plan' | translate }}</mat-card-subtitle>
         <mat-chip-set class="auth-console-badge">
           <mat-chip>{{ 'iam.showcase.monitoring' | translate }}</mat-chip>
         </mat-chip-set>
@@ -42,7 +42,7 @@
       </mat-chip>
       <mat-chip>
         <mat-icon matChipAvatar aria-hidden="true">bolt</mat-icon>
-        {{ 'iam.showcase.features.sub-metering' | translate }}
+        {{ 'iam.showcase.features.sub_metering' | translate }}
       </mat-chip>
       <mat-chip>
         <mat-icon matChipAvatar aria-hidden="true">water_drop</mat-icon>
@@ -62,11 +62,11 @@
     </div>
 
     <footer class="auth-footer">
-      <span>{{ 'shared.footer.copyright' | translate }}</span>
+      <span>{{ 'common.footer.copyright' | translate }}</span>
       <span aria-hidden="true">·</span>
-      <a [routerLink]="appNav.termsAndConditions">{{ 'shared.footer.terms' | translate }}</a>
+      <a [routerLink]="appNav.termsAndConditions">{{ 'common.footer.terms' | translate }}</a>
       <span aria-hidden="true">·</span>
-      <a [routerLink]="appNav.termsAndConditions" fragment="privacy">{{ 'shared.footer.privacy' | translate }}</a>
+      <a [routerLink]="appNav.termsAndConditions" fragment="privacy">{{ 'common.footer.privacy' | translate }}</a>
     </footer>
   </main>
 </div>

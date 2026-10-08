@@ -3,13 +3,13 @@
  * The value doubles as the i18n key suffix (`iam.errors.<code>`).
  */
 export enum IamErrorCode {
-  InvalidCredentials = 'invalid-credentials',
-  AccountInactive = 'account-inactive',
-  RoleNotAllowed = 'role-not-allowed',
-  EmailAlreadyRegistered = 'email-already-registered',
-  WeakPassword = 'weak-password',
-  InvalidResetCode = 'invalid-reset-code',
-  ExpiredResetCode = 'expired-reset-code',
+  InvalidCredentials = 'invalid_credentials',
+  AccountInactive = 'account_inactive',
+  RoleNotAllowed = 'role_not_allowed',
+  EmailAlreadyRegistered = 'email_already_registered',
+  WeakPassword = 'weak_password',
+  InvalidResetCode = 'invalid_reset_code',
+  ExpiredResetCode = 'expired_reset_code',
   Unexpected = 'unexpected',
 }
 

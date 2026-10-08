@@ -1,5 +1,5 @@
 .account-trigger {
-  --mat-button-text-label-text-color: var(--sp-navy);
+  --mat-button-text-label-text-color: var(--sp-text);
   height: 48px;
   text-align: left;
 }
@@ -14,8 +14,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--sp-cyan-50);
-  color: var(--sp-cyan-text);
+  background: var(--sp-primary-soft);
+  color: var(--sp-primary);
   font-size: 13px;
   font-weight: 700;
   display: inline-flex;
@@ -36,19 +36,19 @@
 .account-text small {
   font-size: 12px;
   font-weight: 400;
-  color: var(--sp-muted);
+  color: var(--sp-text-muted);
 }
 
 .account-header {
   --mat-list-list-item-label-text-size: 14px;
   --mat-list-list-item-supporting-text-size: 12px;
-  --mat-list-list-item-supporting-text-color: var(--sp-muted);
+  --mat-list-list-item-supporting-text-color: var(--sp-text-muted);
   padding: 0;
 }
 
 .sign-out {
-  --mat-menu-item-label-text-color: var(--sp-red-text);
-  --mat-menu-item-icon-color: var(--sp-red-text);
+  --mat-menu-item-label-text-color: var(--sp-danger);
+  --mat-menu-item-icon-color: var(--sp-danger);
 }
 
 @media (max-width: 599.98px) {

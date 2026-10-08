@@ -1,16 +1,16 @@
 <mat-button-toggle-group
   hideSingleSelectionIndicator
-  [value]="currentLanguage()"
-  [attr.aria-label]="'shared.language.label' | translate"
+  [value]="i18n.lang()"
+  [attr.aria-label]="'common.language.label' | translate"
   (change)="select($event)"
 >
-  @for (language of languages; track language) {
+  @for (language of languages; track language.code) {
     <mat-button-toggle
-      [value]="language"
-      [aria-label]="'shared.language.names.' + language | translate"
-      [attr.lang]="language"
+      [value]="language.code"
+      [aria-label]="language.nameKey | translate"
+      [attr.lang]="language.code"
     >
-      {{ 'shared.language.codes.' + language | translate }}
+      {{ language.label }}
     </mat-button-toggle>
   }
 </mat-button-toggle-group>

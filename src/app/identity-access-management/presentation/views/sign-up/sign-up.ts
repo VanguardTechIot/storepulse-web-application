@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
 import { appNav } from '../../../../shared/routing/app-nav';
 import { IamStore } from '../../../application/iam.store';
@@ -75,6 +75,6 @@ export class SignUp {
     const { fullName, email, password } = this.form.getRawValue();
     this.store
       .signUp(new SignUpCommand({ fullName, email, password }))
-      .subscribe(() => void this.router.navigate(appNav.home));
+      .subscribe(() => void this.router.navigate(appNav.dashboard));
   }
 }

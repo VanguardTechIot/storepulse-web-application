@@ -5,10 +5,10 @@
   --mat-stepper-header-label-text-weight: 600;
   --mat-stepper-header-selected-state-label-text-size: 13px;
   --mat-stepper-header-selected-state-label-text-weight: 600;
-  --mat-stepper-header-selected-state-icon-background-color: var(--sp-cyan-text);
+  --mat-stepper-header-selected-state-icon-background-color: var(--sp-primary);
   --mat-stepper-header-selected-state-icon-foreground-color: #fff;
   --mat-stepper-header-icon-background-color: var(--sp-border);
-  --mat-stepper-header-icon-foreground-color: var(--sp-muted);
+  --mat-stepper-header-icon-foreground-color: var(--sp-text-muted);
   --mat-stepper-line-color: var(--sp-border);
 }
 
@@ -40,6 +40,6 @@
 
 .terms-error {
   margin-left: 12px;
-  color: var(--sp-red-text);
+  color: var(--sp-danger);
   font-size: 12px;
 }

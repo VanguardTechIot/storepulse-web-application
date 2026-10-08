@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { PasswordPolicy } from '../../../domain/model/password-policy';
 
 type RequirementState = 'pending' | 'met' | 'unmet';
@@ -24,7 +24,7 @@ export class PasswordRequirements {
     const evaluation = PasswordPolicy.evaluate(password);
     const state = (met: boolean): RequirementState => (met ? 'met' : password ? 'unmet' : 'pending');
     return [
-      { key: 'minimum-length', state: state(evaluation.hasMinimumLength) },
+      { key: 'minimum_length', state: state(evaluation.hasMinimumLength) },
       { key: 'number', state: state(evaluation.hasNumber) },
     ];
   });

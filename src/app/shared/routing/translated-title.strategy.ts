@@ -1,32 +1,35 @@
-import { inject, Injectable } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslationService } from '../infrastructure/i18n/translation.service';
 
 const brandName = 'StorePulse';
 
 /**
- * Uses the route `title` as a translation key, so the browser tab follows the selected language.
+ * Translates the browser tab title, so it follows the selected language.
+ * The key comes from the route `title` or, when absent, from `data.titleKey`.
  */
 @Injectable({ providedIn: 'root' })
 export class TranslatedTitleStrategy extends TitleStrategy {
   private readonly title = inject(Title);
-  private readonly translate = inject(TranslateService);
-  private lastSnapshot: RouterStateSnapshot | null = null;
+  private readonly i18n = inject(TranslationService);
+  private readonly titleKey = signal<string | null>(null);
 
   constructor() {
     super();
-    this.translate.onLangChange
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.lastSnapshot && this.updateTitle(this.lastSnapshot));
+    effect(() => {
+      const key = this.titleKey();
+      this.title.setTitle(key ? `${brandName} · ${this.i18n.t(key)}` : brandName);
+    });
   }
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
-    this.lastSnapshot = snapshot;
-    const titleKey = this.buildTitle(snapshot);
-    this.title.setTitle(
-      titleKey ? `${brandName} · ${this.translate.instant(titleKey)}` : brandName,
-    );
+    this.titleKey.set(this.buildTitle(snapshot) ?? this.deepestTitleKey(snapshot));
+  }
+
+  private deepestTitleKey(snapshot: RouterStateSnapshot): string | null {
+    let route = snapshot.root;
+    while (route.firstChild) route = route.firstChild;
+    return (route.data['titleKey'] as string | undefined) ?? null;
   }
 }

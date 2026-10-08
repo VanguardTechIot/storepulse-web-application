@@ -4,9 +4,8 @@
  * another context's routes.
  */
 export const appNav = {
-  /** Landing page after signing in or signing up. Replace with the consolidated dashboard once
-   *  Dashboard and Analytics is implemented (and with gallery registration for sign-up once
-   *  Property Management is implemented). */
-  home: ['/home'],
+  /** Landing page after signing in or signing up. When Property Management implements gallery
+   *  registration, sign-up should continue there (mock-up 03b). */
+  dashboard: ['/dashboard'],
   termsAndConditions: ['/terms-and-conditions'],
 } as const;

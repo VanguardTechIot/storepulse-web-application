@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
 import { IamStore } from '../../../application/iam.store';
 import { RequestPasswordResetCommand } from '../../../domain/model/request-password-reset.command';

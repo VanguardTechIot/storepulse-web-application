@@ -4,7 +4,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { LanguageSwitcher } from '../../../../shared/presentation/components/language-switcher/language-switcher';
 import { appNav } from '../../../../shared/routing/app-nav';
 

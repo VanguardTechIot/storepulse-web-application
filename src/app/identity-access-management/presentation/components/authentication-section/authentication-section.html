@@ -4,7 +4,7 @@
     type="button"
     class="account-trigger"
     [matMenuTriggerFor]="accountMenu"
-    [attr.aria-label]="'iam.account-menu.open' | translate"
+    [attr.aria-label]="'iam.account_menu.open' | translate"
   >
     <span class="account-trigger-content">
       <span class="avatar" aria-hidden="true">{{ initials() }}</span>
@@ -27,7 +27,7 @@
     <mat-divider />
     <button mat-menu-item class="sign-out" (click)="signOut()">
       <mat-icon aria-hidden="true">logout</mat-icon>
-      <span>{{ 'iam.account-menu.sign-out' | translate }}</span>
+      <span>{{ 'iam.account_menu.sign_out' | translate }}</span>
     </button>
   </mat-menu>
 }

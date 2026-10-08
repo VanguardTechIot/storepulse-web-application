@@ -3,9 +3,9 @@
   --mat-button-toggle-shape: 8px;
   --mat-button-toggle-label-text-size: 12px;
   --mat-button-toggle-label-text-weight: 700;
-  --mat-button-toggle-text-color: var(--sp-muted);
+  --mat-button-toggle-text-color: var(--sp-text-muted);
   --mat-button-toggle-divider-color: var(--sp-border);
-  --mat-button-toggle-selected-state-background-color: var(--sp-navy);
+  --mat-button-toggle-selected-state-background-color: var(--sp-text);
   --mat-button-toggle-selected-state-text-color: #fff;
   display: inline-flex;
 }

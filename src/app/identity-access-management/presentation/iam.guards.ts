@@ -18,7 +18,7 @@ export const authenticationGuard: CanActivateFn = (_route, state) => {
 export const guestGuard: CanActivateFn = () => {
   const store = inject(IamStore);
   const router = inject(Router);
-  return !store.isSignedIn() || router.createUrlTree(appNav.home);
+  return !store.isSignedIn() || router.createUrlTree(appNav.dashboard);
 };
 
 /** The code can only be entered after it was requested in this visit. */

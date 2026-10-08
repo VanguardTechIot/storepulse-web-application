@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { IamStore } from '../../../application/iam.store';
 import { iamNav } from '../../iam.nav';
 

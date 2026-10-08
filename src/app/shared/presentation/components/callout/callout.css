@@ -4,7 +4,7 @@
 
 .callout {
   --mat-card-outlined-outline-color: transparent;
-  --mat-card-outlined-container-shape: 10px;
+  --mat-card-outlined-container-shape: var(--sp-radius);
 }
 
 .callout-content {
@@ -24,21 +24,21 @@
 }
 
 .info {
-  --mat-card-outlined-container-color: var(--sp-blue-50);
-  color: var(--sp-blue-text);
+  --mat-card-outlined-container-color: var(--sp-primary-soft);
+  color: var(--sp-primary);
 }
 
 .ok {
-  --mat-card-outlined-container-color: var(--sp-green-50);
-  color: var(--sp-green-text);
+  --mat-card-outlined-container-color: var(--sp-success-soft);
+  color: var(--sp-success);
 }
 
 .warn {
-  --mat-card-outlined-container-color: var(--sp-amber-50);
-  color: var(--sp-amber-text);
+  --mat-card-outlined-container-color: var(--sp-warning-soft);
+  color: var(--sp-warning);
 }
 
 .danger {
-  --mat-card-outlined-container-color: var(--sp-red-50);
-  color: var(--sp-red-text);
+  --mat-card-outlined-container-color: var(--sp-danger-soft);
+  color: var(--sp-danger);
 }

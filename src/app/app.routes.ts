@@ -3,23 +3,39 @@ import {
   authenticationGuard,
   guestGuard,
 } from './identity-access-management/presentation/iam.guards';
-const mainLayout = () =>
-  import('./shared/presentation/views/main-layout/main-layout').then((m) => m.MainLayout);
-const iamRoutes = () =>
-  import('./identity-access-management/presentation/iam.routes').then((m) => m.iamRoutes);
-const home = () => import('./shared/presentation/views/home/home').then((m) => m.Home);
-const pageNotFound = () =>
-  import('./shared/presentation/views/page-not-found/page-not-found').then((m) => m.PageNotFound);
+import { ComingSoon } from './shared/presentation/views/coming-soon/coming-soon';
 
-/** Route titles are i18n keys, translated by `TranslatedTitleStrategy`. */
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'iam' },
-  { path: 'iam', canActivate: [guestGuard], loadChildren: iamRoutes },
+  // Public area: welcome, Log In, registration and password recovery.
+  {
+    path: 'iam',
+    canActivate: [guestGuard],
+    loadChildren: () =>
+      import('./identity-access-management/identity-access-management.routes').then(
+        (m) => m.IDENTITY_ACCESS_MANAGEMENT_ROUTES,
+      ),
+  },
+  // Gallery administrator area: requires an active session.
   {
     path: '',
-    loadComponent: mainLayout,
     canActivate: [authenticationGuard],
-    children: [{ path: 'home', loadComponent: home, title: 'shared.home.page-title' }],
+    loadComponent: () =>
+      import('./shared/presentation/views/main-layout/main-layout').then((m) => m.MainLayout),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'dashboard', component: ComingSoon, data: { titleKey: 'nav.dashboard' } },
+      {
+        path: 'billing',
+        loadChildren: () =>
+          import('./utility-billing/utility-billing.routes').then((m) => m.UTILITY_BILLING_ROUTES),
+      },
+      { path: 'commercial-units', component: ComingSoon, data: { titleKey: 'nav.commercial_units' } },
+      { path: 'devices', component: ComingSoon, data: { titleKey: 'nav.devices' } },
+      { path: 'utility-meters', component: ComingSoon, data: { titleKey: 'nav.utility_meters' } },
+      { path: 'security', component: ComingSoon, data: { titleKey: 'nav.security' } },
+      { path: 'communication', component: ComingSoon, data: { titleKey: 'nav.communication' } },
+      { path: 'subscription', component: ComingSoon, data: { titleKey: 'nav.subscription' } },
+    ],
   },
-  { path: '**', loadComponent: pageNotFound, title: 'shared.not-found.page-title' },
+  { path: '**', redirectTo: '' },
 ];

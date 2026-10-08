@@ -1,38 +1,35 @@
-// Angular Material theme (Material 3) adapted to the StorePulse style guide.
+// Angular Material theme (Material 3) aligned with the global tokens of src/styles.css.
 // Learn more at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
 html {
-  height: 100%;
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        primary: mat.$blue-palette,
+        tertiary: mat.$azure-palette,
       ),
       typography: (
-        plain-family: 'Plus Jakarta Sans',
-        brand-family: 'Plus Jakarta Sans',
+        plain-family: 'Inter',
+        brand-family: 'Inter',
       ),
       density: 0,
     )
   );
 
-  // Brand colors. The primary fill uses the accessible cyan variant (5.9:1 with white text).
+  // Same values as --sp-primary, --sp-text, --sp-border and --sp-danger.
   @include mat.theme-overrides(
     (
-      primary: #0369a1,
+      primary: #2563eb,
       on-primary: #ffffff,
-      outline: #cbd5e1,
+      outline: #d1d5db,
       surface: #ffffff,
-      on-surface: #0f172a,
-      error: #b91c1c,
+      on-surface: #1f2937,
+      error: #dc2626,
     )
   );
 }
 
 body {
   color-scheme: light;
-  margin: 0;
-  height: 100%;
 }

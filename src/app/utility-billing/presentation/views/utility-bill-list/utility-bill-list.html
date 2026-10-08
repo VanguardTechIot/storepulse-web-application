@@ -1,0 +1,85 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'billing.list.title' | translate }}</h1>
+    <p class="page-subtitle">{{ 'billing.list.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <a class="btn btn--ghost" routerLink="/billing/disputes">{{ 'billing.actions.disputes' | translate }}</a>
+    <a class="btn btn--primary" routerLink="/billing/generate">{{ 'billing.actions.generate' | translate }}</a>
+  </div>
+</header>
+
+@if (store.loadError(); as errorKey) {
+  <div class="alert alert--danger">{{ errorKey | translate }}</div>
+}
+
+<section class="kpi-grid">
+  <article class="kpi">
+    <span class="kpi__label">{{ 'billing.kpi.draft' | translate }}</span>
+    <strong class="kpi__value">{{ store.counters().draft }}</strong>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label">{{ 'billing.kpi.verified' | translate }}</span>
+    <strong class="kpi__value">{{ store.counters().verified }}</strong>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label">{{ 'billing.kpi.issued' | translate }}</span>
+    <strong class="kpi__value">{{ store.counters().issued }}</strong>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label">{{ 'billing.kpi.in_dispute' | translate }}</span>
+    <strong class="kpi__value">{{ store.counters().inDispute }}</strong>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label">{{ 'billing.kpi.issued_amount' | translate }}</span>
+    <strong class="kpi__value">{{ store.counters().issuedAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</strong>
+  </article>
+</section>
+
+<nav class="tabs" aria-label="{{ 'billing.filter.label' | translate }}">
+  @for (filter of filters; track filter) {
+    <button
+      type="button"
+      class="tab"
+      [class.is-active]="activeFilter() === filter"
+      (click)="setFilter(filter)"
+    >
+      {{ (filter === 'ALL' ? 'billing.filter.all' : 'billing.bill_status.' + filter) | translate }}
+    </button>
+  }
+</nav>
+
+<section class="card table-wrap">
+  @if (store.loading()) {
+    <p class="empty">{{ 'billing.common.loading' | translate }}</p>
+  } @else if (visibleBills().length === 0) {
+    <p class="empty">{{ 'billing.list.empty' | translate }}</p>
+  } @else {
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ 'billing.table.code' | translate }}</th>
+          <th>{{ 'billing.table.unit' | translate }}</th>
+          <th>{{ 'billing.table.period' | translate }}</th>
+          <th class="num">{{ 'billing.table.total' | translate }}</th>
+          <th>{{ 'billing.table.status' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (bill of visibleBills(); track bill.id) {
+          <tr>
+            <td><strong>{{ bill.code }}</strong></td>
+            <td><span class="unit-code">{{ bill.unitCode }}</span> {{ bill.unitName }}</td>
+            <td>{{ bill.period.start | date: 'dd/MM/yyyy' }} – {{ bill.period.end | date: 'dd/MM/yyyy' }}</td>
+            <td class="num">{{ bill.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+            <td><app-billing-status-badge [status]="bill.status" /></td>
+            <td class="num">
+              <a class="link" [routerLink]="['/billing/bills', bill.id]">{{ 'billing.actions.view' | translate }}</a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>
