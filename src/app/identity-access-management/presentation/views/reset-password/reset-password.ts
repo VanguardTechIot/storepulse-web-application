@@ -76,29 +76,27 @@ export class ResetPassword {
     this.store.clearError();
   }
 
-  protected submit(): void {
+  protected async submit(): Promise<void> {
     const recovery = this.store.passwordRecovery();
     if (this.form.invalid || !recovery) {
       this.form.markAllAsTouched();
       return;
     }
     const { code, newPassword } = this.form.getRawValue();
-    this.store
-      .resetPassword(new ResetPasswordCommand({ email: recovery.email, code, newPassword }))
-      .subscribe(
-        () => void this.router.navigate(iamNav.signIn(), { queryParams: { passwordChanged: true } }),
-      );
+    const command = new ResetPasswordCommand({ email: recovery.email, code, newPassword });
+    if (await this.store.resetPassword(command)) {
+      await this.router.navigate(iamNav.signIn(), { queryParams: { passwordChanged: true } });
+    }
   }
 
-  protected resendCode(): void {
+  protected async resendCode(): Promise<void> {
     const recovery = this.store.passwordRecovery();
     if (!recovery) return;
     this.codeResent.set(false);
-    this.store
-      .requestPasswordReset(new RequestPasswordResetCommand({ email: recovery.email }))
-      .subscribe(() => {
-        this.form.controls.code.reset();
-        this.codeResent.set(true);
-      });
+    const command = new RequestPasswordResetCommand({ email: recovery.email });
+    if (await this.store.requestPasswordReset(command)) {
+      this.form.controls.code.reset();
+      this.codeResent.set(true);
+    }
   }
 }

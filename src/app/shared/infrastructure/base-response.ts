@@ -1,11 +1,6 @@
 /**
- * Base contract for a resource returned by the API.
+ * Shape of a single resource returned by the REST API.
  */
 export interface BaseResource {
-  id: number;
+  id: string;
 }
-
-/**
- * Base contract for a response that wraps a collection of resources.
- */
-export interface BaseResponse {}

@@ -1,18 +1,10 @@
 import { BaseEntity } from '../domain/model/base-entity';
-import { BaseResource, BaseResponse } from './base-response';
+import { BaseResource } from './base-response';
 
 /**
- * Translates between API resources and domain entities.
- * @template TEntity - Domain entity.
- * @template TResource - API resource.
- * @template TResponse - API response that wraps a collection of resources.
+ * Translates REST API resources into domain entities and back.
  */
-export interface BaseAssembler<
-  TEntity extends BaseEntity,
-  TResource extends BaseResource,
-  TResponse extends BaseResponse,
-> {
+export interface BaseAssembler<TEntity extends BaseEntity, TResource extends BaseResource> {
   toEntityFromResource(resource: TResource): TEntity;
   toResourceFromEntity(entity: TEntity): TResource;
-  toEntitiesFromResponse(response: TResponse): TEntity[];
 }

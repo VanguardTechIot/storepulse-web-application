@@ -67,14 +67,14 @@ export class SignUp {
     this.store.clearError();
   }
 
-  protected submit(): void {
+  protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const { fullName, email, password } = this.form.getRawValue();
-    this.store
-      .signUp(new SignUpCommand({ fullName, email, password }))
-      .subscribe(() => void this.router.navigate(appNav.dashboard));
+    if (await this.store.signUp(new SignUpCommand({ fullName, email, password }))) {
+      await this.router.navigate(appNav.dashboard);
+    }
   }
 }

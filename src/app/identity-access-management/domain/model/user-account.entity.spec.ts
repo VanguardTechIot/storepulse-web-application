@@ -4,7 +4,7 @@ import { UserStatus } from './user-status.enum';
 
 describe('UserAccount', () => {
   function account(role: Role, status: UserStatus): UserAccount {
-    return new UserAccount({ id: 1, email: 'admin@gallery.pe', role, status });
+    return new UserAccount({ id: 'usr-001', email: 'admin@gallery.pe', role, status });
   }
 
   it('lets an active gallery administrator use the web application', () => {

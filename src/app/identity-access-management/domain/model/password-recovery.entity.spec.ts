@@ -6,8 +6,8 @@ describe('PasswordRecovery', () => {
 
   function recovery(overrides: Partial<{ used: boolean }> = {}): PasswordRecovery {
     return new PasswordRecovery({
-      id: 1,
-      userId: 7,
+      id: 'rec-001',
+      userId: 'usr-007',
       code: new PasswordResetCode('482917'),
       requestedAt,
       expiresAt: new Date(requestedAt.getTime() + 15 * 60_000),
@@ -16,7 +16,7 @@ describe('PasswordRecovery', () => {
   }
 
   it('generates a 6-digit code valid for 15 minutes', () => {
-    const generated = PasswordRecovery.generate(7, requestedAt);
+    const generated = PasswordRecovery.generate('usr-007', requestedAt);
     expect(PasswordResetCode.isValid(generated.code.value)).toBe(true);
     expect(generated.expiresAt.getTime() - requestedAt.getTime()).toBe(15 * 60_000);
     expect(generated.used).toBe(false);

@@ -27,7 +27,7 @@ describe('authenticationInterceptor', () => {
     sessionStorage.save(
       new UserSession({
         user: new UserAccount({
-          id: 1,
+          id: 'usr-001',
           email: 'admin@gallery.pe',
           role: Role.GalleryAdministrator,
           status: UserStatus.Active,

@@ -29,6 +29,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./utility-billing/utility-billing.routes').then((m) => m.UTILITY_BILLING_ROUTES),
       },
+      {
+        path: 'monitoring',
+        loadChildren: () =>
+          import('./service-execution-monitoring/presentation/monitoring.routes').then(
+            (m) => m.MONITORING_ROUTES,
+          ),
+      },
       { path: 'commercial-units', component: ComingSoon, data: { titleKey: 'nav.commercial_units' } },
       { path: 'devices', component: ComingSoon, data: { titleKey: 'nav.devices' } },
       { path: 'utility-meters', component: ComingSoon, data: { titleKey: 'nav.utility_meters' } },

@@ -12,7 +12,7 @@ npm run mock:api
 | Bounded context | Resource | Path |
 | --- | --- | --- |
 | Identity and Access Management | Users | `/api/v1/users` |
-| Identity and Access Management | Password recoveries | `/api/v1/password-recoveries` |
+| Identity and Access Management | Password recoveries | `/api/v1/password-recoveries` (collection `passwordRecoveries`) |
 
 ## Seed accounts
 
@@ -27,4 +27,4 @@ Both accounts use the password `StorePulse2026` (stored as a SHA-256 hash).
 
 There is no email service in local development: after requesting a code, the 6-digit code is
 printed in the browser console (`[IAM] Password reset code: ...`) and saved in
-`password-recoveries` inside `db.json`.
+`passwordRecoveries` inside `db.json`.

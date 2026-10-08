@@ -1,3 +1,6 @@
 {
+  "/api/v1/password-recoveries*": "/passwordRecoveries$1",
+  "/api/v1/iot-devices*": "/iotDevices$1",
+  "/api/v1/monitoring-rules*": "/monitoringRules$1",
   "/api/v1/*": "/$1"
 }

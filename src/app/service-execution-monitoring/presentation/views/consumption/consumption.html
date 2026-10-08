@@ -1,0 +1,209 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">{{ 'monitoring.nav.section' | translate }} / {{ 'monitoring.consumption.crumb' | translate }}</div>
+    <h1>{{ 'monitoring.consumption.title' | translate }}</h1>
+    <p>{{ 'monitoring.consumption.subtitle' | translate }}</p>
+  </div>
+  @if (store.ready()) {
+    <div class="actions">
+      <label class="select-field with-icon">
+        <app-icon name="calendar" [size]="16" />
+        <span class="sr-only">{{ 'monitoring.consumption.period' | translate }}</span>
+        <select class="select" [value]="period()" (change)="period.set($any($event.target).value)">
+          @for (key of periodOptions(); track key) {
+            <option [value]="key" [selected]="key === period()">{{ periodDate(key) | localizedDate: 'monthYear' }}</option>
+          }
+        </select>
+      </label>
+      <button type="button" class="btn btn-outline" [disabled]="store.isLoading()" (click)="refresh()">
+        <app-icon name="refresh" [size]="16" />{{ 'common.actions.refresh' | translate }}
+      </button>
+    </div>
+  }
+</div>
+
+@if (!store.ready()) {
+  <div class="card">
+    <app-view-state [state]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </div>
+} @else if (!periodHasData()) {
+  <div class="card">
+    <app-view-state icon="gauge"
+                    [title]="'monitoring.consumption.noData.title' | translate"
+                    [message]="'monitoring.consumption.noData.message' | translate: { period: (periodDate(period()) | localizedDate: 'monthYear') }" />
+  </div>
+} @else {
+  @if (openPeriodUntil(); as until) {
+    <div class="callout info banner">
+      <app-icon name="clock" [size]="20" />
+      <span class="grow">{{ 'monitoring.consumption.openPeriod' | translate: { date: (until | localizedDate: 'dateTime') } }}</span>
+    </div>
+  }
+
+  <div class="grid g-3">
+    @for (type of consumptionTypes; track type) {
+      <div class="card kpi">
+        <div class="top">
+          <app-measurement-type-label [type]="type" [showLabel]="false" [iconBox]="34" />
+          {{ 'monitoring.consumption.consolidated.' + type | translate }}
+        </div>
+        @if (totals()[type].records > 0) {
+          <div class="val">{{ totals()[type].value | localizedNumber: 1 }}<small>{{ units[type] }}</small></div>
+          <div class="delta muted">{{ 'monitoring.consumption.locationsMeasured' | translate: { count: totals()[type].records } }}</div>
+        } @else {
+          <div class="val">—</div>
+          <div class="delta muted">{{ 'monitoring.consumption.noMeasurementsForType' | translate }}</div>
+        }
+      </div>
+    }
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-violet"><app-icon name="wifioff" /></span>{{ 'monitoring.consumption.withoutData' | translate }}</div>
+      <div class="val">{{ rowsWithoutData() }}<small>/ {{ rows().length }}</small></div>
+      <div class="delta muted">{{ 'monitoring.consumption.withoutDataHint' | translate }}</div>
+    </div>
+  </div>
+
+  @if (selectedRow(); as row) {
+    <div class="row">
+      <section class="card grow" aria-labelledby="history-title">
+        <div class="card-head wrap">
+          <div>
+            <h3 id="history-title">{{ 'monitoring.consumption.history.title' | translate: { location: row.resource.name } }}</h3>
+            <p>{{ row.resource.description }} · {{ 'monitoring.consumption.history.subtitle' | translate: { unit: units[selectedType()] } }}</p>
+          </div>
+          <div class="right">
+            <div class="legend" aria-hidden="true">
+              <span><i class="legend-bar"></i>{{ 'monitoring.consumption.history.legendConsumption' | translate }}</span>
+              <span><i class="legend-line"></i>{{ 'monitoring.consumption.history.legendAverage' | translate }}</span>
+            </div>
+            <div class="tabs" role="tablist">
+              @for (type of consumptionTypes; track type) {
+                <button type="button" role="tab" [class.on]="selectedType() === type" [attr.aria-selected]="selectedType() === type"
+                        [disabled]="!row.byType[type]" (click)="selectedType.set(type)">
+                  {{ 'monitoring.measurementTypes.' + type | translate }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="card-pad">
+          @if (selectedHistory().length > 0) {
+            <app-consumption-history-chart
+              [history]="selectedHistory()"
+              [selectedPeriod]="period()"
+              [average]="selectedBaseline()?.historicalAverage ?? null"
+              [unit]="units[selectedType()]"
+              [label]="'monitoring.consumption.history.title' | translate: { location: row.resource.name }" />
+          } @else {
+            <app-view-state icon="gauge" [title]="'monitoring.consumption.history.empty' | translate" />
+          }
+        </div>
+      </section>
+
+      <aside class="card side-card" aria-labelledby="comparison-title">
+        <div class="card-head">
+          <div>
+            <h3 id="comparison-title">{{ 'monitoring.consumption.comparison.title' | translate }}</h3>
+            <p>{{ row.resource.name }} · {{ periodDate(period()) | localizedDate: 'monthYear' }}</p>
+          </div>
+        </div>
+        <div class="card-pad stack-sm">
+          @if (selectedBaseline(); as baseline) {
+            <div class="kv kv-1">
+              <div>
+                <span>{{ 'monitoring.consumption.comparison.accumulated' | translate }}</span>
+                @if (baseline.current; as current) {
+                  <b class="big">{{ current.totalValue | localizedNumber: 2 }} {{ current.unit }}</b>
+                } @else {
+                  <b class="big">—</b>
+                }
+              </div>
+              @if (baseline.isAvailable) {
+                <div>
+                  <span>{{ 'monitoring.consumption.comparison.average' | translate: { count: baseline.previousPeriods.length } }}</span>
+                  <b class="big">{{ baseline.historicalAverage | localizedNumber: 2 }} {{ units[selectedType()] }}</b>
+                </div>
+                <div>
+                  <span>{{ 'monitoring.consumption.comparison.deviation' | translate }}</span>
+                  <b class="big" [class.warn]="(baseline.deviationPercent ?? 0) > 0" [class.up]="(baseline.deviationPercent ?? 0) < 0">
+                    @if (baseline.deviationPercent !== null) {
+                      {{ baseline.deviationPercent | localizedNumber: 1 : true }}%
+                    } @else { — }
+                  </b>
+                </div>
+              }
+            </div>
+            @if (!baseline.current) {
+              <div class="callout warn">
+                <app-icon name="alert" [size]="18" />
+                <span>{{ 'monitoring.consumption.comparison.noCurrent' | translate }}</span>
+              </div>
+            }
+            @if (!baseline.isAvailable) {
+              <div class="callout warn">
+                <app-icon name="clock" [size]="18" />
+                <span>{{ 'monitoring.consumption.comparison.notAvailable' | translate: { min: minBaselinePeriods, missing: baseline.missingPeriods } }}</span>
+              </div>
+            } @else if (openPeriodUntil() && baseline.current) {
+              <p class="hint">{{ 'monitoring.consumption.comparison.dailyRateHint' | translate }}</p>
+            }
+          }
+        </div>
+      </aside>
+    </div>
+  }
+
+  <section class="card" aria-labelledby="consumption-table-title">
+    <div class="card-head">
+      <div>
+        <h3 id="consumption-table-title">{{ 'monitoring.consumption.table.title' | translate }}</h3>
+        <p>{{ 'monitoring.consumption.table.subtitle' | translate }}</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'monitoring.fields.location' | translate }}</th>
+            @for (type of consumptionTypes; track type) {
+              <th class="t-right">{{ 'monitoring.measurementTypes.' + type | translate }}</th>
+              <th class="t-right">{{ 'monitoring.consumption.table.deviation' | translate }}</th>
+            }
+            <th>{{ 'monitoring.fields.status' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.resource.resourceId) {
+            <tr class="selectable" [class.selected]="selectedRow()?.resource?.resourceId === row.resource.resourceId"
+                tabindex="0" [attr.aria-label]="'monitoring.consumption.table.select' | translate: { location: row.resource.name }"
+                (click)="selectResource(row.resource.resourceId)"
+                (keydown.enter)="selectResource(row.resource.resourceId)">
+              <td>
+                <b>{{ row.resource.name }}</b>
+                <span class="sub">{{ row.resource.description }}</span>
+              </td>
+              @for (type of consumptionTypes; track type) {
+                @if (row.byType[type]; as baseline) {
+                  <td class="mono t-right">
+                    @if (baseline.current; as current) { {{ current.totalValue | localizedNumber: 2 }} {{ current.unit }} } @else { — }
+                  </td>
+                  <td class="mono t-right" [class.warn]="(baseline.deviationPercent ?? 0) > 0">
+                    @if (baseline.deviationPercent !== null) { {{ baseline.deviationPercent | localizedNumber: 1 : true }}% } @else { — }
+                  </td>
+                } @else {
+                  <td class="mono t-right muted">{{ 'monitoring.consumption.table.noMeter' | translate }}</td>
+                  <td class="mono t-right muted">—</td>
+                }
+              }
+              <td>
+                <span class="badge" [class]="'badge ' + statusTones[row.status]">
+                  {{ 'monitoring.consumption.rowStatus.' + row.status | translate }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}

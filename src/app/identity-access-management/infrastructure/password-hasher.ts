@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { from, map, Observable } from 'rxjs';
 
 /**
  * Protects a password before it is stored or compared (SHA-256).
@@ -8,11 +7,8 @@ import { from, map, Observable } from 'rxjs';
  */
 @Injectable({ providedIn: 'root' })
 export class PasswordHasher {
-  hash(password: string): Observable<string> {
-    return from(crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))).pipe(
-      map((digest) =>
-        Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join(''),
-      ),
-    );
+  async hash(password: string): Promise<string> {
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+    return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
   }
 }

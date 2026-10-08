@@ -7,19 +7,19 @@ import { UserStatus } from './user-status.enum';
  * Profile data such as name or photo belongs to Profiles and Preferences, not to this context.
  */
 export class UserAccount implements BaseEntity {
-  private readonly _id: number;
+  private readonly _id: string;
   private readonly _email: string;
   private readonly _role: Role;
   private readonly _status: UserStatus;
 
-  constructor(userAccount: { id: number; email: string; role: Role; status: UserStatus }) {
+  constructor(userAccount: { id: string; email: string; role: Role; status: UserStatus }) {
     this._id = userAccount.id;
     this._email = userAccount.email;
     this._role = userAccount.role;
     this._status = userAccount.status;
   }
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 

@@ -44,13 +44,14 @@ export class ForgotPassword {
     this.store.clearError();
   }
 
-  protected submit(): void {
+  protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    this.store
-      .requestPasswordReset(new RequestPasswordResetCommand(this.form.getRawValue()))
-      .subscribe(() => void this.router.navigate(iamNav.resetPassword()));
+    const command = new RequestPasswordResetCommand(this.form.getRawValue());
+    if (await this.store.requestPasswordReset(command)) {
+      await this.router.navigate(iamNav.resetPassword());
+    }
   }
 }

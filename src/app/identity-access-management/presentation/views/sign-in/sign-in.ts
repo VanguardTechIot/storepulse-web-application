@@ -52,15 +52,15 @@ export class SignIn {
     this.store.clearError();
   }
 
-  protected submit(): void {
+  protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const { email, password, keepSignedIn } = this.form.getRawValue();
-    this.store
-      .signIn(new SignInCommand({ email, password }), keepSignedIn)
-      .subscribe(() => void this.router.navigateByUrl(this.returnUrl()));
+    if (await this.store.signIn(new SignInCommand({ email, password }), keepSignedIn)) {
+      await this.router.navigateByUrl(this.returnUrl());
+    }
   }
 
   /** Goes back to the page that required the session, accepting only in-app paths. */

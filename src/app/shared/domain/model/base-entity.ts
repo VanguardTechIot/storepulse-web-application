@@ -1,6 +1,6 @@
 /**
- * Base contract for every entity of the domain model.
+ * Common contract for every domain entity handled by the Web Application.
  */
 export interface BaseEntity {
-  id: number;
+  id: string;
 }

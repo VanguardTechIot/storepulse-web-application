@@ -6,7 +6,7 @@ import { UserStatus } from '../domain/model/user-status.enum';
 
 interface StoredSession {
   accessToken: string;
-  user: { id: number; email: string; role: Role; status: UserStatus };
+  user: { id: string; email: string; role: Role; status: UserStatus };
 }
 
 const storageKey = 'storepulse.iam.session';

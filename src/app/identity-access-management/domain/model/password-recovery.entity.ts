@@ -8,16 +8,16 @@ import { PasswordResetCode } from './password-reset-code.value-object';
 export class PasswordRecovery implements BaseEntity {
   static readonly validityInMinutes = 15;
 
-  private readonly _id: number;
-  private readonly _userId: number;
+  private readonly _id: string;
+  private readonly _userId: string;
   private readonly _code: PasswordResetCode;
   private readonly _requestedAt: Date;
   private readonly _expiresAt: Date;
   private readonly _used: boolean;
 
   constructor(passwordRecovery: {
-    id: number;
-    userId: number;
+    id: string;
+    userId: string;
     code: PasswordResetCode;
     requestedAt: Date;
     expiresAt: Date;
@@ -32,9 +32,9 @@ export class PasswordRecovery implements BaseEntity {
   }
 
   /** Starts a new recovery for a user with a freshly generated code. */
-  static generate(userId: number, now: Date = new Date()): PasswordRecovery {
+  static generate(userId: string, now: Date = new Date()): PasswordRecovery {
     return new PasswordRecovery({
-      id: 0,
+      id: '',
       userId,
       code: PasswordResetCode.generate(),
       requestedAt: now,
@@ -43,11 +43,11 @@ export class PasswordRecovery implements BaseEntity {
     });
   }
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 
-  get userId(): number {
+  get userId(): string {
     return this._userId;
   }
 
