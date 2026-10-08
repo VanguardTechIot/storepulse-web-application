@@ -1,0 +1,36 @@
+@if (open()) {
+  <div class="backdrop" (click)="busy() || cancelled.emit()"></div>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
+    <div class="modal-head">
+      <span class="li-ico" [class.ico-red]="tone() === 'danger'" [class.ico-cyan]="tone() === 'primary'">
+        <app-icon [name]="icon()" [size]="20" />
+      </span>
+      <div>
+        <h3 id="confirm-dialog-title">{{ title() }}</h3>
+        @if (message()) {
+          <p>{{ message() }}</p>
+        }
+      </div>
+      <button type="button" class="close icon-plain" [attr.aria-label]="'common.actions.close' | translate"
+              [disabled]="busy()" (click)="cancelled.emit()">
+        <app-icon name="x" />
+      </button>
+    </div>
+    <div class="modal-body">
+      <ng-content />
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-soft" [disabled]="busy()" (click)="cancelled.emit()">
+        {{ 'common.actions.cancel' | translate }}
+      </button>
+      <button #confirmButton type="button" class="btn"
+              [class.btn-primary]="tone() === 'primary'" [class.btn-danger]="tone() === 'danger'"
+              [disabled]="busy()" (click)="confirmed.emit()">
+        @if (busy()) {
+          <span class="spinner" aria-hidden="true"></span>
+        }
+        {{ confirmLabel() }}
+      </button>
+    </div>
+  </div>
+}

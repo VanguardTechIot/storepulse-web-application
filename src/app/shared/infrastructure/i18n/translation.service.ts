@@ -26,8 +26,14 @@ export class TranslationService {
     this.lang.set(lang);
   }
 
-  /** Lee la clave en el idioma activo. Si falta, devuelve la clave para detectarla rápido. */
-  t(key: string): string {
-    return this.dictionaries()[this.lang()]?.[key] ?? key;
+  /**
+   * Lee la clave en el idioma activo. Si falta, devuelve la clave para detectarla rápido.
+   * Los parámetros opcionales reemplazan los marcadores {{nombre}} del texto.
+   */
+  t(key: string, params?: Record<string, string | number>): string {
+    const text = this.dictionaries()[this.lang()]?.[key] ?? key;
+    return params
+      ? text.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, name: string) => String(params[name] ?? match))
+      : text;
   }
 }
