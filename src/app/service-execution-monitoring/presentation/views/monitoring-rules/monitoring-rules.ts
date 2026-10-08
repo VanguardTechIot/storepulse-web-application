@@ -15,6 +15,7 @@ import { MonitoringView } from '../monitoring-view';
  */
 @Component({
   selector: 'app-monitoring-rules',
+  host: { class: 'monitoring-page' },
   imports: [
     Icon,
     ViewState,

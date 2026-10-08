@@ -14,9 +14,9 @@ import { MonitoringView } from '../monitoring-view';
 type StateFilter = 'ALL' | Exclude<ResourceMonitoringState, 'NORMAL'>;
 
 const STATE_TONES: Record<ResourceMonitoringState, string> = {
-  NORMAL: 'b-green',
-  OPEN_ALERT: 'b-red',
-  NO_MONITORING: 'b-violet',
+  NORMAL: 'badge--success',
+  OPEN_ALERT: 'badge--danger',
+  NO_MONITORING: 'badge--violet',
 };
 
 const MEASUREMENTS_PAGE_SIZE = 10;
@@ -26,6 +26,7 @@ const MEASUREMENTS_PAGE_SIZE = 10;
  */
 @Component({
   selector: 'app-telemetry-dashboard',
+  host: { class: 'monitoring-page' },
   imports: [
     RouterLink,
     Icon,

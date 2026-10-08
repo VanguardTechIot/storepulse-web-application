@@ -3,9 +3,9 @@ import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.p
 import { AlertStatus } from '../../../domain/model/alert.entity';
 
 const STATUS_TONES: Record<AlertStatus, string> = {
-  ACTIVE: 'b-red',
-  ACKNOWLEDGED: 'b-blue',
-  RESOLVED: 'b-green',
+  ACTIVE: 'badge--danger',
+  ACKNOWLEDGED: 'badge--info',
+  RESOLVED: 'badge--success',
 };
 
 /**

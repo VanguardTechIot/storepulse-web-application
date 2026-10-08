@@ -22,9 +22,9 @@ interface ConsumptionRow {
 }
 
 const ROW_STATUS_TONES: Record<RowStatus, string> = {
-  WITH_BASELINE: 'b-green',
-  NO_BASELINE: 'b-gray',
-  NO_DATA: 'b-violet',
+  WITH_BASELINE: 'badge--success',
+  NO_BASELINE: 'badge--neutral',
+  NO_DATA: 'badge--violet',
 };
 
 const HISTORY_PERIODS = 12;
@@ -34,6 +34,7 @@ const HISTORY_PERIODS = 12;
  */
 @Component({
   selector: 'app-consumption',
+  host: { class: 'monitoring-page' },
   imports: [
     Icon,
     ViewState,

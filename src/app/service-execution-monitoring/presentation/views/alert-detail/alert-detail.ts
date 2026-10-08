@@ -23,6 +23,7 @@ export const RESOLUTION_NOTE_MAX_LENGTH = 500;
  */
 @Component({
   selector: 'app-alert-detail',
+  host: { class: 'monitoring-page' },
   imports: [
     RouterLink,
     UpperCasePipe,

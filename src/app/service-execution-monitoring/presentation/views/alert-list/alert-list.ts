@@ -24,6 +24,7 @@ const ALERTS_PAGE_SIZE = 8;
  */
 @Component({
   selector: 'app-alert-list',
+  host: { class: 'monitoring-page' },
   imports: [
     RouterLink,
     UpperCasePipe,
