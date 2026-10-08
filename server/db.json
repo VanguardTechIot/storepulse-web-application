@@ -2782,5 +2782,24 @@
       "periodStart": "2026-09-01T05:00:00Z",
       "periodEnd": "2026-10-01T05:00:00Z"
     }
-  ]
+  ],
+  "users": [
+    {
+      "id": "usr-001",
+      "fullName": "Carmen Mendoza Ríos",
+      "email": "carmen.mendoza@galeriacentral.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "GALLERY_ADMINISTRATOR",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-002",
+      "fullName": "Luis Paredes Soto",
+      "email": "luis.paredes@galeriacentral.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "TENANT",
+      "status": "ACTIVE"
+    }
+  ],
+  "passwordRecoveries": []
 }

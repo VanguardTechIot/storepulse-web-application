@@ -25,19 +25,7 @@
       <option>Sep 2026</option>
     </select>
 
-    <div class="lang-switch" role="group" aria-label="Idioma">
-      @for (lang of languages; track lang.code) {
-        <button
-          type="button"
-          class="lang-switch__btn"
-          [class.is-active]="i18n.lang() === lang.code"
-          [attr.aria-pressed]="i18n.lang() === lang.code"
-          (click)="switchLanguage(lang.code)"
-        >
-          {{ lang.label }}
-        </button>
-      }
-    </div>
+    <app-language-switcher />
 
     <button type="button" class="icon-btn icon-btn--bell" [attr.aria-label]="i18n.t('toolbar.notifications')">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -48,12 +36,6 @@
       }
     </button>
 
-    <div class="user">
-      <span class="user__avatar">{{ user.initials }}</span>
-      <span class="user__text">
-        <strong>{{ user.name }}</strong>
-        <small>{{ user.role }}</small>
-      </span>
-    </div>
+    <app-authentication-section />
   </div>
 </header>

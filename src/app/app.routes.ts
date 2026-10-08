@@ -1,11 +1,26 @@
 import { Routes } from '@angular/router';
-import { MainLayout } from './shared/presentation/views/main-layout/main-layout';
+import {
+  authenticationGuard,
+  guestGuard,
+} from './identity-access-management/presentation/iam.guards';
 import { ComingSoon } from './shared/presentation/views/coming-soon/coming-soon';
 
 export const routes: Routes = [
+  // Public area: welcome, Log In, registration and password recovery.
+  {
+    path: 'iam',
+    canActivate: [guestGuard],
+    loadChildren: () =>
+      import('./identity-access-management/identity-access-management.routes').then(
+        (m) => m.IDENTITY_ACCESS_MANAGEMENT_ROUTES,
+      ),
+  },
+  // Gallery administrator area: requires an active session.
   {
     path: '',
-    component: MainLayout,
+    canActivate: [authenticationGuard],
+    loadComponent: () =>
+      import('./shared/presentation/views/main-layout/main-layout').then((m) => m.MainLayout),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       { path: 'dashboard', component: ComingSoon, data: { titleKey: 'nav.dashboard' } },
