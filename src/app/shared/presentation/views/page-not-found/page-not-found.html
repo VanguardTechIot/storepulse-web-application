@@ -1,0 +1,7 @@
+<main class="not-found" id="main-content">
+  <div class="top"><app-language-switcher /></div>
+  <span class="icon" aria-hidden="true"><mat-icon>travel_explore</mat-icon></span>
+  <h1>{{ 'shared.not-found.title' | translate }}</h1>
+  <p>{{ 'shared.not-found.description' | translate }}</p>
+  <a matButton="filled" [routerLink]="appNav.home">{{ 'shared.not-found.action' | translate }}</a>
+</main>

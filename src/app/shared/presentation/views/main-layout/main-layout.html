@@ -1,0 +1,64 @@
+<a class="skip-link" href="#main-content" (click)="skipToContent($event, content)">
+  {{ 'shared.a11y.skip-to-content' | translate }}
+</a>
+
+<mat-sidenav-container class="shell">
+  <mat-sidenav
+    #sidenav
+    class="sidenav"
+    [mode]="isHandset() ? 'over' : 'side'"
+    [opened]="!isHandset()"
+  >
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><mat-icon>monitor_heart</mat-icon></span>
+      <span class="brand-name">Store<span>Pulse</span></span>
+    </div>
+
+    <mat-chip-set class="scope">
+      <mat-chip>
+        <mat-icon matChipAvatar aria-hidden="true">apartment</mat-icon>
+        {{ 'shared.nav.scope' | translate }}
+      </mat-chip>
+    </mat-chip-set>
+
+    <mat-nav-list class="nav" [attr.aria-label]="'shared.nav.aria-label' | translate">
+      <div mat-subheader class="nav-label">{{ 'shared.nav.label' | translate }}</div>
+      @for (item of navigation; track item.label) {
+        <a
+          mat-list-item
+          [routerLink]="item.link"
+          routerLinkActive
+          #link="routerLinkActive"
+          [activated]="link.isActive"
+          ariaCurrentWhenActive="page"
+          (click)="isHandset() && sidenav.close()"
+        >
+          <mat-icon matListItemIcon aria-hidden="true">{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label | translate }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <footer class="side-footer">
+      <span>{{ 'shared.footer.copyright' | translate }}</span>
+      <a [routerLink]="appNav.termsAndConditions">{{ 'shared.footer.terms' | translate }}</a>
+    </footer>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="topbar">
+      @if (isHandset()) {
+        <button matIconButton type="button" [attr.aria-label]="'shared.nav.toggle' | translate" (click)="sidenav.toggle()">
+          <mat-icon aria-hidden="true">menu</mat-icon>
+        </button>
+      }
+      <span class="spacer"></span>
+      <app-language-switcher />
+      <app-authentication-section />
+    </mat-toolbar>
+
+    <main #content id="main-content" class="content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+.callout {
+  --mat-card-outlined-outline-color: transparent;
+  --mat-card-outlined-container-shape: 10px;
+}
+
+.callout-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.mat-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.info {
+  --mat-card-outlined-container-color: var(--sp-blue-50);
+  color: var(--sp-blue-text);
+}
+
+.ok {
+  --mat-card-outlined-container-color: var(--sp-green-50);
+  color: var(--sp-green-text);
+}
+
+.warn {
+  --mat-card-outlined-container-color: var(--sp-amber-50);
+  color: var(--sp-amber-text);
+}
+
+.danger {
+  --mat-card-outlined-container-color: var(--sp-red-50);
+  color: var(--sp-red-text);
+}

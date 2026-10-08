@@ -1,0 +1,123 @@
+.shell {
+  --mat-sidenav-content-background-color: var(--sp-bg);
+  --mat-sidenav-container-background-color: var(--sp-card);
+  --mat-sidenav-container-shape: 0;
+  --mat-sidenav-container-width: 260px;
+  --mat-sidenav-container-divider-color: var(--sp-border);
+  min-height: 100vh;
+}
+
+.sidenav {
+  padding: 20px 16px 16px;
+}
+
+.sidenav ::ng-deep .mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--sp-cyan);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-name {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.brand-name span {
+  color: var(--sp-cyan);
+}
+
+.scope {
+  --mat-chip-container-height: 26px;
+  --mat-chip-container-shape-radius: 6px;
+  --mat-chip-outline-color: var(--sp-border);
+  --mat-chip-label-text-size: 11px;
+  --mat-chip-label-text-weight: 700;
+  --mat-chip-label-text-color: var(--sp-slate);
+  text-transform: uppercase;
+}
+
+.nav {
+  --mat-list-active-indicator-color: var(--sp-cyan-25);
+  --mat-list-active-indicator-shape: var(--sp-radius);
+  --mat-list-list-item-one-line-container-height: 44px;
+  --mat-list-list-item-label-text-size: 14px;
+  --mat-list-list-item-label-text-color: var(--sp-slate);
+  --mat-list-list-item-leading-icon-color: var(--sp-slate);
+  padding: 0;
+}
+
+.nav .mdc-list-item--activated {
+  --mat-list-list-item-label-text-color: var(--sp-cyan-text);
+  --mat-list-list-item-leading-icon-color: var(--sp-cyan-text);
+  --mat-list-list-item-label-text-weight: 700;
+}
+
+.nav-label {
+  margin: 0;
+  padding: 12px 8px 4px;
+  border-top: 1px solid var(--sp-border);
+  color: var(--sp-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.side-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  color: var(--sp-muted);
+  font-size: 11px;
+}
+
+.topbar {
+  --mat-toolbar-container-background-color: var(--sp-card);
+  --mat-toolbar-standard-height: 64px;
+  --mat-toolbar-mobile-height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  gap: 16px;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--sp-border);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.content {
+  padding: 32px;
+}
+
+.content:focus {
+  outline: none;
+}
+
+@media (max-width: 959.98px) {
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .content {
+    padding: 24px 16px;
+  }
+}
