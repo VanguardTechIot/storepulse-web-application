@@ -68,3 +68,22 @@ button {
 .badge--danger { color: var(--sp-danger); background: var(--sp-danger-soft); }
 .badge--violet { color: var(--sp-violet); background: var(--sp-violet-soft); }
 .badge--neutral { color: var(--sp-text-muted); background: #f3f4f6; }
+
+/* Foco visible para navegación con teclado (a11y) */
+:focus-visible {
+  outline: 2px solid var(--sp-primary);
+  outline-offset: 2px;
+}
+
+/* Texto solo para lectores de pantalla (a11y) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

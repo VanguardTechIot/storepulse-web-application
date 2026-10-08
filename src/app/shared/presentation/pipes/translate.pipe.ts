@@ -1,7 +1,10 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { TranslationService } from '../../infrastructure/i18n/translation.service';
+import {
+  TranslationParams,
+  TranslationService,
+} from '../../infrastructure/i18n/translation.service';
 
-/** Uso en templates: {{ 'nav.billing' | translate }} o {{ 'clave' | translate: { count: 2 } }} */
+/** Uso en templates: {{ 'nav.billing' | translate }} o {{ 'iam.x' | translate: { count: 8 } }} */
 @Pipe({
   name: 'translate',
   pure: false,
@@ -10,7 +13,7 @@ import { TranslationService } from '../../infrastructure/i18n/translation.servic
 export class TranslatePipe implements PipeTransform {
   private readonly i18n: TranslationService = inject(TranslationService);
 
-  transform(key: string, params?: Record<string, string | number>): string {
+  transform(key: string, params?: TranslationParams): string {
     return this.i18n.t(key, params);
   }
 }

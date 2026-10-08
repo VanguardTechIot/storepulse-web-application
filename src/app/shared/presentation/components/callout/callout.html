@@ -1,0 +1,6 @@
+<mat-card appearance="outlined" [class]="'callout ' + type()">
+  <mat-card-content class="callout-content">
+    <mat-icon aria-hidden="true">{{ icon() }}</mat-icon>
+    <span><ng-content /></span>
+  </mat-card-content>
+</mat-card>

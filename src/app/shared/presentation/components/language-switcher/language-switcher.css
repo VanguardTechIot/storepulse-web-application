@@ -1,0 +1,15 @@
+:host {
+  --mat-button-toggle-height: 32px;
+  --mat-button-toggle-shape: 8px;
+  --mat-button-toggle-label-text-size: 12px;
+  --mat-button-toggle-label-text-weight: 700;
+  --mat-button-toggle-text-color: var(--sp-text-muted);
+  --mat-button-toggle-divider-color: var(--sp-border);
+  --mat-button-toggle-selected-state-background-color: var(--sp-text);
+  --mat-button-toggle-selected-state-text-color: #fff;
+  display: inline-flex;
+}
+
+.mat-button-toggle-group {
+  border-color: var(--sp-border);
+}
