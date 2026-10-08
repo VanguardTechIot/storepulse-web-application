@@ -36,8 +36,19 @@ export const routes: Routes = [
             (m) => m.MONITORING_ROUTES,
           ),
       },
-      { path: 'commercial-units', component: ComingSoon, data: { titleKey: 'nav.commercial_units' } },
-      { path: 'devices', component: ComingSoon, data: { titleKey: 'nav.devices' } },
+      {
+        path: 'commercial-units',
+        component: ComingSoon,
+        data: { titleKey: 'nav.commercial_units' },
+      },
+      {
+        path: 'devices',
+        loadComponent: () =>
+          import('./resource-asset-management/presentation/views/iot-device-list/iot-device-list').then(
+            (m) => m.IoTDeviceList,
+          ),
+        data: { titleKey: 'nav.devices' },
+      },
       { path: 'utility-meters', component: ComingSoon, data: { titleKey: 'nav.utility_meters' } },
       { path: 'security', component: ComingSoon, data: { titleKey: 'nav.security' } },
       { path: 'communication', component: ComingSoon, data: { titleKey: 'nav.communication' } },
