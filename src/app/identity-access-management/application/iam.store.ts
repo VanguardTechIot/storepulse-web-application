@@ -74,6 +74,21 @@ export class IamStore {
     });
   }
 
+  /**
+   * The sign-in email is also the profile email (Profiles and Preferences). When the profile
+   * changes it, the session follows so the account shows the new address.
+   */
+  syncAccountEmail(email: string): void {
+    const user = this.currentUserState();
+    if (!user) return;
+    const updated = new UserAccount({ id: user.id, email, role: user.role, status: user.status });
+    const session = this.sessionStorage.load();
+    if (session) {
+      this.sessionStorage.update(new UserSession({ user: updated, accessToken: session.accessToken }));
+    }
+    this.currentUserState.set(updated);
+  }
+
   clearError(): void {
     this.error.set(null);
   }
