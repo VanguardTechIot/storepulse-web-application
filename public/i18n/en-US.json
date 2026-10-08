@@ -447,5 +447,12 @@
   "devices.types.COMMON_AREA_NODE": "Common area node",
   "devices.bufferedEvents": "Offline · buffering · {{count}} events held",
   "devices.emptyTitle": "No results",
-  "devices.emptyMessage": "No device matches the filter or the search."
+  "devices.emptyMessage": "No device matches the filter or the search.",
+  "devices.fields.action": "Action",
+  "devices.actions.deactivate": "Deactivate",
+  "devices.actions.reactivate": "Reactivate",
+  "devices.deactivate.title": "Deactivate {{id}}?",
+  "devices.deactivate.warning": "Data reception will stop and {{stand}} will be left without monitoring until you reactivate the device.",
+  "devices.deactivate.reason": "Reason",
+  "devices.deactivate.confirm": "Deactivate device"
 }

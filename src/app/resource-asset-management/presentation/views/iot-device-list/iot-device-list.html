@@ -79,6 +79,7 @@
             <th>{{ 'devices.fields.status' | translate }}</th>
             <th>{{ 'devices.fields.connectivity' | translate }}</th>
             <th>{{ 'devices.fields.voltage' | translate }}</th>
+            <th class="t-right">{{ 'devices.fields.action' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -115,6 +116,17 @@
                 <td class="mono">
                   {{ row.device.supplyVoltage !== null ? row.device.supplyVoltage.toFixed(2) + ' V' : '—' }}
                 </td>
+                <td class="t-right">
+                  @if (row.device.isActive) {
+                    <button type="button" class="btn btn-soft btn-sm" (click)="openDeactivation(row)">
+                      {{ 'devices.actions.deactivate' | translate }}
+                    </button>
+                  } @else {
+                    <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="reactivate(row)">
+                      <app-icon name="refresh" [size]="14" />{{ 'devices.actions.reactivate' | translate }}
+                    </button>
+                  }
+                </td>
               </tr>
             }
           </tbody>
@@ -122,5 +134,26 @@
       </div>
       <app-paginator [total]="store.filteredRows().length" [pageSize]="pageSize" [(page)]="page" />
     }
+    <app-confirm-dialog
+      [open]="rowToDeactivate() !== null"
+      [title]="'devices.deactivate.title' | translate: { id: rowToDeactivate()?.device?.serialNumber ?? '' }"
+      [message]="rowToDeactivate()?.resource?.name ?? ''"
+      [confirmLabel]="'devices.deactivate.confirm' | translate"
+      tone="danger"
+      icon="chip"
+      [busy]="busy()"
+      (confirmed)="confirmDeactivation()"
+      (cancelled)="closeDeactivation()"
+    >
+      <div class="callout warn">
+        <app-icon name="alert" />
+        <span>{{ 'devices.deactivate.warning' | translate: { stand: rowToDeactivate()?.resource?.name ?? '' } }}</span>
+      </div>
+      <label class="field">
+        <span>{{ 'devices.deactivate.reason' | translate }}</span>
+        <input class="input" type="text" [value]="deactivationReason()"
+               (input)="deactivationReason.set($any($event.target).value)" />
+      </label>
+    </app-confirm-dialog>
   </section>
 }

@@ -447,5 +447,12 @@
   "devices.types.COMMON_AREA_NODE": "Nodo de área común",
   "devices.bufferedEvents": "Offline · buffering · {{count}} eventos retenidos",
   "devices.emptyTitle": "Sin resultados",
-  "devices.emptyMessage": "Ningún dispositivo coincide con el filtro o la búsqueda."
+  "devices.emptyMessage": "Ningún dispositivo coincide con el filtro o la búsqueda.",
+  "devices.fields.action": "Acción",
+  "devices.actions.deactivate": "Desactivar",
+  "devices.actions.reactivate": "Reactivar",
+  "devices.deactivate.title": "¿Desactivar {{id}}?",
+  "devices.deactivate.warning": "Se detendrá la recepción de datos y {{stand}} quedará sin monitoreo hasta que reactives el dispositivo.",
+  "devices.deactivate.reason": "Motivo",
+  "devices.deactivate.confirm": "Desactivar dispositivo"
 }
