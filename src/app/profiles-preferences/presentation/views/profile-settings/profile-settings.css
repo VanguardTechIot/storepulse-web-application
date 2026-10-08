@@ -1,0 +1,69 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  container-type: inline-size;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-head h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.page-head p {
+  margin: 4px 0 0;
+  color: var(--sp-text-muted);
+}
+
+.sign-out {
+  margin-left: auto;
+  --mat-button-outlined-label-text-color: var(--sp-danger);
+  --mat-button-outlined-outline-color: var(--sp-danger);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: var(--sp-text-muted);
+  text-align: center;
+}
+
+.state b {
+  color: var(--sp-text);
+}
+
+.state-icon {
+  color: var(--sp-danger);
+}
+
+@container (max-width: 879.98px) {
+  .profile-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

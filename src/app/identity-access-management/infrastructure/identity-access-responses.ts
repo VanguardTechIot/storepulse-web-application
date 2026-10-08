@@ -8,15 +8,28 @@ export interface UserAccountResource extends BaseResource {
 }
 
 /**
- * User record stored by the local JSON API. It also keeps the registration name and the password
- * hash because json-server has no server-side logic; the real REST API never returns them.
+ * User record stored by the local JSON API. It also keeps the password hash because json-server
+ * has no server-side logic; the real REST API never returns it.
  */
 export interface UserResource extends UserAccountResource {
-  fullName: string;
   passwordHash: string;
 }
 
 export type SignUpRequest = Omit<UserResource, 'id'>;
+
+/**
+ * Profile created together with the account. Only the local JSON API needs it: the REST API
+ * creates it in Profiles and Preferences on its own. Its id is the user id, so
+ * `/users/{userId}/profile` maps onto it.
+ */
+export interface ProfileCreationRequest extends BaseResource {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string | null;
+  photoUrl: string | null;
+}
 
 export interface PasswordRecoveryResource extends BaseResource {
   userId: string;

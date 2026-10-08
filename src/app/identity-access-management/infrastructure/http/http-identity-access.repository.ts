@@ -15,12 +15,18 @@ import { UserSession } from '../../domain/model/user-session.value-object';
 import { UserStatus } from '../../domain/model/user-status.enum';
 import { IdentityAccessRepository } from '../../domain/repository/identity-access.repository';
 import { PasswordRecoveryAssembler, UserAccountAssembler } from '../identity-access-assemblers';
-import { PasswordRecoveryResource, SignUpRequest, UserResource } from '../identity-access-responses';
+import {
+  PasswordRecoveryResource,
+  ProfileCreationRequest,
+  SignUpRequest,
+  UserResource,
+} from '../identity-access-responses';
 import { PasswordHasher } from '../password-hasher';
 
 const apiUrl = environment.platformProviderApiBaseUrl;
 const usersUrl = `${apiUrl}${environment.platformProviderUsersEndpointPath}`;
 const passwordRecoveriesUrl = `${apiUrl}${environment.platformProviderPasswordRecoveriesEndpointPath}`;
+const profilesUrl = `${apiUrl}${environment.platformProviderProfilesEndpointPath}`;
 
 /**
  * Implementación HTTP del repositorio sobre el servidor de datos local (json-server).
@@ -53,13 +59,15 @@ export class HttpIdentityAccessRepository implements IdentityAccessRepository {
       throw new IamError(IamErrorCode.EmailAlreadyRegistered);
     }
     const request: SignUpRequest = {
-      fullName: command.fullName.trim(),
       email,
       passwordHash: await this.passwordHasher.hash(command.password),
       role: Role.GalleryAdministrator,
       status: UserStatus.Active,
     };
     const user = await firstValueFrom(this.http.post<UserResource>(usersUrl, request));
+    await firstValueFrom(
+      this.http.post(profilesUrl, this.toProfileCreationRequest(user, command.fullName)),
+    );
     return this.toSession(user);
   }
 
@@ -113,6 +121,23 @@ export class HttpIdentityAccessRepository implements IdentityAccessRepository {
       this.http.get<PasswordRecoveryResource[]>(passwordRecoveriesUrl, { params }),
     );
     return latest ? this.passwordRecoveryAssembler.toEntityFromResource(latest) : null;
+  }
+
+  /**
+   * The REST API creates the profile in Profiles and Preferences when a user signs up. The first
+   * word of the registration name becomes the first name; the user can correct it in My profile.
+   */
+  private toProfileCreationRequest(user: UserResource, fullName: string): ProfileCreationRequest {
+    const [firstName = '', ...lastNames] = fullName.trim().split(/\s+/);
+    return {
+      id: user.id,
+      userId: user.id,
+      firstName,
+      lastName: lastNames.join(' '),
+      email: user.email,
+      phoneNumber: null,
+      photoUrl: null,
+    };
   }
 
   private toSession(user: UserResource): UserSession {

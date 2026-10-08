@@ -35,6 +35,17 @@ export class IamSessionStorage {
     }
   }
 
+  /** Rewrites the stored session in the storage it already lives in. */
+  update(session: UserSession): void {
+    let keepSignedIn = false;
+    try {
+      keepSignedIn = localStorage.getItem(storageKey) !== null;
+    } catch {
+      // Storage may be unavailable (private mode); save() then keeps the session in memory only.
+    }
+    this.save(session, keepSignedIn);
+  }
+
   load(): UserSession | null {
     try {
       const raw = sessionStorage.getItem(storageKey) ?? localStorage.getItem(storageKey);

@@ -1,0 +1,47 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <h2 matCardTitle>{{ 'profiles.subscription.title' | translate }}</h2>
+    <a matButton class="manage" [routerLink]="store.manageSubscriptionRoute">
+      {{ 'profiles.subscription.manage' | translate }}
+    </a>
+  </mat-card-header>
+
+  <mat-card-content class="content">
+    @if (store.subscription(); as subscription) {
+      <dl class="summary">
+        <div>
+          <dt>{{ 'profiles.subscription.plan' | translate }}</dt>
+          <dd>{{ 'profiles.subscription.plans.' + subscription.plan | translate }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'profiles.subscription.status' | translate }}</dt>
+          <dd>
+            <span class="badge" [class]="statusTones[subscription.status]">
+              {{ 'profiles.subscription.statuses.' + subscription.status | translate }}
+            </span>
+          </dd>
+        </div>
+        <div>
+          <dt>{{ 'profiles.subscription.expires_at' | translate }}</dt>
+          <dd>{{ subscription.expiresAt | localizedDate: 'date' }}</dd>
+        </div>
+      </dl>
+
+      @if (subscription.isExpired()) {
+        <app-callout type="danger" icon="event_busy">
+          {{ 'profiles.subscription.expired' | translate: { date: (subscription.expiresAt | localizedDate: 'date') } }}
+        </app-callout>
+      } @else if (subscription.isExpiringSoon() && !subscription.autoRenewal) {
+        <app-callout type="warn" icon="schedule">
+          {{ 'profiles.subscription.expiring_soon' | translate: { date: (subscription.expiresAt | localizedDate: 'date') } }}
+        </app-callout>
+      } @else if (subscription.autoRenewal) {
+        <app-callout [type]="subscription.isExpiringSoon() ? 'warn' : 'info'" icon="schedule">
+          {{ 'profiles.subscription.next_renewal' | translate: { date: (subscription.expiresAt | localizedDate: 'date') } }}
+        </app-callout>
+      }
+    } @else {
+      <p class="empty">{{ 'profiles.subscription.none' | translate }}</p>
+    }
+  </mat-card-content>
+</mat-card>

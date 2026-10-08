@@ -25,6 +25,11 @@
       </mat-list-item>
     </mat-list>
     <mat-divider />
+    <a mat-menu-item [routerLink]="appNav.profile">
+      <mat-icon aria-hidden="true">person</mat-icon>
+      <span>{{ 'iam.account_menu.my_profile' | translate }}</span>
+    </a>
+    <mat-divider />
     <button mat-menu-item class="sign-out" (click)="signOut()">
       <mat-icon aria-hidden="true">logout</mat-icon>
       <span>{{ 'iam.account_menu.sign_out' | translate }}</span>

@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
+mat-card-header {
+  padding: 20px 24px 0;
+}
+
+h2[matCardTitle] {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+p[matCardSubtitle] {
+  margin: 2px 0 0;
+}
+
+mat-card-content {
+  padding: 16px 24px 24px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@container (max-width: 599.98px) {
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

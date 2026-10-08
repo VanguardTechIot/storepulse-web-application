@@ -1,0 +1,26 @@
+:host {
+  --avatar-size: 112px;
+  display: inline-flex;
+}
+
+.avatar {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar--default {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sp-bg);
+  border: 2px dashed #9ca3af;
+  color: var(--sp-text-muted);
+}
+
+.avatar--default .mat-icon {
+  width: calc(var(--avatar-size) * 0.46);
+  height: calc(var(--avatar-size) * 0.46);
+  font-size: calc(var(--avatar-size) * 0.46);
+}

@@ -2783,10 +2783,38 @@
       "periodEnd": "2026-10-01T05:00:00Z"
     }
   ],
+  "profiles": [
+    {
+      "id": "usr-001",
+      "userId": "usr-001",
+      "firstName": "Carmen",
+      "lastName": "Mendoza Ríos",
+      "email": "carmen.mendoza@galeriacentral.pe",
+      "phoneNumber": "+51 987 654 321",
+      "photoUrl": null
+    },
+    {
+      "id": "usr-002",
+      "userId": "usr-002",
+      "firstName": "Luis",
+      "lastName": "Paredes Soto",
+      "email": "luis.paredes@galeriacentral.pe",
+      "phoneNumber": null,
+      "photoUrl": null
+    },
+    {
+      "id": "1mBk5FA",
+      "userId": "1mBk5FA",
+      "firstName": "Renzo",
+      "lastName": "Araujo",
+      "email": "araujorenzo@example.com",
+      "phoneNumber": "950147137",
+      "photoUrl": null
+    }
+  ],
   "users": [
     {
       "id": "usr-001",
-      "fullName": "Carmen Mendoza Ríos",
       "email": "carmen.mendoza@galeriacentral.pe",
       "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
       "role": "GALLERY_ADMINISTRATOR",
@@ -2794,11 +2822,17 @@
     },
     {
       "id": "usr-002",
-      "fullName": "Luis Paredes Soto",
       "email": "luis.paredes@galeriacentral.pe",
       "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
       "role": "TENANT",
       "status": "ACTIVE"
+    },
+    {
+      "email": "araujorenzo@example.com",
+      "passwordHash": "7a9e5031ae5c4b67346917e22ba987be0b8d514564283b64cab4a1e1d4dd1cd3",
+      "role": "GALLERY_ADMINISTRATOR",
+      "status": "ACTIVE",
+      "id": "1mBk5FA"
     }
   ],
   "passwordRecoveries": []

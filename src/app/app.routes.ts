@@ -30,6 +30,13 @@ export const routes: Routes = [
           import('./utility-billing/utility-billing.routes').then((m) => m.UTILITY_BILLING_ROUTES),
       },
       {
+        path: 'profile',
+        loadChildren: () =>
+          import('./profiles-preferences/profiles-preferences.routes').then(
+            (m) => m.PROFILES_PREFERENCES_ROUTES,
+          ),
+      },
+      {
         path: 'monitoring',
         loadChildren: () =>
           import('./service-execution-monitoring/presentation/monitoring.routes').then(

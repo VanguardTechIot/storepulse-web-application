@@ -4,13 +4,15 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
+import { appNav } from '../../../../shared/routing/app-nav';
 import { IamStore } from '../../../application/iam.store';
 import { iamNav } from '../../iam.nav';
 
 /**
- * Account menu of the top bar (mock-up 04b): who is signed in and the Log Out action (US-04).
+ * Account menu of the top bar (mock-up 04b): who is signed in, the way to My profile and the
+ * Log Out action (US-04).
  */
 @Component({
   selector: 'app-authentication-section',
@@ -20,6 +22,7 @@ import { iamNav } from '../../iam.nav';
     MatIconModule,
     MatListModule,
     MatMenuModule,
+    RouterLink,
     TranslatePipe,
   ],
   templateUrl: './authentication-section.html',
@@ -29,6 +32,7 @@ export class AuthenticationSection {
   private readonly store = inject(IamStore);
   private readonly router = inject(Router);
 
+  protected readonly appNav = appNav;
   protected readonly user = this.store.currentUser;
   protected readonly initials = computed(
     () => this.user()?.email.slice(0, 2).toUpperCase() ?? '',
