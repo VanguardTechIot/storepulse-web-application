@@ -2242,7 +2242,7 @@
         "value": 20,
         "operator": "LESS_THAN"
       },
-      "enabled": false,
+      "enabled": true,
       "createdAt": "2026-04-02T15:08:00Z"
     },
     {
@@ -2273,9 +2273,9 @@
       "id": "alr-0418",
       "ruleId": "rul-002",
       "measurementId": "msr-00120",
-      "status": "ACTIVE",
+      "status": "ACKNOWLEDGED",
       "createdAt": "2026-10-08T09:00:09Z",
-      "acknowledgedAt": null,
+      "acknowledgedAt": "2026-10-08T17:46:37.778Z",
       "resolvedAt": null,
       "resolutionNote": null
     },
