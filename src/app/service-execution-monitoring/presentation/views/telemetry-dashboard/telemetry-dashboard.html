@@ -197,9 +197,9 @@
                 <td class="mono t-right"><b>{{ row.measurement.value | localizedNumber: 3 }}</b> {{ row.measurement.unit }}</td>
                 <td>
                   @if (row.matchedRule; as rule) {
-                    <span class="badge b-amber">{{ 'monitoring.overview.measurements.exceeds' | translate: { rule: rule.name } }}</span>
+                    <span class="badge badge--warning">{{ 'monitoring.overview.measurements.exceeds' | translate: { rule: rule.name } }}</span>
                   } @else {
-                    <span class="badge b-gray">{{ 'monitoring.overview.measurements.withinThreshold' | translate }}</span>
+                    <span class="badge badge--neutral">{{ 'monitoring.overview.measurements.withinThreshold' | translate }}</span>
                   }
                 </td>
               </tr>
