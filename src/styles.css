@@ -1,1 +1,89 @@
-/* You can add global styles to this file, and also import other style files */
+/* StorePulse design tokens (5.1 Style Guidelines). Text colors use the WCAG 2.1 AA variants
+   documented in mockups/web/trazabilidad.md. */
+:root {
+  --sp-navy: #0f172a;
+  --sp-cyan: #0ea5e9;
+  --sp-cyan-50: #e0f2fe;
+  --sp-cyan-25: #f0f9ff;
+  --sp-cyan-text: #0369a1;
+  --sp-slate: #334155;
+  --sp-muted: #5b6b82;
+  --sp-muted-2: #94a3b8;
+  --sp-bg: #f8fafc;
+  --sp-card: #ffffff;
+  --sp-border: #e2e8f0;
+  --sp-hover: #f1f5f9;
+  --sp-red: #ef4444;
+  --sp-red-50: #fef2f2;
+  --sp-red-text: #b91c1c;
+  --sp-green: #10b981;
+  --sp-green-50: #ecfdf5;
+  --sp-green-text: #047857;
+  --sp-blue-50: #eff6ff;
+  --sp-blue-text: #1d4ed8;
+  --sp-amber-50: #fffbeb;
+  --sp-amber-text: #b45309;
+  --sp-radius: 8px;
+  --sp-radius-lg: 12px;
+  --sp-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --sp-font: 'Plus Jakarta Sans', sans-serif;
+  --sp-font-data: 'Inter', sans-serif;
+  --sp-font-mono: 'JetBrains Mono', monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--sp-font);
+  color: var(--sp-navy);
+  background: var(--sp-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--sp-cyan-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sp-cyan);
+  outline-offset: 2px;
+}
+
+/* ---------- Accessibility ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  padding: 8px 16px;
+  border-radius: var(--sp-radius);
+  background: var(--sp-navy);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
