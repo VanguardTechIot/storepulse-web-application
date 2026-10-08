@@ -1,0 +1,167 @@
+﻿<div class="page-head">
+  <div>
+    <div class="crumbs">{{ 'devices.crumb' | translate }}</div>
+    <h1>{{ 'devices.title' | translate }}</h1>
+    <p>{{ 'devices.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn btn-primary" (click)="registerOpen.set(true)">
+      {{ 'devices.actions.register' | translate }}
+    </button>
+  </div>
+</div>
+
+@if (store.hasError()) {
+  <div class="card">
+    <app-view-state state="error" (retry)="store.load()" />
+  </div>
+} @else if (store.isLoading() && store.registeredCount() === 0) {
+  <div class="card">
+    <app-view-state state="loading" />
+  </div>
+} @else {
+  <div class="grid g-4">
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-cyan"><app-icon name="chip" /></span>{{ 'devices.kpi.registered' | translate }}</div>
+      <div class="val">{{ store.registeredCount() }}</div>
+      <div class="delta muted">
+        {{ 'devices.kpi.registeredDetail' | translate: { active: store.activeCount(), inactive: store.inactiveCount() } }}
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-amber"><app-icon name="wifioff" /></span>{{ 'devices.kpi.disconnected' | translate }}</div>
+      <div class="val">{{ store.disconnectedCount() }}</div>
+      <div class="delta warn">{{ 'devices.kpi.disconnectedDetail' | translate }}</div>
+    </div>
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-violet"><app-icon name="alert" /></span>{{ 'devices.kpi.faulty' | translate }}</div>
+      <div class="val">{{ store.faultyCount() }}</div>
+      <div class="delta muted">{{ 'devices.kpi.faultyDetail' | translate }}</div>
+    </div>
+    <div class="card kpi">
+      <div class="top"><span class="ico ico-blue"><app-icon name="refresh" /></span>{{ 'devices.kpi.buffered' | translate }}</div>
+      <div class="val">{{ store.bufferedEventCount() }}</div>
+      <div class="delta muted">{{ 'devices.kpi.bufferedDetail' | translate }}</div>
+    </div>
+  </div>
+
+  @if (store.disconnectedCount() > 0) {
+    <div class="callout warn" role="status">
+      <app-icon name="wifioff" />
+      <span>{{ 'devices.offlineNotice' | translate: { count: store.disconnectedCount() } }}</span>
+    </div>
+  }
+
+  <section class="card" aria-labelledby="devices-title">
+    <h2 id="devices-title" class="sr-only">{{ 'devices.title' | translate }}</h2>
+    <div class="toolbar wrap">
+      <label class="search">
+        <app-icon name="search" [size]="16" />
+        <span class="sr-only">{{ 'devices.search' | translate }}</span>
+        <input type="search" [value]="store.searchTerm()" [placeholder]="'devices.search' | translate"
+               (input)="setSearch($any($event.target).value)" />
+      </label>
+      <div class="tabs" role="tablist">
+        @for (filter of filters; track filter) {
+          <button type="button" role="tab" [class.on]="store.filter() === filter"
+                  [attr.aria-selected]="store.filter() === filter" (click)="setFilter(filter)">
+            {{ 'devices.filters.' + filter | translate }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (store.filteredRows().length === 0) {
+      <app-view-state icon="search" [title]="'devices.emptyTitle' | translate"
+                      [message]="'devices.emptyMessage' | translate" />
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th>{{ 'devices.fields.device' | translate }}</th>
+            <th>{{ 'devices.fields.stand' | translate }}</th>
+            <th>{{ 'devices.fields.status' | translate }}</th>
+            <th>{{ 'devices.fields.connectivity' | translate }}</th>
+            <th>{{ 'devices.fields.voltage' | translate }}</th>
+            <th class="t-right">{{ 'devices.fields.action' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (row of pagedRows(); track row.device.id) {
+              <tr>
+                <td>
+                  <b class="mono">{{ row.device.serialNumber }}</b>
+                  <span class="sub">{{ 'devices.types.' + row.device.type | translate }}</span>
+                  @if (row.device.bufferedEvents > 0) {
+                    <span class="sub warn">{{ 'devices.bufferedEvents' | translate: { count: row.device.bufferedEvents } }}</span>
+                  }
+                  @if (row.device.deactivationReason) {
+                    <span class="sub">{{ row.device.deactivationReason }}</span>
+                  }
+                </td>
+                <td>
+                  <b>{{ row.resource?.name ?? '—' }}</b>
+                  <span class="sub">{{ row.resource?.description }}</span>
+                </td>
+                <td>
+                  <span [class]="'badge ' + toneOf(row.device)">{{ 'devices.status.' + statusOf(row.device) | translate }}</span>
+                </td>
+                <td>
+                  @if (row.device.isActive) {
+                    <span class="badge" [class.badge--success]="!row.device.isDisconnected"
+                          [class.badge--warning]="row.device.isDisconnected">
+                      {{ 'devices.connectivity.' + row.device.connectivity | translate }}
+                    </span>
+                  } @else {
+                    —
+                  }
+                  <span class="sub mono">{{ row.device.lastReportAt | localizedDate: 'dateTime' }}</span>
+                </td>
+                <td class="mono">
+                  {{ row.device.supplyVoltage !== null ? row.device.supplyVoltage.toFixed(2) + ' V' : '—' }}
+                </td>
+                <td class="t-right">
+                  @if (row.device.isActive) {
+                    <button type="button" class="btn btn-soft btn-sm" (click)="openDeactivation(row)">
+                      {{ 'devices.actions.deactivate' | translate }}
+                    </button>
+                  } @else {
+                    <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="reactivate(row)">
+                      <app-icon name="refresh" [size]="14" />{{ 'devices.actions.reactivate' | translate }}
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-paginator [total]="store.filteredRows().length" [pageSize]="pageSize" [(page)]="page" />
+    }
+  </section>
+
+  <app-confirm-dialog
+    [open]="rowToDeactivate() !== null"
+    [title]="'devices.deactivate.title' | translate: { id: rowToDeactivate()?.device?.serialNumber ?? '' }"
+    [message]="rowToDeactivate()?.resource?.name ?? ''"
+    [confirmLabel]="'devices.deactivate.confirm' | translate"
+    tone="danger"
+    icon="chip"
+    [busy]="busy()"
+    (confirmed)="confirmDeactivation()"
+    (cancelled)="closeDeactivation()"
+  >
+    <div class="callout warn">
+      <app-icon name="alert" />
+      <span>{{ 'devices.deactivate.warning' | translate: { stand: rowToDeactivate()?.resource?.name ?? '' } }}</span>
+    </div>
+    <label class="field">
+      <span>{{ 'devices.deactivate.reason' | translate }}</span>
+      <input class="input" type="text" [value]="deactivationReason()"
+             (input)="deactivationReason.set($any($event.target).value)" />
+    </label>
+  </app-confirm-dialog>
+
+  <app-register-device-dialog [open]="registerOpen()" (closed)="registerOpen.set(false)" />
+}

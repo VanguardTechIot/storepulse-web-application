@@ -24,8 +24,13 @@ export class ResourceAssetContextFacade {
       const device = asset ? devices.find((d) => d.assetId === asset.id) : undefined;
       const activeTypes = new Set<MeasurementType>(
         [...sensors, ...meters]
-          .filter((component) => component.iotDeviceId === device?.id && component.status === 'ACTIVE')
-          .map((component) => component.type),
+          .filter(
+            (component) => component.iotDeviceId === device?.id && component.status === 'ACTIVE',
+          )
+          .map((component) => component.type)
+          .filter((type): type is MeasurementType =>
+            MEASUREMENT_TYPES.includes(type as MeasurementType),
+          ),
       );
       return {
         resourceId: resource.id,

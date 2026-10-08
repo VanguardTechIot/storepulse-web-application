@@ -1,8 +1,8 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
 import { AssetStatus } from './asset.entity';
 
-export type SensorType = 'HUMIDITY' | 'TEMPERATURE' | 'WATER' | 'ELECTRICITY';
-
+export type SensorType =
+  'MOTION' | 'DOOR_STATE' | 'SMOKE' | 'HUMIDITY' | 'TEMPERATURE' | 'WATER' | 'ELECTRICITY';
 /**
  * Sensor attached to an IoT device.
  */
