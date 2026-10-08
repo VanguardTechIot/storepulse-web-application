@@ -26,6 +26,7 @@ export class SidebarNavigation {
     { key: 'utility-meters', labelKey: 'nav.utility_meters', route: '/utility-meters', icon: 'M4 14a8 8 0 1 1 16 0M12 14l4-4' },
     { key: 'billing', labelKey: 'nav.billing', route: '/billing', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
     { key: 'security', labelKey: 'nav.security', route: '/security', icon: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', dot: true },
+    { key: 'monitoring', labelKey: 'nav.monitoring', route: '/monitoring', icon: 'M3 12h4l2-5 4 10 2-5h6' },
     { key: 'communication', labelKey: 'nav.communication', route: '/communication', icon: 'M4 5h16v11H9l-5 4z' },
     { key: 'subscription', labelKey: 'nav.subscription', route: '/subscription', icon: 'M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z' },
   ];
