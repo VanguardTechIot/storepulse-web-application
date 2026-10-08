@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { TranslationService } from '../../infrastructure/translation.service';
+import { TranslationService } from '../../infrastructure/i18n/translation.service';
 
 export type DateFormat = 'date' | 'time' | 'dateTime' | 'monthYear' | 'shortMonth';
 
@@ -20,6 +20,6 @@ export class LocalizedDatePipe implements PipeTransform {
 
   transform(value: Date | null | undefined, format: DateFormat = 'dateTime'): string {
     if (!value) return '—';
-    return new Intl.DateTimeFormat(this.translation.language(), FORMATS[format]).format(value);
+    return new Intl.DateTimeFormat(this.translation.lang(), FORMATS[format]).format(value);
   }
 }

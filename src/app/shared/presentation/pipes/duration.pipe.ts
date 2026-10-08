@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { TranslationService } from '../../infrastructure/translation.service';
+import { TranslationService } from '../../infrastructure/i18n/translation.service';
 
 /**
  * Formats an elapsed time in milliseconds as "1 h 4 min", "6 min 41 s" or "52 s".
@@ -14,7 +14,7 @@ export class DurationPipe implements PipeTransform {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    const t = (key: string, value: number) => this.translation.translate(`common.duration.${key}`, { value });
+    const t = (key: string, value: number) => this.translation.t(`common.duration.${key}`, { value });
     if (hours > 0) return `${t('hours', hours)} ${t('minutes', minutes)}`;
     if (minutes > 0) return `${t('minutes', minutes)} ${t('seconds', seconds)}`;
     return t('seconds', seconds);

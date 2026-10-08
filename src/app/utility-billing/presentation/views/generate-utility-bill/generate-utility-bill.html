@@ -1,0 +1,91 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'billing.generate.title' | translate }}</h1>
+    <p class="page-subtitle">{{ 'billing.generate.subtitle' | translate }}</p>
+  </div>
+  <a class="btn btn--ghost" routerLink="/billing">{{ 'billing.actions.back' | translate }}</a>
+</header>
+
+<div class="two-columns">
+  <section class="card">
+    <h2 class="card__title">{{ 'billing.generate.setup' | translate }}</h2>
+
+    <label class="field">
+      <span class="field__label">{{ 'billing.generate.unit' | translate }}</span>
+      <select class="input" [ngModel]="unitId" (ngModelChange)="onUnitChange($event)">
+        <option value="">{{ 'billing.generate.select_unit' | translate }}</option>
+        @for (unit of store.units(); track unit.id) {
+          <option [value]="unit.id">{{ unit.code }} · {{ unit.name }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field__label">{{ 'billing.generate.period' | translate }}</span>
+      <select class="input" [ngModel]="month" (ngModelChange)="onMonthChange($event)">
+        @for (option of monthOptions; track option.key) {
+          <option [value]="option.key">{{ option.labelKey | translate }}</option>
+        }
+      </select>
+    </label>
+
+    @if (errorKey(); as key) {
+      <div class="alert alert--danger">{{ key | translate }}</div>
+    }
+
+    <button
+      type="button"
+      class="btn btn--primary btn--block"
+      [disabled]="!summary() || submitting()"
+      (click)="generate()"
+    >
+      {{ 'billing.actions.generate' | translate }}
+    </button>
+  </section>
+
+  <section class="card">
+    <h2 class="card__title">{{ 'billing.generate.preview' | translate }}</h2>
+
+    @if (summary(); as current) {
+      @if (completeness() < fullCompleteness) {
+        <div class="alert alert--warning">{{ 'billing.generate.incomplete_warning' | translate }}</div>
+      }
+
+      <div class="field__label">{{ 'billing.generate.completeness' | translate }}: {{ completeness() }} %</div>
+      <div class="progress" role="progressbar" [attr.aria-valuenow]="completeness()">
+        <span [style.width.%]="completeness()"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ 'billing.table.service' | translate }}</th>
+              <th class="num">{{ 'billing.table.consumption' | translate }}</th>
+              <th class="num">{{ 'billing.table.baseline' | translate }}</th>
+              <th class="num">{{ 'billing.table.variance' | translate }}</th>
+              <th class="num">{{ 'billing.table.readings' | translate }}</th>
+              <th class="num">{{ 'billing.table.estimated' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of current.utilities; track u.utilityType) {
+              <tr>
+                <td>{{ ('billing.utility.' + u.utilityType) | translate }}</td>
+                <td class="num">{{ u.consumption | number: '1.0-1' }} {{ u.unitOfMeasure }}</td>
+                <td class="num">{{ u.baseline | number: '1.0-1' }} {{ u.unitOfMeasure }}</td>
+                <td class="num" [class.variance--up]="ratioOf(u) > threshold">
+                  {{ ratioOf(u) | percent: '1.0-0' }}
+                </td>
+                <td class="num">{{ u.receivedReadings }}/{{ u.expectedReadings }}</td>
+                <td class="num">{{ (u.consumption * u.rate) | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="empty">{{ 'billing.generate.empty' | translate }}</p>
+    }
+  </section>
+</div>

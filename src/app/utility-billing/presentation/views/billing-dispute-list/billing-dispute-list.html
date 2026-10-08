@@ -1,0 +1,59 @@
+<header class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'billing.disputes.title' | translate }}</h1>
+    <p class="page-subtitle">{{ 'billing.disputes.subtitle' | translate }}</p>
+  </div>
+  <a class="btn btn--ghost" routerLink="/billing">{{ 'billing.actions.back' | translate }}</a>
+</header>
+
+<nav class="tabs" aria-label="{{ 'billing.filter.label' | translate }}">
+  @for (filter of filters; track filter) {
+    <button
+      type="button"
+      class="tab"
+      [class.is-active]="activeFilter() === filter"
+      (click)="setFilter(filter)"
+    >
+      {{ (filter === 'ALL' ? 'billing.filter.all' : 'billing.dispute_status.' + filter) | translate }}
+    </button>
+  }
+</nav>
+
+<section class="card table-wrap">
+  @if (store.loading()) {
+    <p class="empty">{{ 'billing.common.loading' | translate }}</p>
+  } @else if (visibleDisputes().length === 0) {
+    <p class="empty">{{ 'billing.disputes.empty' | translate }}</p>
+  } @else {
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ 'billing.table.code' | translate }}</th>
+          <th>{{ 'billing.table.bill' | translate }}</th>
+          <th>{{ 'billing.table.unit' | translate }}</th>
+          <th>{{ 'billing.table.tenant' | translate }}</th>
+          <th>{{ 'billing.table.reason' | translate }}</th>
+          <th>{{ 'billing.table.created' | translate }}</th>
+          <th>{{ 'billing.table.status' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (dispute of visibleDisputes(); track dispute.id) {
+          <tr>
+            <td><strong>{{ dispute.code }}</strong></td>
+            <td>{{ billCodeOf(dispute.billId) }}</td>
+            <td>{{ unitOf(dispute.billId) }}</td>
+            <td>{{ dispute.tenantName }}</td>
+            <td>{{ ('billing.reason.' + dispute.reason) | translate }}</td>
+            <td>{{ dispute.createdAt | date: 'dd/MM/yyyy' }}</td>
+            <td><app-billing-status-badge [status]="dispute.status" kind="dispute" /></td>
+            <td class="num">
+              <a class="link" [routerLink]="['/billing/disputes', dispute.id]">{{ 'billing.actions.view' | translate }}</a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { MonitoringStore } from '../../application/monitoring.store';
 import { ToastService } from '../../../shared/presentation/components/toast-host/toast.service';
-import { TranslationService } from '../../../shared/infrastructure/translation.service';
+import { TranslationService } from '../../../shared/infrastructure/i18n/translation.service';
 
 /**
  * Common behaviour of the monitoring views: initial load, manual refresh and localized messages.
@@ -29,6 +29,6 @@ export abstract class MonitoringView {
   }
 
   protected t(key: string, params?: Record<string, string | number>): string {
-    return this.translation.translate(key, params);
+    return this.translation.t(key, params);
   }
 }

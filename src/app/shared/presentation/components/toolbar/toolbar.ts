@@ -1,40 +1,25 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { Icon } from '../icon/icon';
-import { LanguageSwitcher } from '../language-switcher/language-switcher';
-import { TranslatePipe } from '../../pipes/translate.pipe';
-import { MonitoringStore } from '../../../../service-execution-monitoring/application/monitoring.store';
+import { Component, inject } from '@angular/core';
+import { Lang, TranslationService } from '../../../infrastructure/i18n/translation.service';
 
-/**
- * Top bar with the global monitoring status and the language selector.
- */
 @Component({
   selector: 'app-toolbar',
-  imports: [RouterLink, Icon, LanguageSwitcher, TranslatePipe],
-  template: `
-    <header class="topbar">
-      <button type="button" class="icon-btn menu-toggle" [attr.aria-expanded]="menuOpen()"
-              aria-controls="app-sidebar" [attr.aria-label]="'layout.toggleMenu' | translate" (click)="toggleMenu.emit()">
-        <app-icon name="menu" [size]="20" />
-      </button>
-      @if (monitoringStore.ready()) {
-        @if (monitoringStore.activeAlertCount() > 0) {
-          <a class="status-pill alerta" routerLink="/monitoring/alerts" [queryParams]="{ status: 'ACTIVE' }">
-            <i></i>{{ 'layout.status.alert' | translate: { count: monitoringStore.activeAlertCount() } }}
-          </a>
-        } @else {
-          <span class="status-pill normal"><i></i>{{ 'layout.status.normal' | translate }}</span>
-        }
-      }
-      <div class="spacer"></div>
-      <app-language-switcher />
-    </header>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './toolbar.html',
+  styleUrl: './toolbar.css',
 })
 export class Toolbar {
-  protected readonly monitoringStore = inject(MonitoringStore);
+  protected readonly i18n = inject(TranslationService);
 
-  readonly menuOpen = input(false);
-  readonly toggleMenu = output<void>();
+  protected readonly languages: { code: Lang; label: string }[] = [
+    { code: 'en-US', label: 'EN' },
+    { code: 'es-419', label: 'ES' },
+  ];
+
+  // Datos de ejemplo: después se reemplazarán por el estado real de la galería y el usuario.
+  protected readonly gallery = { name: 'Galería Central #04', locales: 92, district: 'Cercado de Lima' };
+  protected readonly user = { initials: 'CM', name: 'Carmen Mendoza', role: 'Administradora' };
+  protected readonly unreadNotifications = 3;
+
+  protected switchLanguage(code: Lang): void {
+    void this.i18n.setLang(code);
+  }
 }

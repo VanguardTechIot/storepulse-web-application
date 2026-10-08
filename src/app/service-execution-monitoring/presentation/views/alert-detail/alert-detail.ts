@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { Icon } from '../../../../shared/presentation/components/icon/icon';
 import { ViewState } from '../../../../shared/presentation/components/view-state/view-state';
 import { ConfirmDialog } from '../../../../shared/presentation/components/confirm-dialog/confirm-dialog';
@@ -38,8 +40,11 @@ export const RESOLUTION_NOTE_MAX_LENGTH = 500;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertDetail extends MonitoringView {
-  /** Route parameter bound by the router. */
-  readonly id = input.required<string>();
+  /** Alert identifier taken from the route. */
+  protected readonly id = toSignal(
+    inject(ActivatedRoute).paramMap.pipe(map((params) => params.get('id') ?? '')),
+    { initialValue: '' },
+  );
 
   protected readonly units = MEASUREMENT_UNITS;
   protected readonly noteMaxLength = RESOLUTION_NOTE_MAX_LENGTH;
