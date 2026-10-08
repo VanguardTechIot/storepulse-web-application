@@ -1,6 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { firstValueFrom, forkJoin } from 'rxjs';
-import { MonitoringApi } from '../infrastructure/monitoring-api';
+import { MONITORING_REPOSITORY } from '../infrastructure/monitoring.token';
 import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
 import { MonitoredResource } from '../domain/model/monitored-resource';
 import { Telemetry } from '../domain/model/telemetry.entity';
@@ -46,7 +45,7 @@ type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
  */
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
-  private readonly api = inject(MonitoringApi);
+  private readonly repository = inject(MONITORING_REPOSITORY);
   private readonly resourceAssetContext = inject(ResourceAssetContextFacade);
 
   private readonly status = signal<LoadStatus>('idle');
@@ -147,15 +146,13 @@ export class MonitoringStore {
     if (!force && (this.status() === 'loaded' || this.status() === 'loading')) return;
     this.status.set('loading');
     try {
-      const { resources, telemetry, rules, alerts, consumption } = await firstValueFrom(
-        forkJoin({
-          resources: this.resourceAssetContext.getMonitoredResources(),
-          telemetry: this.api.getTelemetry(),
-          rules: this.api.getMonitoringRules(),
-          alerts: this.api.getAlerts(),
-          consumption: this.api.getConsumption(),
-        }),
-      );
+      const [resources, telemetry, rules, alerts, consumption] = await Promise.all([
+        this.resourceAssetContext.getMonitoredResources(),
+        this.repository.listTelemetry(),
+        this.repository.listMonitoringRules(),
+        this.repository.listAlerts(),
+        this.repository.listConsumption(),
+      ]);
       this.resources.set(resources);
       this.telemetry.set(telemetry);
       this.rules.set(rules);
@@ -181,8 +178,9 @@ export class MonitoringStore {
   async acknowledgeAlert(id: string): Promise<AlertActionOutcome> {
     const current = await this.refreshAlert(id);
     if (!current.canAcknowledge) return 'unchanged';
-    const saved = await firstValueFrom(this.api.updateAlertLifecycle(current.acknowledge()));
-    this.replaceAlert(saved);
+    const updated = current.acknowledge();
+    await this.repository.saveAlert(updated);
+    this.replaceAlert(updated);
     return 'updated';
   }
 
@@ -190,22 +188,23 @@ export class MonitoringStore {
   async resolveAlert(id: string, resolutionNote: string): Promise<AlertActionOutcome> {
     const current = await this.refreshAlert(id);
     if (!current.canResolve) return 'unchanged';
-    const saved = await firstValueFrom(this.api.updateAlertLifecycle(current.resolve(resolutionNote)));
-    this.replaceAlert(saved);
+    const updated = current.resolve(resolutionNote);
+    await this.repository.saveAlert(updated);
+    this.replaceAlert(updated);
     return 'updated';
   }
 
   async setRuleEnabled(id: string, enabled: boolean): Promise<void> {
     const rule = this.ruleById().get(id);
     if (!rule || rule.enabled === enabled) return;
-    const saved = await firstValueFrom(
-      this.api.updateMonitoringRuleEnabled(enabled ? rule.enable() : rule.disable()),
-    );
-    this.rules.update((rules) => rules.map((r) => (r.id === saved.id ? saved : r)));
+    const updated = enabled ? rule.enable() : rule.disable();
+    await this.repository.saveMonitoringRule(updated);
+    this.rules.update((rules) => rules.map((r) => (r.id === updated.id ? updated : r)));
   }
 
   private async refreshAlert(id: string): Promise<Alert> {
-    const latest = await firstValueFrom(this.api.getAlert(id));
+    const latest = await this.repository.findAlert(id);
+    if (!latest) throw new Error(`Alert ${id} not found`);
     this.replaceAlert(latest);
     return latest;
   }
