@@ -1,14 +1,16 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { TranslationService } from '../../infrastructure/translation.service';
+import { TranslationService } from '../../infrastructure/i18n/translation.service';
 
-/**
- * Resolves a localization key for the current language. Impure so it reacts to language changes.
- */
-@Pipe({ name: 'translate', pure: false })
+/** Uso en templates: {{ 'nav.billing' | translate }} o {{ 'clave' | translate: { count: 2 } }} */
+@Pipe({
+  name: 'translate',
+  pure: false,
+  standalone: true,
+})
 export class TranslatePipe implements PipeTransform {
-  private readonly translation = inject(TranslationService);
+  private readonly i18n: TranslationService = inject(TranslationService);
 
   transform(key: string, params?: Record<string, string | number>): string {
-    return this.translation.translate(key, params);
+    return this.i18n.t(key, params);
   }
 }
