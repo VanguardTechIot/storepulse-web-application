@@ -1,4 +1,5 @@
 :host {
+  --avatar-size: 112px;
   display: inline-flex;
 }
 
