@@ -13,7 +13,6 @@ import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.p
     <nav
       mat-tab-nav-bar
       mat-stretch-tabs="false"
-      mat-align-tabs="start"
       [tabPanel]="panel"
       [attr.aria-label]="'subscriptions.tabs.label' | translate"
     >
