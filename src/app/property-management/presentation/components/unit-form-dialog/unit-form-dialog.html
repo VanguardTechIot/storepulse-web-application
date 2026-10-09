@@ -1,0 +1,108 @@
+<h2 mat-dialog-title>
+  {{ (editing ? 'property.unit_form.edit_title' : 'property.unit_form.new_title') | translate }}
+</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <mat-dialog-content>
+    <div class="form">
+      @if (store.error(); as error) {
+        <app-callout type="danger" icon="error" role="alert">{{
+          'property.errors.' + error | translate
+        }}</app-callout>
+      }
+
+      @if (!editing) {
+        <mat-button-toggle-group
+          class="type"
+          formControlName="type"
+          [attr.aria-label]="'property.fields.type' | translate"
+        >
+          <mat-button-toggle [value]="UnitType.Store">
+            <mat-icon aria-hidden="true">storefront</mat-icon>
+            {{ 'property.types.STORE' | translate }}
+          </mat-button-toggle>
+          <mat-button-toggle [value]="UnitType.CommonArea">
+            <mat-icon aria-hidden="true">deck</mat-icon>
+            {{ 'property.types.COMMON_AREA' | translate }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      }
+
+      <div class="row">
+        <mat-form-field>
+          <mat-label>{{
+            (isStore ? 'property.fields.unit_number' : 'property.fields.common_area_name')
+              | translate
+          }}</mat-label>
+          <input
+            matInput
+            formControlName="code"
+            [placeholder]="isStore ? 'A-03' : ''"
+            [maxlength]="codeMaxLength"
+            required
+            cdkFocusInitial
+          />
+          @if (form.controls.code.hasError('required')) {
+            <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+          } @else if (form.controls.code.hasError('maxlength')) {
+            <mat-error>{{
+              'property.validation.max_length' | translate: { count: codeMaxLength }
+            }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'property.fields.floor' | translate }}</mat-label>
+          <input matInput formControlName="floor" [maxlength]="floorMaxLength" required />
+          @if (form.controls.floor.hasError('required')) {
+            <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field>
+          <mat-label>{{ 'property.fields.area' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="areaSquareMeters"
+            required
+          />
+          <span matTextSuffix>m²</span>
+          @if (form.controls.areaSquareMeters.hasError('required')) {
+            <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+          } @else if (form.controls.areaSquareMeters.hasError('area')) {
+            <mat-error>{{ 'property.errors.invalid_area' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        @if (isStore) {
+          <mat-form-field>
+            <mat-label>{{ 'property.fields.business_name' | translate }}</mat-label>
+            <input matInput formControlName="businessName" [maxlength]="businessNameMaxLength" />
+            <mat-hint>{{ 'property.unit_form.business_hint' | translate }}</mat-hint>
+          </mat-form-field>
+        }
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close [disabled]="store.saving()">
+      {{ 'common.actions.cancel' | translate }}
+    </button>
+    <button matButton="filled" type="submit" [disabled]="store.saving()">
+      {{
+        (store.saving()
+          ? 'property.actions.saving'
+          : editing
+            ? 'property.actions.save'
+            : 'property.unit_form.register'
+        ) | translate
+      }}
+    </button>
+  </mat-dialog-actions>
+</form>
