@@ -67,7 +67,13 @@ export const routes: Routes = [
             (m) => m.PROPERTY_COMMUNICATION_ROUTES,
           ),
       },
-      { path: 'subscription', component: ComingSoon, data: { titleKey: 'nav.subscription' } },
+      {
+        path: 'subscription',
+        loadChildren: () =>
+          import('./subscriptions-payments/subscriptions-payments.routes').then(
+            (m) => m.SUBSCRIPTIONS_PAYMENTS_ROUTES,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
