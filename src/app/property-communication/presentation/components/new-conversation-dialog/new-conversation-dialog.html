@@ -1,0 +1,101 @@
+<h2 mat-dialog-title>{{ 'communication.new_conversation.title' | translate }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <mat-dialog-content>
+    <div class="form">
+      @if (store.error(); as error) {
+        <app-callout type="danger" icon="error" role="alert">{{
+          'communication.errors.' + error | translate
+        }}</app-callout>
+      }
+
+      <mat-form-field>
+        <mat-label>{{ 'communication.fields.tenant' | translate }}</mat-label>
+        <mat-select formControlName="tenantId" required>
+          @for (tenant of store.directory.tenants(); track tenant.id) {
+            <mat-option [value]="tenant.id">{{ tenant.fullName }} · {{ tenant.email }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.tenantId.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'communication.fields.subject' | translate }}</mat-label>
+        <input matInput formControlName="subject" [maxlength]="subjectMaxLength" required />
+        <mat-hint align="end"
+          >{{ form.controls.subject.value.length }} / {{ subjectMaxLength }}</mat-hint
+        >
+        @if (form.controls.subject.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'communication.fields.message' | translate }}</mat-label>
+        <textarea
+          matInput
+          formControlName="content"
+          rows="5"
+          [maxlength]="contentMaxLength"
+          required
+        ></textarea>
+        <mat-hint align="end"
+          >{{ form.controls.content.value.length }} / {{ contentMaxLength }}</mat-hint
+        >
+        @if (form.controls.content.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="attachments">
+        @for (attachment of attachments(); track $index) {
+          <span class="attachment">
+            <mat-icon aria-hidden="true">{{ attachmentIcon(attachment.mimeType) }}</mat-icon>
+            {{ attachment.fileName }}
+            <button
+              type="button"
+              [attr.aria-label]="
+                'communication.attachments.remove' | translate: { name: attachment.fileName }
+              "
+              (click)="removeAttachment($index)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </span>
+        }
+        <button matButton type="button" (click)="fileInput.click()">
+          <mat-icon aria-hidden="true">attach_file</mat-icon>
+          {{ 'communication.attachments.add' | translate }}
+        </button>
+        <input
+          #fileInput
+          type="file"
+          hidden
+          multiple
+          [accept]="accept"
+          (change)="addFiles(fileInput)"
+        />
+      </div>
+      @if (attachmentError(); as error) {
+        <app-callout type="warn" icon="attach_file" role="alert">{{
+          'communication.errors.' + error | translate
+        }}</app-callout>
+      }
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close [disabled]="store.saving()">
+      {{ 'common.actions.cancel' | translate }}
+    </button>
+    <button matButton="filled" type="submit" [disabled]="store.saving()">
+      <mat-icon aria-hidden="true">send</mat-icon>
+      {{
+        (store.saving() ? 'communication.actions.sending' : 'communication.new_conversation.start')
+          | translate
+      }}
+    </button>
+  </mat-dialog-actions>
+</form>

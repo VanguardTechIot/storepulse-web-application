@@ -1,0 +1,78 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'property.floors.page_title' | translate }}</h1>
+    <p>{{ 'property.floors.subtitle' | translate }}</p>
+  </div>
+</header>
+
+<app-property-tabs />
+
+@if (store.loading() && !store.loaded()) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else if (rows().length === 0) {
+  <mat-card appearance="outlined">
+    <div class="state">
+      <mat-icon class="state-icon" aria-hidden="true">layers</mat-icon>
+      <b>{{ 'property.units.empty_title' | translate }}</b>
+      <a routerLink="/commercial-units">{{ 'property.units.empty_message' | translate }}</a>
+    </div>
+  </mat-card>
+} @else {
+  <div class="legend" aria-hidden="true">
+    <span
+      ><i style="background: var(--sp-success)"></i
+      >{{ 'property.status.AVAILABLE' | translate }}</span
+    >
+    <span
+      ><i style="background: var(--sp-primary)"></i
+      >{{ 'property.status.OCCUPIED' | translate }}</span
+    >
+    <span
+      ><i style="background: var(--sp-warning)"></i
+      >{{ 'property.status.MAINTENANCE' | translate }}</span
+    >
+    <span
+      ><i style="background: var(--sp-violet)"></i
+      >{{ 'property.types.COMMON_AREA' | translate }}</span
+    >
+  </div>
+
+  @for (row of rows(); track row.floor) {
+    <mat-card appearance="outlined" class="floor">
+      <h2>
+        <mat-icon class="tone-primary" aria-hidden="true">layers</mat-icon>
+        {{ 'property.units.floor' | translate: { floor: row.floor } }}
+        <span class="count-chip">{{
+          'property.floors.occupancy'
+            | translate: { occupied: row.occupied, total: row.units.length }
+        }}</span>
+      </h2>
+      <div class="tiles">
+        @for (unit of row.units; track unit.id) {
+          <a
+            [class]="tileClass(unit)"
+            [routerLink]="['/commercial-units', unit.id]"
+            [attr.aria-label]="
+              unit.code +
+              ' · ' +
+              ((unit.isCommonArea ? 'property.types.COMMON_AREA' : 'property.status.' + unit.status)
+                | translate)
+            "
+          >
+            <strong>{{ unit.code }}</strong>
+            <span>{{
+              unit.isStore
+                ? (store.tenantOf(unit.id)?.fullName ??
+                  unit.businessName ??
+                  ('property.units.no_tenant' | translate))
+                : ('property.types.COMMON_AREA' | translate)
+            }}</span>
+          </a>
+        }
+      </div>
+    </mat-card>
+  }
+}

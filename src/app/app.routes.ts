@@ -45,8 +45,10 @@ export const routes: Routes = [
       },
       {
         path: 'commercial-units',
-        component: ComingSoon,
-        data: { titleKey: 'nav.commercial_units' },
+        loadChildren: () =>
+          import('./property-management/property-management.routes').then(
+            (m) => m.PROPERTY_MANAGEMENT_ROUTES,
+          ),
       },
       {
         path: 'devices',
@@ -58,7 +60,13 @@ export const routes: Routes = [
       },
       { path: 'utility-meters', component: ComingSoon, data: { titleKey: 'nav.utility_meters' } },
       { path: 'security', component: ComingSoon, data: { titleKey: 'nav.security' } },
-      { path: 'communication', component: ComingSoon, data: { titleKey: 'nav.communication' } },
+      {
+        path: 'communication',
+        loadChildren: () =>
+          import('./property-communication/property-communication.routes').then(
+            (m) => m.PROPERTY_COMMUNICATION_ROUTES,
+          ),
+      },
       { path: 'subscription', component: ComingSoon, data: { titleKey: 'nav.subscription' } },
     ],
   },

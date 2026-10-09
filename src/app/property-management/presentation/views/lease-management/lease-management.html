@@ -1,0 +1,99 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'property.invitations.page_title' | translate }}</h1>
+    <p>{{ 'property.invitations.subtitle' | translate }}</p>
+  </div>
+</header>
+
+<app-property-tabs />
+
+<app-callout type="info" icon="info">
+  {{ 'property.invitations.assign_hint' | translate }}
+  <a [routerLink]="store.assignmentsRoute">{{ 'property.invitations.assign_link' | translate }}</a>
+</app-callout>
+
+<mat-button-toggle-group
+  [value]="filter()"
+  (change)="filter.set($event.value)"
+  [attr.aria-label]="'property.units.filter' | translate"
+>
+  @for (option of filters; track option) {
+    <mat-button-toggle [value]="option">
+      {{
+        (option === 'ALL' ? 'property.filters.ALL' : 'property.invitation_status.' + option)
+          | translate
+      }}
+    </mat-button-toggle>
+  }
+</mat-button-toggle-group>
+
+@if (store.loading() && !store.loaded()) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else {
+  <mat-card appearance="outlined" class="table-card">
+    @if (visible().length === 0) {
+      <div class="state">
+        <mat-icon class="state-icon" aria-hidden="true">forward_to_inbox</mat-icon>
+        <b>{{ 'property.invitations.empty' | translate }}</b>
+        <span>{{ 'property.invitations.empty_hint' | translate }}</span>
+      </div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'property.fields.unit' | translate }}</th>
+            <th scope="col">{{ 'property.fields.tenant_email' | translate }}</th>
+            <th scope="col">{{ 'property.fields.sent_at' | translate }}</th>
+            <th scope="col">{{ 'property.fields.expires_at' | translate }}</th>
+            <th scope="col">{{ 'property.fields.status' | translate }}</th>
+            <th scope="col">
+              <span class="sr-only">{{ 'property.fields.actions' | translate }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (invitation of visible(); track invitation.id) {
+            <tr>
+              <td>
+                <a [routerLink]="['/commercial-units', invitation.unitId]"
+                  ><strong>{{ unitCode(invitation) }}</strong></a
+                >
+              </td>
+              <td>{{ invitation.email }}</td>
+              <td>{{ invitation.sentAt | localizedDate: 'dateTime' }}</td>
+              <td>{{ invitation.expiresAt | localizedDate: 'dateTime' }}</td>
+              <td><app-invitation-status-badge [invitation]="invitation" /></td>
+              <td class="end">
+                @if (invitation.canBeResent()) {
+                  <button
+                    matIconButton
+                    type="button"
+                    [matTooltip]="'property.invitations.resend' | translate"
+                    [attr.aria-label]="'property.invitations.resend' | translate"
+                    [disabled]="store.saving()"
+                    (click)="resend(invitation)"
+                  >
+                    <mat-icon>forward_to_inbox</mat-icon>
+                  </button>
+                  <button
+                    matIconButton
+                    type="button"
+                    [matTooltip]="'property.invitations.revoke' | translate"
+                    [attr.aria-label]="'property.invitations.revoke' | translate"
+                    [disabled]="store.saving()"
+                    (click)="revoke(invitation)"
+                  >
+                    <mat-icon>link_off</mat-icon>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </mat-card>
+}

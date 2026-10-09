@@ -1,0 +1,155 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'communication.page_title' | translate }}</h1>
+    <p>{{ 'communication.notifications.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button matButton="filled" type="button" (click)="publish()">
+      <mat-icon aria-hidden="true">campaign</mat-icon>
+      {{ 'communication.notifications.new' | translate }}
+    </button>
+  </div>
+</header>
+
+<app-communication-tabs />
+
+@if (store.lastPublication(); as result) {
+  @if (result.unitsWithoutTenant.length > 0) {
+    <app-callout type="warn" icon="person_off" role="status">
+      {{
+        'communication.publish.skipped'
+          | translate: { count: result.sent, units: unitsWithoutTenant() }
+      }}
+    </app-callout>
+  }
+}
+
+<section class="kpis" [attr.aria-label]="'communication.notifications.summary' | translate">
+  <mat-card appearance="outlined" class="kpi">
+    <span class="label"
+      ><mat-icon class="tone-primary" aria-hidden="true">notifications</mat-icon
+      >{{ 'communication.notifications.total' | translate }}</span
+    >
+    <span class="value">{{ store.notifications().length }}</span>
+  </mat-card>
+  <mat-card appearance="outlined" class="kpi">
+    <span class="label"
+      ><mat-icon class="tone-warning" aria-hidden="true">mark_email_unread</mat-icon
+      >{{ 'communication.notifications.unread' | translate }}</span
+    >
+    <span class="value">{{ store.unreadCount() }}</span>
+  </mat-card>
+  <mat-card appearance="outlined" class="kpi">
+    <span class="label"
+      ><mat-icon class="tone-danger" aria-hidden="true">error</mat-icon
+      >{{ 'communication.notifications.failed' | translate }}</span
+    >
+    <span class="value">{{ store.failedCount() }}</span>
+  </mat-card>
+</section>
+
+<div class="filters">
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>{{ 'communication.fields.type' | translate }}</mat-label>
+    <mat-select [value]="type()" (valueChange)="setType($event)">
+      <mat-option value="ALL">{{ 'communication.filters.all' | translate }}</mat-option>
+      @for (option of types; track option) {
+        <mat-option [value]="option">{{ 'communication.types.' + option | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>{{ 'communication.fields.status' | translate }}</mat-label>
+    <mat-select [value]="status()" (valueChange)="setStatus($event)">
+      <mat-option value="ALL">{{ 'communication.filters.all' | translate }}</mat-option>
+      @for (option of statuses; track option) {
+        <mat-option [value]="option">{{ 'communication.status.' + option | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (store.loading() && store.notifications().length === 0) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else {
+  <mat-card appearance="outlined" class="table-card">
+    @if (filtered().length === 0) {
+      <div class="state">
+        <mat-icon class="state-icon" aria-hidden="true">notifications_off</mat-icon>
+        <b>{{ 'communication.notifications.empty' | translate }}</b>
+      </div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'communication.fields.date' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.tenant' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.type' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.notification' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.channel' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.status' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.read' | translate }}</th>
+            <th scope="col">
+              <span class="sr-only">{{ 'communication.fields.actions' | translate }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (notification of page(); track notification.id) {
+            <tr>
+              <td>{{ notification.createdAt | localizedDate: 'dateTime' }}</td>
+              <td>
+                {{ store.directory.tenantName(notification.tenantId) }}
+                <small>{{ store.directory.unitLabel(notification.commercialUnitId) }}</small>
+              </td>
+              <td>{{ 'communication.types.' + notification.type | translate }}</td>
+              <td>
+                <strong>{{ notification.title }}</strong>
+                <small class="clamp">{{ notification.body }}</small>
+              </td>
+              <td>{{ 'communication.channels.' + notification.channel | translate }}</td>
+              <td><app-communication-status-badge [status]="notification.status" /></td>
+              <td>
+                <mat-icon
+                  [class]="notification.read ? 'tone-success' : 'muted'"
+                  [attr.aria-label]="
+                    (notification.read
+                      ? 'communication.notifications.read_yes'
+                      : 'communication.notifications.read_no'
+                    ) | translate
+                  "
+                >
+                  {{ notification.read ? 'drafts' : 'mail' }}
+                </mat-icon>
+              </td>
+              <td class="end">
+                @if (notification.isFailed) {
+                  <button
+                    matIconButton
+                    type="button"
+                    [matTooltip]="'communication.notifications.retry' | translate"
+                    [attr.aria-label]="'communication.notifications.retry' | translate"
+                    [disabled]="store.saving()"
+                    (click)="retry(notification.id)"
+                  >
+                    <mat-icon>refresh</mat-icon>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <mat-paginator
+        [length]="filtered().length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex()"
+        [hidePageSize]="true"
+        (page)="changePage($event)"
+      />
+    }
+  </mat-card>
+}

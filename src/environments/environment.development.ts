@@ -11,4 +11,17 @@ export const environment = {
   // Identity and Access Management
   platformProviderUsersEndpointPath: '/users',
   platformProviderPasswordRecoveriesEndpointPath: '/password-recoveries',
+
+  // Property Management: galleries, their units (stores and common areas) and tenant invitations.
+  platformProviderGalleriesEndpointPath: '/galleries',
+  platformProviderGalleryUnitsEndpointPath: '/galleries/{galleryId}/units',
+  platformProviderUnitsEndpointPath: '/units',
+  platformProviderUnitInviteEndpointPath: '/units/{unitId}/invite',
+  platformProviderTenantInvitationsEndpointPath: '/tenant-invitations',
+
+  // Property Communication
+  platformProviderConversationsEndpointPath: '/conversations',
+  platformProviderTenantNotificationsEndpointPath: '/tenant-notifications',
+  platformProviderCommunicationLogsEndpointPath: '/communication-logs',
+  platformProviderTenantAssignmentsEndpointPath: '/tenant-assignments',
 };

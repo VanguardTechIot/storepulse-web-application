@@ -1,0 +1,243 @@
+<header class="page-head">
+  <div>
+    <h1>
+      {{ 'property.units.page_title' | translate }}
+      @if (store.gallery()) {
+        <span class="count-chip">{{
+          'property.units.active_count' | translate: { count: store.units().length }
+        }}</span>
+      }
+    </h1>
+    <p>{{ store.gallery()?.name ?? ('property.units.subtitle' | translate) }}</p>
+  </div>
+  @if (store.gallery()) {
+    <div class="actions">
+      <button matButton="outlined" type="button" (click)="actions.register(UnitType.CommonArea)">
+        <mat-icon aria-hidden="true">deck</mat-icon>
+        {{ 'property.actions.new_common_area' | translate }}
+      </button>
+      <button matButton="filled" type="button" (click)="actions.register()">
+        <mat-icon aria-hidden="true">add</mat-icon>
+        {{ 'property.actions.new_unit' | translate }}
+      </button>
+    </div>
+  }
+</header>
+
+@if (store.loading() && !store.loaded()) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else if (!store.loaded() && store.error(); as error) {
+  <div class="state" role="alert">
+    <mat-icon class="state-icon error" aria-hidden="true">error</mat-icon>
+    <b>{{ 'property.errors.' + error | translate }}</b>
+    <button matButton="outlined" type="button" (click)="store.load()">
+      <mat-icon aria-hidden="true">refresh</mat-icon>
+      {{ 'common.actions.retry' | translate }}
+    </button>
+  </div>
+} @else if (!store.gallery()) {
+  <app-gallery-form />
+} @else {
+  <app-property-tabs />
+
+  <section class="kpis" [attr.aria-label]="'property.summary.label' | translate">
+    <mat-card appearance="outlined" class="kpi">
+      <span class="label"
+        ><mat-icon class="tone-primary" aria-hidden="true">storefront</mat-icon
+        >{{ 'property.summary.stores' | translate }}</span
+      >
+      <span class="value">{{ store.summary().stores }}</span>
+      <span class="hint">{{
+        'property.summary.declared' | translate: { count: store.gallery()!.totalUnits }
+      }}</span>
+    </mat-card>
+    <mat-card appearance="outlined" class="kpi">
+      <span class="label"
+        ><mat-icon class="tone-violet" aria-hidden="true">person</mat-icon
+        >{{ 'property.summary.occupied' | translate }}</span
+      >
+      <span class="value">{{ store.summary().occupied }}</span>
+      <span class="hint">{{ 'property.summary.with_tenant' | translate }}</span>
+    </mat-card>
+    <mat-card appearance="outlined" class="kpi">
+      <span class="label"
+        ><mat-icon class="tone-success" aria-hidden="true">check_circle</mat-icon
+        >{{ 'property.summary.available' | translate }}</span
+      >
+      <span class="value">{{ store.summary().available }}</span>
+      <span class="hint">{{ 'property.summary.ready_for_tenant' | translate }}</span>
+    </mat-card>
+    <mat-card appearance="outlined" class="kpi">
+      <span class="label"
+        ><mat-icon class="tone-warning" aria-hidden="true">construction</mat-icon
+        >{{ 'property.summary.maintenance' | translate }}</span
+      >
+      <span class="value">{{ store.summary().maintenance }}</span>
+      <span class="hint">{{
+        'property.summary.common_areas' | translate: { count: store.summary().commonAreas }
+      }}</span>
+    </mat-card>
+  </section>
+
+  @if (store.units().length === 0) {
+    <mat-card appearance="outlined">
+      <div class="state">
+        <mat-icon class="state-icon" aria-hidden="true">add_business</mat-icon>
+        <b>{{ 'property.units.empty_title' | translate }}</b>
+        <span>{{ 'property.units.empty_message' | translate }}</span>
+        <button matButton="filled" type="button" (click)="actions.register()">
+          <mat-icon aria-hidden="true">add</mat-icon>
+          {{ 'property.actions.new_unit' | translate }}
+        </button>
+      </div>
+    </mat-card>
+  } @else {
+    <div class="filters">
+      <mat-form-field class="search" subscriptSizing="dynamic">
+        <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+        <mat-label>{{ 'property.units.search' | translate }}</mat-label>
+        <input matInput type="search" [ngModel]="search()" (ngModelChange)="search.set($event)" />
+      </mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>{{ 'property.units.filter' | translate }}</mat-label>
+        <mat-select [value]="filter()" (valueChange)="filter.set($event)">
+          @for (option of filters; track option) {
+            <mat-option [value]="option">{{ 'property.filters.' + option | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (visibleUnits().length === 0) {
+      <mat-card appearance="outlined">
+        <div class="state">
+          <mat-icon class="state-icon" aria-hidden="true">search_off</mat-icon>
+          <b>{{ 'property.units.no_results' | translate }}</b>
+          <button matButton="outlined" type="button" (click)="clearFilters()">
+            {{ 'common.actions.clearFilters' | translate }}
+          </button>
+        </div>
+      </mat-card>
+    } @else {
+      <section class="unit-grid">
+        @for (unit of visibleUnits(); track unit.id) {
+          <mat-card appearance="outlined" class="unit-card">
+            <div class="top">
+              <span class="unit-icon" [class.common]="unit.isCommonArea" aria-hidden="true">
+                <mat-icon>{{ unit.isStore ? 'storefront' : 'deck' }}</mat-icon>
+              </span>
+              <div>
+                <h2 class="code">{{ unit.code }}</h2>
+                <p class="business">
+                  {{
+                    unit.isStore
+                      ? (unit.businessName ?? ('property.units.no_business' | translate))
+                      : ('property.types.COMMON_AREA' | translate)
+                  }}
+                </p>
+              </div>
+              <app-unit-status-badge [unit]="unit" />
+            </div>
+
+            <ul class="meta">
+              <li>
+                <mat-icon aria-hidden="true">layers</mat-icon
+                >{{ 'property.units.floor' | translate: { floor: unit.floor } }}
+              </li>
+              <li>
+                <mat-icon aria-hidden="true">square_foot</mat-icon
+                >{{ unit.areaSquareMeters | localizedNumber }} m²
+              </li>
+            </ul>
+
+            @if (unit.isStore) {
+              @if (store.tenantOf(unit.id); as tenant) {
+                <div class="tenant-line">
+                  <mat-icon aria-hidden="true">person</mat-icon>
+                  <span>{{ tenant.fullName }}</span>
+                </div>
+              } @else if (store.pendingInvitationOf(unit.id); as invitation) {
+                <div class="tenant-line pending">
+                  <mat-icon aria-hidden="true">{{
+                    isExpired(invitation) ? 'schedule' : 'schedule_send'
+                  }}</mat-icon>
+                  <span>{{
+                    (isExpired(invitation)
+                      ? 'property.units.invitation_expired'
+                      : 'property.units.invitation_pending'
+                    )
+                      | translate
+                        : {
+                            email: invitation.email,
+                            date: (invitation.expiresAt | localizedDate: 'date'),
+                          }
+                  }}</span>
+                </div>
+              } @else {
+                <div class="tenant-line">
+                  <mat-icon aria-hidden="true">person_off</mat-icon>
+                  <span class="muted">{{ 'property.units.no_tenant' | translate }}</span>
+                </div>
+              }
+            }
+
+            <div class="card-actions">
+              <a matButton [routerLink]="['/commercial-units', unit.id]">{{
+                'common.actions.viewDetail' | translate
+              }}</a>
+              <span class="spacer"></span>
+              <button
+                matIconButton
+                type="button"
+                [matTooltip]="'property.actions.edit' | translate"
+                [attr.aria-label]="'property.actions.edit' | translate"
+                (click)="actions.edit(unit)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              @if (unit.canReceiveTenant()) {
+                <button
+                  matIconButton
+                  type="button"
+                  [matTooltip]="'property.actions.invite' | translate"
+                  [attr.aria-label]="'property.actions.invite' | translate"
+                  (click)="actions.invite(unit)"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              }
+              <button
+                matIconButton
+                type="button"
+                [matMenuTriggerFor]="more"
+                [attr.aria-label]="'property.actions.more' | translate: { unit: unit.code }"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #more="matMenu" xPosition="before">
+                @if (!unit.isOccupied) {
+                  <button mat-menu-item type="button" (click)="actions.toggleMaintenance(unit)">
+                    <mat-icon>construction</mat-icon>
+                    {{
+                      (unit.isUnderMaintenance
+                        ? 'property.actions.end_maintenance'
+                        : 'property.actions.start_maintenance'
+                      ) | translate
+                    }}
+                  </button>
+                }
+                <button mat-menu-item type="button" (click)="actions.remove(unit)">
+                  <mat-icon class="tone-danger">delete</mat-icon>
+                  {{ 'property.actions.remove' | translate }}
+                </button>
+              </mat-menu>
+            </div>
+          </mat-card>
+        }
+      </section>
+    }
+  }
+}

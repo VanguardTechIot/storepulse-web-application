@@ -2810,6 +2810,51 @@
       "email": "araujorenzo@example.com",
       "phoneNumber": "950147137",
       "photoUrl": null
+    },
+    {
+      "id": "usr-003",
+      "userId": "usr-003",
+      "firstName": "Rosa",
+      "lastName": "Quispe Huamán",
+      "email": "rosa.quispe@perfumeriaaroma.pe",
+      "phoneNumber": "+51 912 345 678",
+      "photoUrl": null
+    },
+    {
+      "id": "usr-004",
+      "userId": "usr-004",
+      "firstName": "Jorge",
+      "lastName": "Huamán Torres",
+      "email": "jorge.huaman@incagold.pe",
+      "phoneNumber": "+51 934 221 908",
+      "photoUrl": null
+    },
+    {
+      "id": "usr-005",
+      "userId": "usr-005",
+      "firstName": "Patricia",
+      "lastName": "Salas Vega",
+      "email": "patricia.salas@opticasvision.pe",
+      "phoneNumber": "+51 955 410 233",
+      "photoUrl": null
+    },
+    {
+      "id": "usr-006",
+      "userId": "usr-006",
+      "firstName": "Miguel",
+      "lastName": "Torres Rojas",
+      "email": "miguel.torres@comidamax.pe",
+      "phoneNumber": "+51 976 118 402",
+      "photoUrl": null
+    },
+    {
+      "id": "usr-007",
+      "userId": "usr-007",
+      "firstName": "Ana",
+      "lastName": "Castillo Ramos",
+      "email": "ana.castillo@libreriaelsaber.pe",
+      "phoneNumber": null,
+      "photoUrl": null
     }
   ],
   "users": [
@@ -2833,7 +2878,684 @@
       "role": "GALLERY_ADMINISTRATOR",
       "status": "ACTIVE",
       "id": "1mBk5FA"
+    },
+    {
+      "id": "usr-003",
+      "email": "rosa.quispe@perfumeriaaroma.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "TENANT",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-004",
+      "email": "jorge.huaman@incagold.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "TENANT",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-005",
+      "email": "patricia.salas@opticasvision.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "TENANT",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-006",
+      "email": "miguel.torres@comidamax.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "TENANT",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-007",
+      "email": "ana.castillo@libreriaelsaber.pe",
+      "passwordHash": "26f8a70792d2ccbef0158f63b404b15990a2c9aea065427d07b8034139f59713",
+      "role": "TENANT",
+      "status": "ACTIVE"
     }
   ],
-  "passwordRecoveries": []
+  "passwordRecoveries": [],
+  "galleries": [
+    {
+      "id": "gal-001",
+      "administratorId": "usr-001",
+      "name": "Galería Central",
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "totalUnits": 12,
+      "registeredAt": "2026-03-02T14:00:00Z"
+    }
+  ],
+  "units": [
+    {
+      "id": "unit-a03",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "A-03",
+      "floor": "1",
+      "areaSquareMeters": 24,
+      "businessName": "Calzados Roma",
+      "status": "OCCUPIED",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-a07",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "A-07",
+      "floor": "1",
+      "areaSquareMeters": 18,
+      "businessName": "Perfumería Aroma",
+      "status": "OCCUPIED",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-a10",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "A-10",
+      "floor": "1",
+      "areaSquareMeters": 20,
+      "businessName": null,
+      "status": "AVAILABLE",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-b09",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "B-09",
+      "floor": "2",
+      "areaSquareMeters": 15,
+      "businessName": "Joyería Inca Gold",
+      "status": "OCCUPIED",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-b12",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "B-12",
+      "floor": "2",
+      "areaSquareMeters": 22,
+      "businessName": "Ópticas Visión",
+      "status": "OCCUPIED",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-b15",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "B-15",
+      "floor": "2",
+      "areaSquareMeters": 16,
+      "businessName": null,
+      "status": "AVAILABLE",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-c03",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "C-03",
+      "floor": "3",
+      "areaSquareMeters": 30,
+      "businessName": "Comida Rápida Max",
+      "status": "OCCUPIED",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-c07",
+      "galleryId": "gal-001",
+      "type": "STORE",
+      "code": "C-07",
+      "floor": "3",
+      "areaSquareMeters": 26,
+      "businessName": "Librería El Saber",
+      "status": "MAINTENANCE",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-cn01",
+      "galleryId": "gal-001",
+      "type": "COMMON_AREA",
+      "code": "Pasillo norte",
+      "floor": "1",
+      "areaSquareMeters": 60,
+      "businessName": null,
+      "status": "AVAILABLE",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    },
+    {
+      "id": "unit-cn02",
+      "galleryId": "gal-001",
+      "type": "COMMON_AREA",
+      "code": "Patio de comidas",
+      "floor": "3",
+      "areaSquareMeters": 120,
+      "businessName": null,
+      "status": "AVAILABLE",
+      "active": true,
+      "createdAt": "2026-03-02T15:00:00Z"
+    }
+  ],
+  "tenantInvitations": [
+    {
+      "id": "inv-001",
+      "unitId": "unit-a10",
+      "galleryId": "gal-001",
+      "email": "carlos.rojas@gmail.com",
+      "token": "b2f4c7d1e9a84f0c",
+      "status": "PENDING",
+      "sentAt": "2026-10-06T16:20:00Z",
+      "expiresAt": "2026-10-13T16:20:00Z"
+    },
+    {
+      "id": "inv-002",
+      "unitId": "unit-b15",
+      "galleryId": "gal-001",
+      "email": "lucia.vega@outlook.com",
+      "token": "7c0e1a5b3d9f2e64",
+      "status": "PENDING",
+      "sentAt": "2026-09-12T15:00:00Z",
+      "expiresAt": "2026-09-19T15:00:00Z"
+    }
+  ],
+  "tenantAssignments": [
+    {
+      "id": "asg-001",
+      "tenantId": "usr-002",
+      "commercialUnitId": "unit-a03",
+      "galleryAdministratorId": "usr-001",
+      "status": "ACTIVE",
+      "assignedAt": "2026-03-10T15:00:00Z",
+      "terminatedAt": null
+    },
+    {
+      "id": "asg-002",
+      "tenantId": "usr-003",
+      "commercialUnitId": "unit-a07",
+      "galleryAdministratorId": "usr-001",
+      "status": "ACTIVE",
+      "assignedAt": "2026-03-12T15:00:00Z",
+      "terminatedAt": null
+    },
+    {
+      "id": "asg-003",
+      "tenantId": "usr-004",
+      "commercialUnitId": "unit-b09",
+      "galleryAdministratorId": "usr-001",
+      "status": "ACTIVE",
+      "assignedAt": "2026-04-01T15:00:00Z",
+      "terminatedAt": null
+    },
+    {
+      "id": "asg-004",
+      "tenantId": "usr-005",
+      "commercialUnitId": "unit-b12",
+      "galleryAdministratorId": "usr-001",
+      "status": "ACTIVE",
+      "assignedAt": "2026-04-15T15:00:00Z",
+      "terminatedAt": null
+    },
+    {
+      "id": "asg-005",
+      "tenantId": "usr-006",
+      "commercialUnitId": "unit-c03",
+      "galleryAdministratorId": "usr-001",
+      "status": "ACTIVE",
+      "assignedAt": "2026-05-02T15:00:00Z",
+      "terminatedAt": null
+    },
+    {
+      "id": "asg-006",
+      "tenantId": "usr-007",
+      "commercialUnitId": "unit-c07",
+      "galleryAdministratorId": "usr-001",
+      "status": "TERMINATED",
+      "assignedAt": "2026-03-20T15:00:00Z",
+      "terminatedAt": "2026-09-30T22:00:00Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "cnv-001",
+      "tenantId": "usr-002",
+      "commercialUnitId": "unit-a03",
+      "galleryAdministratorId": "usr-001",
+      "subject": "Corte de luz en el local A-03",
+      "status": "OPEN",
+      "startedAt": "2026-10-08T13:05:00Z",
+      "lastMessageAt": "2026-10-08T14:12:00Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "cnv-002",
+      "tenantId": "usr-004",
+      "commercialUnitId": "unit-b09",
+      "galleryAdministratorId": "usr-001",
+      "subject": "Consulta sobre el recibo de septiembre",
+      "status": "OPEN",
+      "startedAt": "2026-10-06T16:40:00Z",
+      "lastMessageAt": "2026-10-07T09:30:00Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "cnv-003",
+      "tenantId": "usr-006",
+      "commercialUnitId": "unit-c03",
+      "galleryAdministratorId": "usr-001",
+      "subject": "Fuga de agua en el patio de comidas",
+      "status": "OPEN",
+      "startedAt": "2026-10-05T19:15:00Z",
+      "lastMessageAt": "2026-10-05T19:15:00Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "cnv-004",
+      "tenantId": "usr-003",
+      "commercialUnitId": "unit-a07",
+      "galleryAdministratorId": "usr-001",
+      "subject": "Cambio de horario de atención",
+      "status": "RESOLVED",
+      "startedAt": "2026-09-28T15:00:00Z",
+      "lastMessageAt": "2026-09-29T10:20:00Z",
+      "resolvedAt": "2026-09-29T10:25:00Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-001",
+      "conversationId": "cnv-001",
+      "senderId": "usr-002",
+      "senderRole": "TENANT",
+      "content": "Buenas tardes, desde las 12:50 no tenemos luz en el local A-03. Los locales vecinos sí tienen energía.",
+      "attachments": [
+        {
+          "fileName": "tablero-a03.jpg",
+          "url": "https://storage.storepulse.pe/attachments/tablero-a03.jpg",
+          "mimeType": "image/jpeg",
+          "sizeBytes": 482113
+        }
+      ],
+      "sentAt": "2026-10-08T13:05:00Z"
+    },
+    {
+      "id": "msg-002",
+      "conversationId": "cnv-001",
+      "senderId": "usr-001",
+      "senderRole": "GALLERY_ADMINISTRATOR",
+      "content": "Gracias por avisar, Luis. Ya enviamos al electricista; llega en unos 20 minutos.",
+      "attachments": [],
+      "sentAt": "2026-10-08T13:20:00Z"
+    },
+    {
+      "id": "msg-003",
+      "conversationId": "cnv-001",
+      "senderId": "usr-002",
+      "senderRole": "TENANT",
+      "content": "Perfecto, lo espero en el local.",
+      "attachments": [],
+      "sentAt": "2026-10-08T14:12:00Z"
+    },
+    {
+      "id": "msg-004",
+      "conversationId": "cnv-002",
+      "senderId": "usr-004",
+      "senderRole": "TENANT",
+      "content": "Hola, el recibo de septiembre de mi local subió casi 40 % y abrimos el mismo horario. ¿Pueden revisarlo?",
+      "attachments": [
+        {
+          "fileName": "recibo-b09-2026-09.pdf",
+          "url": "https://storage.storepulse.pe/attachments/recibo-b09-2026-09.pdf",
+          "mimeType": "application/pdf",
+          "sizeBytes": 96210
+        }
+      ],
+      "sentAt": "2026-10-06T16:40:00Z"
+    },
+    {
+      "id": "msg-005",
+      "conversationId": "cnv-002",
+      "senderId": "usr-001",
+      "senderRole": "GALLERY_ADMINISTRATOR",
+      "content": "Hola Jorge, estamos revisando el desglose de consumo del medidor de su local. Le escribimos mañana.",
+      "attachments": [],
+      "sentAt": "2026-10-07T09:30:00Z"
+    },
+    {
+      "id": "msg-006",
+      "conversationId": "cnv-003",
+      "senderId": "usr-006",
+      "senderRole": "TENANT",
+      "content": "Hay una fuga de agua cerca del lavadero del patio de comidas, el piso está mojado.",
+      "attachments": [],
+      "sentAt": "2026-10-05T19:15:00Z"
+    },
+    {
+      "id": "msg-007",
+      "conversationId": "cnv-004",
+      "senderId": "usr-003",
+      "senderRole": "TENANT",
+      "content": "¿Puedo abrir los domingos de 10:00 a 18:00 desde octubre?",
+      "attachments": [],
+      "sentAt": "2026-09-28T15:00:00Z"
+    },
+    {
+      "id": "msg-008",
+      "conversationId": "cnv-004",
+      "senderId": "usr-001",
+      "senderRole": "GALLERY_ADMINISTRATOR",
+      "content": "Sí, Rosa. Ya actualizamos el horario de su local en el sistema.",
+      "attachments": [],
+      "sentAt": "2026-09-29T10:20:00Z"
+    }
+  ],
+  "tenantNotifications": [
+    {
+      "id": "ntf-001",
+      "tenantId": "usr-002",
+      "commercialUnitId": "unit-a03",
+      "galleryAdministratorId": "usr-001",
+      "type": "CONVERSATION_STARTED",
+      "title": "Conversación iniciada",
+      "body": "La administración recibió su mensaje: \"Corte de luz en el local A-03\".",
+      "channel": "IN_APP",
+      "status": "SENT",
+      "read": true,
+      "createdAt": "2026-10-08T13:05:02Z",
+      "referenceId": "cnv-001"
+    },
+    {
+      "id": "ntf-002",
+      "tenantId": "usr-002",
+      "commercialUnitId": "unit-a03",
+      "galleryAdministratorId": "usr-001",
+      "type": "MESSAGE_RECEIVED",
+      "title": "Nuevo mensaje de la administración",
+      "body": "Gracias por avisar, Luis. Ya enviamos al electricista; llega en unos 20 minutos.",
+      "channel": "PUSH",
+      "status": "SENT",
+      "read": true,
+      "createdAt": "2026-10-08T13:20:01Z",
+      "referenceId": "cnv-001"
+    },
+    {
+      "id": "ntf-003",
+      "tenantId": "usr-002",
+      "commercialUnitId": "unit-a03",
+      "galleryAdministratorId": "usr-001",
+      "type": "INCIDENT",
+      "title": "Incidente en su local",
+      "body": "Se registró un corte de energía en el local A-03. El personal técnico ya está en camino.",
+      "channel": "PUSH",
+      "status": "SENT",
+      "read": false,
+      "createdAt": "2026-10-08T13:22:00Z",
+      "referenceId": null
+    },
+    {
+      "id": "ntf-004",
+      "tenantId": "usr-004",
+      "commercialUnitId": "unit-b09",
+      "galleryAdministratorId": "usr-001",
+      "type": "UTILITY_BILL_ISSUED",
+      "title": "Recibo de septiembre emitido",
+      "body": "Su recibo de servicios de septiembre ya está disponible para consulta.",
+      "channel": "EMAIL",
+      "status": "SENT",
+      "read": true,
+      "createdAt": "2026-10-01T13:00:00Z",
+      "referenceId": null
+    },
+    {
+      "id": "ntf-005",
+      "tenantId": "usr-005",
+      "commercialUnitId": "unit-b12",
+      "galleryAdministratorId": "usr-001",
+      "type": "UTILITY_BILL_ISSUED",
+      "title": "Recibo de septiembre emitido",
+      "body": "Su recibo de servicios de septiembre ya está disponible para consulta.",
+      "channel": "EMAIL",
+      "status": "FAILED",
+      "read": false,
+      "createdAt": "2026-10-01T13:00:00Z",
+      "referenceId": null
+    },
+    {
+      "id": "ntf-006",
+      "tenantId": "usr-002",
+      "commercialUnitId": "unit-a03",
+      "galleryAdministratorId": "usr-001",
+      "type": "ANNOUNCEMENT",
+      "title": "Fumigación general",
+      "body": "El sábado 11 de octubre se fumigará la galería de 06:00 a 09:00. Mantenga su mercadería cubierta.",
+      "channel": "IN_APP",
+      "status": "SENT",
+      "read": false,
+      "createdAt": "2026-10-07T15:00:00Z",
+      "referenceId": null
+    },
+    {
+      "id": "ntf-007",
+      "tenantId": "usr-003",
+      "commercialUnitId": "unit-a07",
+      "galleryAdministratorId": "usr-001",
+      "type": "ANNOUNCEMENT",
+      "title": "Fumigación general",
+      "body": "El sábado 11 de octubre se fumigará la galería de 06:00 a 09:00. Mantenga su mercadería cubierta.",
+      "channel": "IN_APP",
+      "status": "SENT",
+      "read": true,
+      "createdAt": "2026-10-07T15:00:00Z",
+      "referenceId": null
+    },
+    {
+      "id": "ntf-008",
+      "tenantId": "usr-004",
+      "commercialUnitId": "unit-b09",
+      "galleryAdministratorId": "usr-001",
+      "type": "ANNOUNCEMENT",
+      "title": "Fumigación general",
+      "body": "El sábado 11 de octubre se fumigará la galería de 06:00 a 09:00. Mantenga su mercadería cubierta.",
+      "channel": "IN_APP",
+      "status": "SENT",
+      "read": false,
+      "createdAt": "2026-10-07T15:00:00Z",
+      "referenceId": null
+    },
+    {
+      "id": "ntf-009",
+      "tenantId": "usr-005",
+      "commercialUnitId": "unit-b12",
+      "galleryAdministratorId": "usr-001",
+      "type": "ANNOUNCEMENT",
+      "title": "Fumigación general",
+      "body": "El sábado 11 de octubre se fumigará la galería de 06:00 a 09:00. Mantenga su mercadería cubierta.",
+      "channel": "IN_APP",
+      "status": "SENT",
+      "read": false,
+      "createdAt": "2026-10-07T15:00:00Z",
+      "referenceId": null
+    },
+    {
+      "id": "ntf-010",
+      "tenantId": "usr-006",
+      "commercialUnitId": "unit-c03",
+      "galleryAdministratorId": "usr-001",
+      "type": "ANNOUNCEMENT",
+      "title": "Fumigación general",
+      "body": "El sábado 11 de octubre se fumigará la galería de 06:00 a 09:00. Mantenga su mercadería cubierta.",
+      "channel": "IN_APP",
+      "status": "SENT",
+      "read": true,
+      "createdAt": "2026-10-07T15:00:00Z",
+      "referenceId": null
+    }
+  ],
+  "communicationLogs": [
+    {
+      "id": "log-001",
+      "referenceId": "cnv-004",
+      "referenceType": "CONVERSATION",
+      "action": "CONVERSATION_STARTED",
+      "tenantId": "usr-003",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Cambio de horario de atención",
+      "loggedAt": "2026-09-28T15:00:01Z"
+    },
+    {
+      "id": "log-002",
+      "referenceId": "cnv-004",
+      "referenceType": "CONVERSATION",
+      "action": "CONVERSATION_RESOLVED",
+      "tenantId": "usr-003",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Cambio de horario de atención",
+      "loggedAt": "2026-09-29T10:25:00Z"
+    },
+    {
+      "id": "log-003",
+      "referenceId": "ntf-004",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-004",
+      "galleryAdministratorId": "usr-001",
+      "channel": "EMAIL",
+      "detail": "Recibo de septiembre emitido",
+      "loggedAt": "2026-10-01T13:00:03Z"
+    },
+    {
+      "id": "log-004",
+      "referenceId": "ntf-005",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_FAILED",
+      "tenantId": "usr-005",
+      "galleryAdministratorId": "usr-001",
+      "channel": "EMAIL",
+      "detail": "Recibo de septiembre emitido",
+      "loggedAt": "2026-10-01T13:00:04Z"
+    },
+    {
+      "id": "log-005",
+      "referenceId": "cnv-003",
+      "referenceType": "CONVERSATION",
+      "action": "CONVERSATION_STARTED",
+      "tenantId": "usr-006",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Fuga de agua en el patio de comidas",
+      "loggedAt": "2026-10-05T19:15:01Z"
+    },
+    {
+      "id": "log-006",
+      "referenceId": "cnv-002",
+      "referenceType": "CONVERSATION",
+      "action": "CONVERSATION_STARTED",
+      "tenantId": "usr-004",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Consulta sobre el recibo de septiembre",
+      "loggedAt": "2026-10-06T16:40:01Z"
+    },
+    {
+      "id": "log-007",
+      "referenceId": "ntf-006",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-002",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Fumigación general",
+      "loggedAt": "2026-10-07T15:00:02Z"
+    },
+    {
+      "id": "log-008",
+      "referenceId": "ntf-007",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-003",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Fumigación general",
+      "loggedAt": "2026-10-07T15:00:02Z"
+    },
+    {
+      "id": "log-009",
+      "referenceId": "ntf-008",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-004",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Fumigación general",
+      "loggedAt": "2026-10-07T15:00:02Z"
+    },
+    {
+      "id": "log-010",
+      "referenceId": "ntf-009",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-005",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Fumigación general",
+      "loggedAt": "2026-10-07T15:00:02Z"
+    },
+    {
+      "id": "log-011",
+      "referenceId": "ntf-010",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-006",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Fumigación general",
+      "loggedAt": "2026-10-07T15:00:02Z"
+    },
+    {
+      "id": "log-012",
+      "referenceId": "cnv-001",
+      "referenceType": "CONVERSATION",
+      "action": "CONVERSATION_STARTED",
+      "tenantId": "usr-002",
+      "galleryAdministratorId": "usr-001",
+      "channel": "IN_APP",
+      "detail": "Corte de luz en el local A-03",
+      "loggedAt": "2026-10-08T13:05:01Z"
+    },
+    {
+      "id": "log-013",
+      "referenceId": "ntf-002",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-002",
+      "galleryAdministratorId": "usr-001",
+      "channel": "PUSH",
+      "detail": "Nuevo mensaje de la administración",
+      "loggedAt": "2026-10-08T13:20:02Z"
+    },
+    {
+      "id": "log-014",
+      "referenceId": "ntf-003",
+      "referenceType": "NOTIFICATION",
+      "action": "NOTIFICATION_SENT",
+      "tenantId": "usr-002",
+      "galleryAdministratorId": "usr-001",
+      "channel": "PUSH",
+      "detail": "Incidente en su local",
+      "loggedAt": "2026-10-08T13:22:01Z"
+    }
+  ]
 }

@@ -1,0 +1,91 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'communication.page_title' | translate }}</h1>
+    <p>{{ 'communication.assignments.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button matButton="filled" type="button" (click)="assign()">
+      <mat-icon aria-hidden="true">person_add</mat-icon>
+      {{ 'communication.assignments.new' | translate }}
+    </button>
+  </div>
+</header>
+
+<app-communication-tabs />
+
+<mat-button-toggle-group
+  [value]="filter()"
+  (change)="filter.set($event.value)"
+  [attr.aria-label]="'communication.filters.label' | translate"
+>
+  @for (option of filters; track option) {
+    <mat-button-toggle [value]="option">
+      {{
+        (option === 'ALL' ? 'communication.filters.all' : 'communication.status.' + option)
+          | translate
+      }}
+      @if (option === 'ACTIVE') {
+        ({{ store.activeCount() }})
+      }
+    </mat-button-toggle>
+  }
+</mat-button-toggle-group>
+
+@if (store.loading() && store.assignments().length === 0) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else {
+  <mat-card appearance="outlined" class="table-card">
+    @if (visible().length === 0) {
+      <div class="state">
+        <mat-icon class="state-icon" aria-hidden="true">assignment_ind</mat-icon>
+        <b>{{ 'communication.assignments.empty' | translate }}</b>
+      </div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'communication.fields.tenant' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.unit' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.assigned_at' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.terminated_at' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.status' | translate }}</th>
+            <th scope="col">
+              <span class="sr-only">{{ 'communication.fields.actions' | translate }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (assignment of visible(); track assignment.id) {
+            <tr>
+              <td>
+                <strong>{{ store.directory.tenantName(assignment.tenantId) }}</strong>
+                <small>{{ store.directory.tenant(assignment.tenantId)?.email }}</small>
+              </td>
+              <td>{{ store.directory.unitLabel(assignment.commercialUnitId) }}</td>
+              <td>{{ assignment.assignedAt | localizedDate: 'date' }}</td>
+              <td>{{ assignment.terminatedAt | localizedDate: 'date' }}</td>
+              <td><app-communication-status-badge [status]="assignment.status" /></td>
+              <td class="end">
+                @if (assignment.isActive) {
+                  <button
+                    matButton
+                    type="button"
+                    class="danger-button"
+                    [disabled]="store.saving()"
+                    (click)="terminate(assignment)"
+                  >
+                    <mat-icon aria-hidden="true">person_remove</mat-icon>
+                    {{ 'communication.assignments.terminate' | translate }}
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </mat-card>
+}

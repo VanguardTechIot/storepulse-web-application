@@ -3,5 +3,15 @@
   "/api/v1/users/:userId/profile": "/profiles/:userId",
   "/api/v1/iot-devices*": "/iotDevices$1",
   "/api/v1/monitoring-rules*": "/monitoringRules$1",
+  "/api/v1/galleries/:galleryId/units": "/units?galleryId=:galleryId",
+  "/api/v1/units/:unitId/invite": "/tenantInvitations",
+  "/api/v1/tenant-invitations*": "/tenantInvitations$1",
+  "/api/v1/conversations/administrators/:administratorId": "/conversations?galleryAdministratorId=:administratorId",
+  "/api/v1/conversations/:conversationId/messages": "/messages?conversationId=:conversationId",
+  "/api/v1/conversations/:conversationId/resolve": "/conversations/:conversationId",
+  "/api/v1/tenant-notifications*": "/tenantNotifications$1",
+  "/api/v1/communication-logs*": "/communicationLogs$1",
+  "/api/v1/tenant-assignments/:assignmentId/terminate": "/tenantAssignments/:assignmentId",
+  "/api/v1/tenant-assignments*": "/tenantAssignments$1",
   "/api/v1/*": "/$1"
 }

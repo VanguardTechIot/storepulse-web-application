@@ -1,0 +1,95 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'communication.page_title' | translate }}</h1>
+    <p>{{ 'communication.logs.subtitle' | translate }}</p>
+  </div>
+</header>
+
+<app-communication-tabs />
+
+<div class="filters">
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>{{ 'communication.fields.tenant' | translate }}</mat-label>
+    <mat-select [value]="tenantId()" (valueChange)="setFilter('tenantId', $event)">
+      <mat-option value="ALL">{{ 'communication.filters.all_tenants' | translate }}</mat-option>
+      @for (tenant of store.directory.tenants(); track tenant.id) {
+        <mat-option [value]="tenant.id">{{ tenant.fullName }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>{{ 'communication.fields.reference' | translate }}</mat-label>
+    <mat-select [value]="referenceType()" (valueChange)="setFilter('referenceType', $event)">
+      <mat-option value="ALL">{{ 'communication.filters.all' | translate }}</mat-option>
+      @for (option of referenceTypes; track option) {
+        <mat-option [value]="option">{{
+          'communication.references.' + option | translate
+        }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>{{ 'communication.filters.from' | translate }}</mat-label>
+    <input matInput type="date" [ngModel]="from()" (ngModelChange)="setFilter('from', $event)" />
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>{{ 'communication.filters.to' | translate }}</mat-label>
+    <input matInput type="date" [ngModel]="to()" (ngModelChange)="setFilter('to', $event)" />
+  </mat-form-field>
+  @if (hasFilters()) {
+    <button matButton type="button" (click)="clearFilters()">
+      {{ 'common.actions.clearFilters' | translate }}
+    </button>
+  }
+</div>
+
+@if (store.loading() && store.logs().length === 0) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else {
+  <mat-card appearance="outlined" class="table-card">
+    @if (filtered().length === 0) {
+      <div class="state">
+        <mat-icon class="state-icon" aria-hidden="true">history</mat-icon>
+        <b>{{ 'communication.logs.empty' | translate }}</b>
+      </div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'communication.fields.date' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.tenant' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.event' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.detail' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.channel' | translate }}</th>
+            <th scope="col">{{ 'communication.fields.reference' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of page(); track log.id) {
+            <tr>
+              <td>{{ log.loggedAt | localizedDate: 'dateTime' }}</td>
+              <td>{{ store.directory.tenantName(log.tenantId) }}</td>
+              <td>{{ 'communication.actions_log.' + log.action | translate }}</td>
+              <td>{{ log.detail }}</td>
+              <td>{{ 'communication.channels.' + log.channel | translate }}</td>
+              <td>
+                {{ 'communication.references.' + log.referenceType | translate }}
+                <small>{{ log.referenceId }}</small>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <mat-paginator
+        [length]="filtered().length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex()"
+        [hidePageSize]="true"
+        (page)="changePage($event)"
+      />
+    }
+  </mat-card>
+}

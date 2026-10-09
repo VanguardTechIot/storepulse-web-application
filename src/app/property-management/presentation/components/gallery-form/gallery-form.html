@@ -1,0 +1,106 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <h2 matCardTitle>
+      {{
+        (gallery() ? 'property.gallery.edit_title' : 'property.gallery.register_title') | translate
+      }}
+    </h2>
+    <p matCardSubtitle>
+      {{
+        (gallery() ? 'property.gallery.edit_subtitle' : 'property.gallery.register_subtitle')
+          | translate
+      }}
+    </p>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (store.error(); as error) {
+        <app-callout type="danger" icon="error" role="alert">{{
+          'property.errors.' + error | translate
+        }}</app-callout>
+      }
+
+      <mat-form-field>
+        <mat-label>{{ 'property.fields.gallery_name' | translate }}</mat-label>
+        <mat-icon matPrefix aria-hidden="true">apartment</mat-icon>
+        <input matInput formControlName="name" [maxlength]="nameMaxLength" required />
+        @if (form.controls.name.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        } @else if (form.controls.name.hasError('maxlength')) {
+          <mat-error>{{
+            'property.validation.max_length' | translate: { count: nameMaxLength }
+          }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'property.fields.address' | translate }}</mat-label>
+        <mat-icon matPrefix aria-hidden="true">location_on</mat-icon>
+        <input
+          matInput
+          formControlName="address"
+          autocomplete="street-address"
+          [maxlength]="addressMaxLength"
+          required
+        />
+        @if (form.controls.address.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        } @else if (form.controls.address.hasError('maxlength')) {
+          <mat-error>{{
+            'property.validation.max_length' | translate: { count: addressMaxLength }
+          }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'property.fields.total_units' | translate }}</mat-label>
+        <mat-icon matPrefix aria-hidden="true">storefront</mat-icon>
+        <input
+          matInput
+          type="number"
+          min="1"
+          [max]="maxTotalUnits"
+          step="1"
+          formControlName="totalUnits"
+          required
+        />
+        <mat-hint>{{ 'property.gallery.total_units_hint' | translate }}</mat-hint>
+        @if (form.controls.totalUnits.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        } @else if (form.controls.totalUnits.invalid) {
+          <mat-error>{{
+            'property.validation.total_units' | translate: { max: maxTotalUnits }
+          }}</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="actions">
+        @if (gallery()) {
+          <button
+            matButton="outlined"
+            type="button"
+            [disabled]="form.pristine || store.saving()"
+            (click)="discard()"
+          >
+            {{ 'property.actions.discard' | translate }}
+          </button>
+        }
+        <button
+          matButton="filled"
+          type="submit"
+          [disabled]="store.saving() || (gallery() !== null && form.pristine)"
+        >
+          {{
+            (store.saving()
+              ? 'property.actions.saving'
+              : gallery()
+                ? 'property.actions.save'
+                : 'property.gallery.register'
+            ) | translate
+          }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
