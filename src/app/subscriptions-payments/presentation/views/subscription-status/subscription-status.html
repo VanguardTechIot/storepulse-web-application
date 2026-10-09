@@ -127,8 +127,8 @@
         | translate: { date: (subscription.billingPeriod?.endDate | localizedDate: 'date') }
     "
     [confirmLabel]="'subscriptions.status.cancel_renewal' | translate"
-    tone="danger"
-    icon="alert"
+    [tone]="'danger'"
+    [icon]="'alert'"
     [busy]="store.processing()"
     (confirmed)="cancelRenewal()"
     (cancelled)="confirmingCancel.set(false)"
