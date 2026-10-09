@@ -11,4 +11,6 @@ export const appNav = {
   /** Profile of the signed-in user (Profiles and Preferences), opened from the account menu. */
   profile: ['/profile'],
   termsAndConditions: ['/terms-and-conditions'],
+  /** Notification Center of Dashboard and Analytics (US-49), opened from the toolbar bell. */
+  notifications: ['/dashboard/notifications'],
 } as const;
