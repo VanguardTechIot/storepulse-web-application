@@ -1,0 +1,173 @@
+<a class="back" routerLink="/communication/conversations">
+  <mat-icon aria-hidden="true">arrow_back</mat-icon>
+  {{ 'communication.conversation.back' | translate }}
+</a>
+
+@if (store.current(); as conversation) {
+  <header class="page-head">
+    <div>
+      <h1>
+        {{ conversation.subject }}
+        <app-communication-status-badge [status]="conversation.status" />
+      </h1>
+      <p>
+        {{ store.directory.tenantName(conversation.tenantId) }} ·
+        {{ store.directory.unitLabel(conversation.commercialUnitId) }}
+      </p>
+    </div>
+    @if (conversation.isOpen) {
+      <div class="actions">
+        <button matButton="outlined" type="button" [disabled]="store.saving()" (click)="resolve()">
+          <mat-icon aria-hidden="true">task_alt</mat-icon>
+          {{ 'communication.conversation.resolve' | translate }}
+        </button>
+      </div>
+    }
+  </header>
+
+  @if (store.error(); as error) {
+    <app-callout type="danger" icon="error" role="alert">{{
+      'communication.errors.' + error | translate
+    }}</app-callout>
+  }
+
+  <mat-card appearance="outlined" class="thread-card">
+    <div class="thread-info">
+      <span
+        ><mat-icon aria-hidden="true">schedule</mat-icon
+        >{{
+          'communication.conversation.started'
+            | translate: { date: (conversation.startedAt | localizedDate: 'dateTime') }
+        }}</span
+      >
+      @if (conversation.resolvedAt) {
+        <span
+          ><mat-icon aria-hidden="true">task_alt</mat-icon
+          >{{
+            'communication.conversation.resolved_on'
+              | translate: { date: (conversation.resolvedAt | localizedDate: 'dateTime') }
+          }}</span
+        >
+      }
+      <span
+        ><mat-icon aria-hidden="true">mail</mat-icon
+        >{{ store.directory.tenant(conversation.tenantId)?.email ?? '—' }}</span
+      >
+    </div>
+
+    <div
+      class="thread"
+      #thread
+      role="log"
+      [attr.aria-label]="'communication.conversation.messages' | translate"
+    >
+      @for (message of store.messages(); track message.id) {
+        <article class="bubble" [class.mine]="message.isFromAdministrator">
+          <span class="author">{{
+            authorName(message.senderId, message.isFromAdministrator)
+          }}</span>
+          <p>{{ message.content }}</p>
+          @if (message.hasAttachments) {
+            <div class="attachments">
+              @for (attachment of message.attachments; track attachment.fileName) {
+                <a
+                  class="attachment"
+                  [href]="attachment.url"
+                  target="_blank"
+                  rel="noopener"
+                  [attr.download]="attachment.fileName"
+                >
+                  <mat-icon aria-hidden="true">{{ attachmentIcon(attachment.mimeType) }}</mat-icon>
+                  {{ attachment.fileName }}
+                </a>
+              }
+            </div>
+          }
+          <time [attr.datetime]="message.sentAt.toISOString()">{{
+            message.sentAt | localizedDate: 'dateTime'
+          }}</time>
+        </article>
+      } @empty {
+        <p class="muted">{{ 'communication.conversation.no_messages' | translate }}</p>
+      }
+    </div>
+
+    @if (conversation.isOpen) {
+      <form class="composer" [formGroup]="composer" (ngSubmit)="send()" novalidate>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'communication.conversation.reply' | translate }}</mat-label>
+          <textarea
+            matInput
+            formControlName="content"
+            rows="3"
+            [maxlength]="contentMaxLength"
+            (keydown)="onKeydown($event)"
+          ></textarea>
+          <mat-hint align="end">{{ content.value.length }} / {{ contentMaxLength }}</mat-hint>
+        </mat-form-field>
+        @if (attachmentError(); as error) {
+          <app-callout type="warn" icon="attach_file" role="alert">{{
+            'communication.errors.' + error | translate
+          }}</app-callout>
+        }
+        <div class="row">
+          <div class="attachments grow">
+            @for (attachment of attachments(); track $index) {
+              <span class="attachment">
+                <mat-icon aria-hidden="true">{{ attachmentIcon(attachment.mimeType) }}</mat-icon>
+                {{ attachment.fileName }}
+                <button
+                  type="button"
+                  [attr.aria-label]="
+                    'communication.attachments.remove' | translate: { name: attachment.fileName }
+                  "
+                  (click)="removeAttachment($index)"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </span>
+            }
+            <button matButton type="button" (click)="fileInput.click()">
+              <mat-icon aria-hidden="true">attach_file</mat-icon>
+              {{ 'communication.attachments.add' | translate }}
+            </button>
+            <input
+              #fileInput
+              type="file"
+              hidden
+              multiple
+              [accept]="accept"
+              (change)="addFiles(fileInput)"
+            />
+          </div>
+          <button matButton="filled" type="submit" [disabled]="store.saving() || content.invalid">
+            <mat-icon aria-hidden="true">send</mat-icon>
+            {{
+              (store.saving() ? 'communication.actions.sending' : 'communication.conversation.send')
+                | translate
+            }}
+          </button>
+        </div>
+      </form>
+    } @else {
+      <div class="composer">
+        <app-callout type="ok" icon="task_alt">{{
+          'communication.conversation.closed_notice' | translate
+        }}</app-callout>
+      </div>
+    }
+  </mat-card>
+} @else if (store.loading()) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else {
+  <div class="state" role="alert">
+    <mat-icon class="state-icon error" aria-hidden="true">error</mat-icon>
+    <b>{{ 'communication.errors.' + (store.error() ?? 'conversation_not_found') | translate }}</b>
+    <a matButton="outlined" routerLink="/communication/conversations">{{
+      'communication.conversation.back' | translate
+    }}</a>
+  </div>
+}

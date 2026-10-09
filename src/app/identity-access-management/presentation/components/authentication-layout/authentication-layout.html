@@ -1,0 +1,72 @@
+<div class="auth">
+  <aside class="auth-side">
+    <div class="auth-brand">
+      <span class="auth-brand-mark" aria-hidden="true"><mat-icon>monitor_heart</mat-icon></span>
+      <span class="auth-brand-name">Store<span>Pulse</span></span>
+    </div>
+
+    <mat-chip-set class="auth-eyebrow">
+      <mat-chip>
+        <mat-icon matChipAvatar aria-hidden="true">monitor_heart</mat-icon>
+        {{ 'iam.showcase.eyebrow' | translate }}
+      </mat-chip>
+    </mat-chip-set>
+    <h2>
+      {{ 'iam.showcase.title' | translate }}
+      <span>{{ 'iam.showcase.title_highlight' | translate }}</span>
+    </h2>
+    <p>{{ 'iam.showcase.description' | translate }}</p>
+
+    <mat-card class="auth-console" aria-hidden="true">
+      <mat-card-header class="auth-console-head">
+        <mat-card-subtitle>{{ 'iam.showcase.floor_plan' | translate }}</mat-card-subtitle>
+        <mat-chip-set class="auth-console-badge">
+          <mat-chip>{{ 'iam.showcase.monitoring' | translate }}</mat-chip>
+        </mat-chip-set>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-grid-list cols="4" rowHeight="58px" gutterSize="10px">
+          @for (unit of units; track unit) {
+            <mat-grid-tile class="auth-unit" [class.alert]="unit === alertUnit">
+              <i></i>{{ unit }}
+            </mat-grid-tile>
+          }
+        </mat-grid-list>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-chip-set class="auth-features">
+      <mat-chip>
+        <mat-icon matChipAvatar aria-hidden="true">verified_user</mat-icon>
+        {{ 'iam.showcase.features.security' | translate }}
+      </mat-chip>
+      <mat-chip>
+        <mat-icon matChipAvatar aria-hidden="true">bolt</mat-icon>
+        {{ 'iam.showcase.features.sub_metering' | translate }}
+      </mat-chip>
+      <mat-chip>
+        <mat-icon matChipAvatar aria-hidden="true">water_drop</mat-icon>
+        {{ 'iam.showcase.features.water' | translate }}
+      </mat-chip>
+    </mat-chip-set>
+  </aside>
+
+  <main class="auth-main" id="main-content" tabindex="-1">
+    <div class="auth-top">
+      <ng-content select="[authTop]" />
+      <app-language-switcher />
+    </div>
+
+    <div class="auth-form" [class.wide]="width() === 'wide'">
+      <ng-content />
+    </div>
+
+    <footer class="auth-footer">
+      <span>{{ 'common.footer.copyright' | translate }}</span>
+      <span aria-hidden="true">·</span>
+      <a [routerLink]="appNav.termsAndConditions">{{ 'common.footer.terms' | translate }}</a>
+      <span aria-hidden="true">·</span>
+      <a [routerLink]="appNav.termsAndConditions" fragment="privacy">{{ 'common.footer.privacy' | translate }}</a>
+    </footer>
+  </main>
+</div>

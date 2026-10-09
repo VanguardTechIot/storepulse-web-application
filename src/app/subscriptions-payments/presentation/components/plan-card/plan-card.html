@@ -1,0 +1,56 @@
+<article class="plan">
+  <header>
+    <h3>{{ 'subscriptions.plans.' + plan().code + '.name' | translate }}</h3>
+    @if (current()) {
+      <span class="badge badge--success">{{ 'subscriptions.plan_card.current' | translate }}</span>
+    }
+  </header>
+  <p class="segment">{{ 'subscriptions.plans.' + plan().code + '.segment' | translate }}</p>
+
+  <p class="price">
+    <span class="currency">S/</span>
+    <b>{{ price().amount | localizedNumber: 0 }}</b>
+    <span class="per"
+    >/
+      {{
+        (annual() ? 'subscriptions.plan_card.per_year' : 'subscriptions.plan_card.per_month')
+          | translate
+      }}</span
+    >
+  </p>
+
+  <p class="limit">
+    <mat-icon aria-hidden="true">storefront</mat-icon>
+    @if (plan().isUnlimited) {
+      {{ 'subscriptions.plan_card.unlimited_units' | translate }}
+    } @else {
+      {{
+        'subscriptions.plan_card.up_to_units' | translate: { count: plan().monitoredUnitLimit ?? 0 }
+      }}
+    }
+  </p>
+
+  <ul class="features">
+    @for (feature of plan().features; track feature) {
+      <li>
+        <mat-icon aria-hidden="true">check</mat-icon
+        >{{ 'subscriptions.features.' + feature | translate }}
+      </li>
+    }
+  </ul>
+
+  @if (current()) {
+    <button matButton="outlined" type="button" disabled>
+      {{ 'subscriptions.plan_card.current' | translate }}
+    </button>
+  } @else {
+    <button matButton="filled" type="button" [disabled]="!fits()" (click)="selected.emit(plan())">
+      {{ 'subscriptions.plan_card.choose' | translate }}
+    </button>
+    @if (!fits()) {
+      <p class="hint">
+        {{ 'subscriptions.plan_card.does_not_fit' | translate: { count: monitoredUnitCount() } }}
+      </p>
+    }
+  }
+</article>

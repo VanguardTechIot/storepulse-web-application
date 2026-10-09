@@ -1,0 +1,35 @@
+// Angular Material theme (Material 3) aligned with the global tokens of src/styles.css.
+// Learn more at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$blue-palette,
+        tertiary: mat.$azure-palette,
+      ),
+      typography: (
+        plain-family: 'Inter',
+        brand-family: 'Inter',
+      ),
+      density: 0,
+    )
+  );
+
+  // Same values as --sp-primary, --sp-text, --sp-border and --sp-danger.
+  @include mat.theme-overrides(
+    (
+      primary: #2563eb,
+      on-primary: #ffffff,
+      outline: #d1d5db,
+      surface: #ffffff,
+      on-surface: #1f2937,
+      error: #dc2626,
+    )
+  );
+}
+
+body {
+  color-scheme: light;
+}

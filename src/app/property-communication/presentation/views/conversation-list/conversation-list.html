@@ -1,0 +1,85 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'communication.page_title' | translate }}</h1>
+    <p>{{ 'communication.conversations.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button matButton="filled" type="button" (click)="startConversation()">
+      <mat-icon aria-hidden="true">add_comment</mat-icon>
+      {{ 'communication.conversations.new' | translate }}
+    </button>
+  </div>
+</header>
+
+<app-communication-tabs />
+
+<div class="filters">
+  <mat-form-field class="search" subscriptSizing="dynamic">
+    <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+    <mat-label>{{ 'communication.conversations.search' | translate }}</mat-label>
+    <input matInput type="search" [ngModel]="search()" (ngModelChange)="search.set($event)" />
+  </mat-form-field>
+  <mat-button-toggle-group
+    [value]="filter()"
+    (change)="filter.set($event.value)"
+    [attr.aria-label]="'communication.filters.label' | translate"
+  >
+    @for (option of filters; track option) {
+      <mat-button-toggle [value]="option">
+        {{
+          (option === 'ALL' ? 'communication.filters.all' : 'communication.status.' + option)
+            | translate
+        }}
+        @if (option === 'OPEN') {
+          ({{ store.openCount() }})
+        }
+      </mat-button-toggle>
+    }
+  </mat-button-toggle-group>
+</div>
+
+@if (store.loading() && store.conversations().length === 0) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else if (store.error(); as error) {
+  <div class="state" role="alert">
+    <mat-icon class="state-icon error" aria-hidden="true">error</mat-icon>
+    <b>{{ 'communication.errors.' + error | translate }}</b>
+    <button matButton="outlined" type="button" (click)="store.load()">
+      {{ 'common.actions.retry' | translate }}
+    </button>
+  </div>
+} @else {
+  <mat-card appearance="outlined">
+    @if (visible().length === 0) {
+      <div class="state">
+        <mat-icon class="state-icon" aria-hidden="true">forum</mat-icon>
+        <b>{{ 'communication.conversations.empty' | translate }}</b>
+        <span>{{ 'communication.conversations.empty_hint' | translate }}</span>
+      </div>
+    } @else {
+      <div class="conversations">
+        @for (conversation of visible(); track conversation.id) {
+          <a class="conversation" [routerLink]="['/communication/conversations', conversation.id]">
+            <span class="avatar" aria-hidden="true">{{ initials(conversation.tenantId) }}</span>
+            <div class="body">
+              <div class="who">
+                <strong>{{ store.directory.tenantName(conversation.tenantId) }}</strong>
+                <small>{{ store.directory.unitLabel(conversation.commercialUnitId) }}</small>
+              </div>
+              <p class="subject">{{ conversation.subject }}</p>
+            </div>
+            <div class="side">
+              <time [attr.datetime]="conversation.lastMessageAt.toISOString()">{{
+                conversation.lastMessageAt | localizedDate: 'dateTime'
+              }}</time>
+              <app-communication-status-badge [status]="conversation.status" />
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </mat-card>
+}

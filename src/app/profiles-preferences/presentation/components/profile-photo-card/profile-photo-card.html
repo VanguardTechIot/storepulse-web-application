@@ -1,0 +1,59 @@
+<mat-card appearance="outlined">
+  <mat-card-content class="photo-card">
+    <app-profile-avatar
+      [photoUrl]="editing() ? previewUrl() : profile().photoUrl"
+      [alt]="'profiles.photo.alt' | translate: { name: profile().fullName }"
+      (loadFailed)="onPreviewFailed()"
+    />
+    @if (!profile().hasPhoto() && !editing()) {
+      <span class="muted">{{ 'profiles.photo.default' | translate }}</span>
+    }
+
+    <div class="identity">
+      <span class="name">{{ profile().fullName }}</span>
+      <span class="muted">{{ profile().email }}</span>
+    </div>
+    @if (role(); as role) {
+      <span class="badge role">
+        <mat-icon aria-hidden="true">verified_user</mat-icon>
+        {{ 'profiles.roles.' + role | translate }}
+      </span>
+    }
+
+    @if (editing()) {
+      <form class="photo-form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <mat-form-field>
+          <mat-label>{{ 'profiles.photo.url' | translate }}</mat-label>
+          <mat-icon matPrefix aria-hidden="true">link</mat-icon>
+          <input matInput type="url" inputmode="url" formControlName="photoUrl" autocomplete="photo" required />
+          <mat-hint>{{ 'profiles.photo.hint' | translate }}</mat-hint>
+          @if (form.controls.photoUrl.hasError('required')) {
+            <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+          } @else if (form.controls.photoUrl.hasError('photoFormat')) {
+            <mat-error>{{ 'profiles.errors.unsupported_photo_format' | translate }}</mat-error>
+          } @else if (form.controls.photoUrl.hasError('photoNotLoaded')) {
+            <mat-error>{{ 'profiles.photo.load_error' | translate }}</mat-error>
+          }
+        </mat-form-field>
+        <div class="actions">
+          <button matButton type="button" (click)="cancel()">{{ 'common.actions.cancel' | translate }}</button>
+          <button matButton="filled" type="submit" [disabled]="store.saving()">
+            {{ (store.saving() ? 'profiles.photo.saving' : 'profiles.photo.save') | translate }}
+          </button>
+        </div>
+      </form>
+    } @else {
+      <div class="actions">
+        <button matButton="outlined" type="button" (click)="startEditing()">
+          <mat-icon aria-hidden="true">add_a_photo</mat-icon>
+          {{ (profile().hasPhoto() ? 'profiles.photo.change' : 'profiles.photo.add') | translate }}
+        </button>
+        @if (profile().hasPhoto()) {
+          <button matButton type="button" class="remove" [disabled]="store.saving()" (click)="remove()">
+            {{ 'profiles.photo.remove' | translate }}
+          </button>
+        }
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

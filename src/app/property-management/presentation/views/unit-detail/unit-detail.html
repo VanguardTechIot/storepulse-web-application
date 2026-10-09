@@ -1,0 +1,190 @@
+<a class="back" routerLink="/commercial-units">
+  <mat-icon aria-hidden="true">arrow_back</mat-icon>
+  {{ 'property.unit_detail.back' | translate }}
+</a>
+
+@if (unit(); as unit) {
+  <header class="page-head">
+    <div>
+      <h1>
+        {{ unit.code }}
+        <app-unit-status-badge [unit]="unit" />
+      </h1>
+      <p>
+        {{
+          unit.isStore
+            ? (unit.businessName ?? ('property.units.no_business' | translate))
+            : ('property.types.COMMON_AREA' | translate)
+        }}
+      </p>
+    </div>
+    @if (unit.active) {
+      <div class="actions">
+        @if (!unit.isOccupied) {
+          <button matButton="outlined" type="button" (click)="actions.toggleMaintenance(unit)">
+            <mat-icon aria-hidden="true">construction</mat-icon>
+            {{
+              (unit.isUnderMaintenance
+                ? 'property.actions.end_maintenance'
+                : 'property.actions.start_maintenance'
+              ) | translate
+            }}
+          </button>
+        }
+        <button matButton="outlined" type="button" (click)="actions.edit(unit)">
+          <mat-icon aria-hidden="true">edit</mat-icon>
+          {{ 'property.actions.edit' | translate }}
+        </button>
+        <button matButton="outlined" type="button" class="danger-button" (click)="remove()">
+          <mat-icon aria-hidden="true">delete</mat-icon>
+          {{ 'property.actions.remove' | translate }}
+        </button>
+      </div>
+    }
+  </header>
+
+  <div class="detail-grid">
+    <mat-card appearance="outlined" class="section-card">
+      <mat-card-header>
+        <h2 matCardTitle>{{ 'property.unit_detail.data' | translate }}</h2>
+      </mat-card-header>
+      <mat-card-content>
+        <dl class="facts">
+          <div>
+            <dt>{{ 'property.fields.type' | translate }}</dt>
+            <dd>{{ 'property.types.' + unit.type | translate }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'property.fields.floor' | translate }}</dt>
+            <dd>{{ unit.floor }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'property.fields.area' | translate }}</dt>
+            <dd>{{ unit.areaSquareMeters | localizedNumber }} m²</dd>
+          </div>
+          <div>
+            <dt>{{ 'property.fields.registered_at' | translate }}</dt>
+            <dd>{{ unit.createdAt | localizedDate: 'date' }}</dd>
+          </div>
+          @if (unit.isStore) {
+            <div>
+              <dt>{{ 'property.fields.business_name' | translate }}</dt>
+              <dd>{{ unit.businessName ?? '—' }}</dd>
+            </div>
+          }
+          <div>
+            <dt>{{ 'property.fields.gallery' | translate }}</dt>
+            <dd>{{ store.gallery()?.name ?? '—' }}</dd>
+          </div>
+        </dl>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="section-card">
+      <mat-card-header>
+        <h2 matCardTitle>{{ 'property.unit_detail.devices' | translate }}</h2>
+      </mat-card-header>
+      <mat-card-content>
+        @if (devices(); as serials) {
+          @if (serials.length === 0) {
+            <p class="muted">{{ 'property.unit_detail.no_devices' | translate }}</p>
+          } @else {
+            <ul class="list">
+              @for (serial of serials; track serial) {
+                <li>
+                  <mat-icon class="tone-primary" aria-hidden="true">memory</mat-icon
+                  ><span class="grow">{{ serial }}</span>
+                </li>
+              }
+            </ul>
+            <p class="muted">{{ 'property.unit_detail.devices_block_removal' | translate }}</p>
+          }
+          <a matButton routerLink="/devices">{{
+            'property.unit_detail.manage_devices' | translate
+          }}</a>
+        } @else {
+          <mat-spinner diameter="24" aria-hidden="true" />
+        }
+      </mat-card-content>
+    </mat-card>
+
+    @if (unit.isStore) {
+      <mat-card appearance="outlined" class="section-card">
+        <mat-card-header>
+          <h2 matCardTitle>{{ 'property.unit_detail.tenant' | translate }}</h2>
+        </mat-card-header>
+        <mat-card-content>
+          @if (tenant(); as tenant) {
+            <dl class="facts">
+              <div>
+                <dt>{{ 'property.fields.tenant' | translate }}</dt>
+                <dd>{{ tenant.fullName }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'property.fields.email' | translate }}</dt>
+                <dd>{{ tenant.email }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'property.fields.assigned_at' | translate }}</dt>
+                <dd>{{ tenant.assignedAt | localizedDate: 'date' }}</dd>
+              </div>
+            </dl>
+          } @else {
+            <p class="muted">{{ 'property.unit_detail.no_tenant' | translate }}</p>
+          }
+          <div class="card-actions">
+            @if (unit.canReceiveTenant()) {
+              <button matButton="filled" type="button" (click)="actions.invite(unit)">
+                <mat-icon aria-hidden="true">person_add</mat-icon>
+                {{ 'property.actions.invite' | translate }}
+              </button>
+            }
+            <a matButton [routerLink]="store.assignmentsRoute">{{
+              'property.unit_detail.manage_assignments' | translate
+            }}</a>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined" class="section-card">
+        <mat-card-header>
+          <h2 matCardTitle>{{ 'property.unit_detail.invitations' | translate }}</h2>
+        </mat-card-header>
+        <mat-card-content>
+          @if (invitations().length === 0) {
+            <p class="muted">{{ 'property.unit_detail.no_invitations' | translate }}</p>
+          } @else {
+            <ul class="list">
+              @for (invitation of invitations(); track invitation.id) {
+                <li>
+                  <mat-icon class="muted" aria-hidden="true">mail</mat-icon>
+                  <span class="grow">
+                    {{ invitation.email }}
+                    <small>{{
+                      'property.invitations.valid_until'
+                        | translate: { date: (invitation.expiresAt | localizedDate: 'dateTime') }
+                    }}</small>
+                  </span>
+                  <app-invitation-status-badge [invitation]="invitation" />
+                </li>
+              }
+            </ul>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+} @else if (store.loading()) {
+  <div class="state" role="status">
+    <mat-spinner diameter="32" aria-hidden="true" />
+    <span>{{ 'common.states.loading' | translate }}</span>
+  </div>
+} @else {
+  <div class="state" role="alert">
+    <mat-icon class="state-icon error" aria-hidden="true">error</mat-icon>
+    <b>{{ 'property.errors.unit_not_found' | translate }}</b>
+    <a matButton="outlined" routerLink="/commercial-units">{{
+      'property.unit_detail.back' | translate
+    }}</a>
+  </div>
+}

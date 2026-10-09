@@ -1,0 +1,7 @@
+@if (photoUrl() && !failed()) {
+  <img class="avatar" [src]="photoUrl()" [alt]="alt()" (load)="loaded.emit()" (error)="onError()" />
+} @else {
+  <span class="avatar avatar--default" role="img" [attr.aria-label]="alt()">
+    <mat-icon aria-hidden="true">person</mat-icon>
+  </span>
+}

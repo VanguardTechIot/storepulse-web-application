@@ -1,0 +1,86 @@
+<app-authentication-layout width="wide">
+  <ng-container ngProjectAs="[authTop]">
+    <span>{{ 'iam.sign_up.has_account' | translate }}</span>
+    <a matButton="outlined" [routerLink]="iamNav.signIn()">{{ 'iam.sign_up.sign_in' | translate }}</a>
+  </ng-container>
+
+  <!-- Gallery (Property Management) and Plan (Subscriptions and Payments) continue the flow. -->
+  <mat-stepper linear class="stepper" [aria-label]="'iam.sign_up.steps.label' | translate">
+    <mat-step [label]="'iam.sign_up.steps.account' | translate" [completed]="false">
+      <div class="step-content">
+        <h1>{{ 'iam.sign_up.title' | translate }}</h1>
+        <p class="auth-subtitle">{{ 'iam.sign_up.subtitle' | translate }}</p>
+
+        @if (store.error(); as error) {
+          <app-callout type="danger" icon="error" role="alert">{{ 'iam.errors.' + error | translate }}</app-callout>
+        }
+
+        <form class="auth-fields" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <mat-form-field>
+            <mat-label>{{ 'iam.fields.full_name' | translate }}</mat-label>
+            <mat-icon matPrefix aria-hidden="true">person</mat-icon>
+            <input matInput formControlName="fullName" autocomplete="name" maxlength="100" required />
+            @if (form.controls.fullName.hasError('required')) {
+              <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ 'iam.fields.email' | translate }}</mat-label>
+            <mat-icon matPrefix aria-hidden="true">mail</mat-icon>
+            <input matInput type="email" formControlName="email" autocomplete="email" required />
+            @if (form.controls.email.hasError('required')) {
+              <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+            } @else if (form.controls.email.hasError('email')) {
+              <mat-error>{{ 'common.validation.email' | translate }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ 'iam.fields.password' | translate }}</mat-label>
+            <mat-icon matPrefix aria-hidden="true">lock</mat-icon>
+            <input
+              matInput
+              [type]="hidePassword() ? 'password' : 'text'"
+              formControlName="password"
+              autocomplete="new-password"
+              aria-describedby="password-requirements"
+              required
+            />
+            <button
+              matIconButton
+              matSuffix
+              type="button"
+              [attr.aria-label]="(hidePassword() ? 'iam.fields.show_password' : 'iam.fields.hide_password') | translate"
+              [attr.aria-pressed]="!hidePassword()"
+              (click)="hidePassword.set(!hidePassword())"
+            >
+              <mat-icon aria-hidden="true">{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+            @if (form.controls.password.hasError('required')) {
+              <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+            } @else if (form.controls.password.hasError('passwordPolicy')) {
+              <mat-error>{{ 'iam.errors.weak_password' | translate }}</mat-error>
+            }
+          </mat-form-field>
+          <app-password-requirements id="password-requirements" [password]="password()" />
+
+          <mat-checkbox class="terms" formControlName="acceptTerms" required>
+            {{ 'iam.sign_up.accept_terms' | translate }}
+            <a [routerLink]="appNav.termsAndConditions" target="_blank">{{ 'common.footer.terms' | translate }}</a>
+          </mat-checkbox>
+          @if (form.controls.acceptTerms.invalid && form.controls.acceptTerms.touched) {
+            <mat-error class="terms-error" role="alert">{{ 'iam.sign_up.accept_terms_required' | translate }}</mat-error>
+          }
+
+          <button matButton="filled" class="auth-cta" type="submit" [disabled]="store.loading()">
+            {{ (store.loading() ? 'iam.sign_up.submitting' : 'iam.sign_up.submit') | translate }}
+            <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+          </button>
+        </form>
+      </div>
+    </mat-step>
+    <mat-step [label]="'iam.sign_up.steps.gallery' | translate" [completed]="false" />
+    <mat-step [label]="'iam.sign_up.steps.plan' | translate" />
+  </mat-stepper>
+</app-authentication-layout>

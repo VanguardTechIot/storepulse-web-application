@@ -1,0 +1,51 @@
+/* Dashboard and Analytics — shared styles of the views of the module.
+   Each view references this file with styleUrl, so the rules stay scoped to it. */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h1, h2, h3, p { margin: 0; }
+
+.page-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.page-head h1 { font-size: 22px; font-weight: 600; }
+.page-head p { margin-top: 4px; color: var(--sp-text-muted); }
+.page-head .actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.crumbs { font-size: 12px; color: var(--sp-text-muted); margin-bottom: 4px; }
+.crumbs a { color: var(--sp-primary); text-decoration: none; }
+
+.card {
+  background: var(--sp-surface);
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  box-shadow: var(--sp-shadow);
+  padding: 20px 24px;
+}
+.card-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.card-head h2 { font-size: 16px; font-weight: 600; }
+.card-head p { color: var(--sp-text-muted); font-size: 13px; margin-top: 2px; }
+.card-head .right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.main-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+
+.notification-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.day { font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--sp-text-muted); text-transform: uppercase; padding: 14px 0 6px; }
+.link { color: var(--sp-primary); text-decoration: none; font-weight: 500; font-size: 14px; }
+
+.state { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 16px; text-align: center; color: var(--sp-text-muted); }
+.state b { color: var(--sp-text); }
+.state mat-icon { font-size: 32px; width: 32px; height: 32px; color: var(--sp-primary); }
+
+.steps { list-style: none; padding: 0; margin: 8px 0 0; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.steps li { padding: 8px 12px; border: 1px solid var(--sp-border); border-radius: 8px; font-size: 13px; }
+
+@media (max-width: 1100px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .main-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .kpis { grid-template-columns: 1fr; }
+}

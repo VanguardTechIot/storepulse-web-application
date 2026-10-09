@@ -1,0 +1,38 @@
+@if (user(); as user) {
+  <button
+    matButton
+    type="button"
+    class="account-trigger"
+    [matMenuTriggerFor]="accountMenu"
+    [attr.aria-label]="'iam.account_menu.open' | translate"
+  >
+    <span class="account-trigger-content">
+      <span class="avatar" aria-hidden="true">{{ initials() }}</span>
+      <span class="account-text">
+        <b>{{ user.email }}</b>
+        <small>{{ 'iam.roles.' + user.role | translate }}</small>
+      </span>
+    </span>
+    <mat-icon iconPositionEnd aria-hidden="true">expand_more</mat-icon>
+  </button>
+
+  <mat-menu #accountMenu="matMenu" xPosition="before">
+    <mat-list class="account-header">
+      <mat-list-item>
+        <span matListItemAvatar class="avatar" aria-hidden="true">{{ initials() }}</span>
+        <span matListItemTitle>{{ user.email }}</span>
+        <span matListItemLine>{{ 'iam.roles.' + user.role | translate }}</span>
+      </mat-list-item>
+    </mat-list>
+    <mat-divider />
+    <a mat-menu-item [routerLink]="appNav.profile">
+      <mat-icon aria-hidden="true">person</mat-icon>
+      <span>{{ 'iam.account_menu.my_profile' | translate }}</span>
+    </a>
+    <mat-divider />
+    <button mat-menu-item class="sign-out" (click)="signOut()">
+      <mat-icon aria-hidden="true">logout</mat-icon>
+      <span>{{ 'iam.account_menu.sign_out' | translate }}</span>
+    </button>
+  </mat-menu>
+}

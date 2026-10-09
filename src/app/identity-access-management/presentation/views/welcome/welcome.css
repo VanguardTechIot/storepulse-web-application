@@ -1,0 +1,31 @@
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--sp-text-muted);
+  font-size: 12px;
+}
+
+.divider .mat-divider {
+  flex: 1;
+}
+
+.tenant-card {
+  --mat-card-outlined-container-color: var(--sp-bg);
+  --mat-card-outlined-outline-color: var(--sp-border);
+  --mat-card-outlined-container-shape: var(--sp-radius);
+  --mat-card-title-text-size: 14px;
+  --mat-card-title-text-weight: 700;
+  --mat-card-subtitle-text-size: 12px;
+  --mat-card-subtitle-text-color: var(--sp-text-muted);
+  padding-bottom: 16px;
+}
+
+.tenant-icon {
+  border-radius: var(--sp-radius);
+  background: var(--sp-primary-soft);
+  color: var(--sp-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

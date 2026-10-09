@@ -1,0 +1,37 @@
+# StorePulse · Local JSON API
+
+Mock of the StorePulse REST API for frontend development, served by
+[json-server](https://github.com/typicode/json-server) at `http://localhost:3000/api/v1`.
+
+```bash
+npm run mock:api
+```
+
+## Resources
+
+| Bounded context | Resource | Path |
+| --- | --- | --- |
+| Identity and Access Management | Users | `/api/v1/users` |
+| Profiles and Preferences | User profile | `/api/v1/users/{userId}/profile` (collection `profiles`) |
+| Identity and Access Management | Password recoveries | `/api/v1/password-recoveries` (collection `passwordRecoveries`) |
+
+## Seed accounts
+
+Both accounts use the password `StorePulse2026` (stored as a SHA-256 hash).
+
+| Email | Role | Expected result in the web app |
+| --- | --- | --- |
+| `carmen.mendoza@galeriacentral.pe` | `GALLERY_ADMINISTRATOR` | Signs in (US-02). |
+| `luis.paredes@galeriacentral.pe` | `TENANT` | Rejected: tenants use the mobile app (US-05). |
+
+## User profiles
+
+Each profile uses the user id as its own id, so `GET` and `PUT /api/v1/users/{userId}/profile`
+(TS-04) map onto `/profiles/{userId}`. The REST API creates the profile when a user signs up; with
+json-server the web app sends that `POST /api/v1/profiles` itself.
+
+## Password recovery
+
+There is no email service in local development: after requesting a code, the 6-digit code is
+printed in the browser console (`[IAM] Password reset code: ...`) and saved in
+`passwordRecoveries` inside `db.json`.
