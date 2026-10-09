@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   // Replace with the deployed StorePulse REST API URL when it is available.
-  platformProviderApiBaseUrl: 'http://localhost:3000/api/v1',
+  platformProviderApiBaseUrl: 'https://storepulse-web-application.onrender.com/api/v1',
 
   // Profiles and Preferences: the profile is read and updated at /users/{userId}/profile (TS-04).
   platformProviderUserProfileEndpointPath: '/users/{userId}/profile',
