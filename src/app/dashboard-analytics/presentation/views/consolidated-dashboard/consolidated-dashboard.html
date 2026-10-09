@@ -40,8 +40,8 @@
         }}</a>
     </app-kpi-card>
     <app-kpi-card
-      icon="bolt"
-      tone="warning"
+      [icon]="'bolt'"
+      [tone]="'warning'"
       [label]="'analytics.dashboard.kpis.energy' | translate"
       [value]="formatValue(summary().electricity?.current)"
       [unit]="summary().electricity?.unit ?? ''"
@@ -49,8 +49,8 @@
       {{ variationText(summary().electricity) }}
     </app-kpi-card>
     <app-kpi-card
-      icon="water_drop"
-      tone="primary"
+      [icon]="'water_drop'"
+      [tone]="'primary'"
       [label]="'analytics.dashboard.kpis.water' | translate"
       [value]="formatValue(summary().water?.current)"
       [unit]="summary().water?.unit ?? ''"
@@ -58,8 +58,8 @@
       {{ variationText(summary().water) }}
     </app-kpi-card>
     <app-kpi-card
-      icon="wifi_off"
-      tone="violet"
+      [icon]="'wifi_off'"
+      [tone]="'violet'"
       [label]="'analytics.dashboard.kpis.disconnected' | translate"
       [value]="formatValue(summary().disconnectedDevices)"
       [unit]="summary().registeredDevices !== null ? '/ ' + summary().registeredDevices : ''"
