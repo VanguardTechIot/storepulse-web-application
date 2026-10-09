@@ -1,0 +1,162 @@
+<header class="page-head">
+  <div>
+    <div class="crumbs">
+      <a routerLink="/subscription/plans">{{ 'subscriptions.tabs.plans' | translate }}</a> /
+      {{ 'subscriptions.checkout.crumb' | translate }}
+    </div>
+    <h1>{{ 'subscriptions.checkout.page_title' | translate }}</h1>
+    @if (store.gallery(); as gallery) {
+      <p>
+        {{
+          'subscriptions.checkout.subtitle'
+            | translate: { gallery: gallery.name, count: gallery.monitoredUnitCount }
+        }}
+      </p>
+    }
+  </div>
+</header>
+
+@if (!store.loaded()) {
+  <app-subscription-state />
+} @else if (plan(); as plan) {
+  @if (store.error(); as error) {
+    <app-callout type="danger" icon="credit_card_off" role="alert">
+      {{ 'subscriptions.errors.' + error | translate }}
+    </app-callout>
+  }
+
+  <div class="checkout">
+    <section class="card" aria-labelledby="card-title">
+      <div class="card-head">
+        <div>
+          <h2 id="card-title">{{ 'subscriptions.checkout.card_title' | translate }}</h2>
+          <p>{{ 'subscriptions.checkout.card_subtitle' | translate }}</p>
+        </div>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="pay()" novalidate>
+        <mat-radio-group
+          formControlName="paymentMethod"
+          [attr.aria-label]="'subscriptions.checkout.method' | translate"
+        >
+          @for (method of methods; track method) {
+            <mat-radio-button [value]="method">{{
+                'subscriptions.payment_methods.' + method | translate
+              }}</mat-radio-button>
+          }
+        </mat-radio-group>
+
+        <mat-form-field>
+          <mat-label>{{ 'subscriptions.checkout.card_holder' | translate }}</mat-label>
+          <input matInput formControlName="cardHolder" autocomplete="cc-name" />
+          @if (form.controls.cardHolder.hasError('required')) {
+            <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'subscriptions.checkout.card_number' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="cardNumber"
+            inputmode="numeric"
+            autocomplete="cc-number"
+            placeholder="4111 1111 1111 4821"
+          />
+          <mat-icon matSuffix aria-hidden="true">credit_card</mat-icon>
+          @if (form.controls.cardNumber.hasError('required')) {
+            <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+          } @else if (form.controls.cardNumber.hasError('cardNumber')) {
+            <mat-error>{{ 'subscriptions.checkout.invalid_card_number' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="row">
+          <mat-form-field>
+            <mat-label>{{ 'subscriptions.checkout.card_expiry' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="cardExpiry"
+              placeholder="MM/AA"
+              autocomplete="cc-exp"
+            />
+            @if (form.controls.cardExpiry.hasError('cardExpiry')) {
+              <mat-error>{{ 'subscriptions.checkout.invalid_expiry' | translate }}</mat-error>
+            } @else if (form.controls.cardExpiry.hasError('required')) {
+              <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>CVV</mat-label>
+            <input
+              matInput
+              formControlName="cardCvv"
+              type="password"
+              inputmode="numeric"
+              autocomplete="cc-csc"
+            />
+            @if (form.controls.cardCvv.invalid) {
+              <mat-error>{{ 'subscriptions.checkout.invalid_cvv' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <p class="secure">
+          <mat-icon aria-hidden="true">lock</mat-icon>
+          {{ 'subscriptions.checkout.secure_notice' | translate }}
+        </p>
+
+        <div class="form-actions">
+          <a matButton routerLink="/subscription/plans">{{
+              'subscriptions.checkout.back' | translate
+            }}</a>
+          <button matButton="filled" type="submit" [disabled]="store.processing()">
+            @if (store.processing()) {
+              <mat-spinner diameter="18" aria-hidden="true" />
+              {{ 'subscriptions.checkout.processing' | translate }}
+            } @else {
+              {{ 'subscriptions.checkout.pay' | translate }}
+            }
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <aside class="card" aria-labelledby="summary-title">
+      <div class="card-head">
+        <h2 id="summary-title">{{ 'subscriptions.checkout.summary' | translate }}</h2>
+      </div>
+      <mat-button-toggle-group
+        [formControl]="form.controls.billingCycle"
+        [attr.aria-label]="'subscriptions.plans_page.cycle' | translate"
+      >
+        @for (option of cycles; track option) {
+          <mat-button-toggle [value]="option">{{
+              'subscriptions.cycle_options.' + option | translate
+            }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+      <div class="summary-line">
+        <span>{{ 'subscriptions.plans.' + plan.code + '.name' | translate }}</span>
+        <span>
+          @if (plan.isUnlimited) {
+            {{ 'subscriptions.plan_card.unlimited_units' | translate }}
+          } @else {
+            {{
+              'subscriptions.plan_card.up_to_units'
+                | translate: { count: plan.monitoredUnitLimit ?? 0 }
+            }}
+          }
+        </span>
+      </div>
+      <div class="summary-line total">
+        <span>{{ 'subscriptions.checkout.total_today' | translate }}</span>
+        <span>S/ {{ total()?.amount ?? 0 | localizedNumber: 2 }}</span>
+      </div>
+    </aside>
+  </div>
+} @else {
+  <app-callout type="danger" icon="error" role="alert">{{
+      'subscriptions.errors.plan_not_found' | translate
+    }}</app-callout>
+}
