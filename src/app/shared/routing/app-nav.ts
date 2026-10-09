@@ -4,9 +4,10 @@
  * another context's routes.
  */
 export const appNav = {
-  /** Landing page after signing in or signing up. When Property Management implements gallery
-   *  registration, sign-up should continue there (mock-up 03b). */
+  /** Landing page after signing in. */
   dashboard: ['/dashboard'],
+  /** Gallery registration of Property Management, where sign-up continues (mock-up 03b, US-08). */
+  galleryRegistration: ['/commercial-units/gallery'],
   /** Profile of the signed-in user (Profiles and Preferences), opened from the account menu. */
   profile: ['/profile'],
   termsAndConditions: ['/terms-and-conditions'],

@@ -74,7 +74,7 @@ export class SignUp {
     }
     const { fullName, email, password } = this.form.getRawValue();
     if (await this.store.signUp(new SignUpCommand({ fullName, email, password }))) {
-      await this.router.navigate(appNav.dashboard);
+      await this.router.navigate(appNav.galleryRegistration);
     }
   }
 }
