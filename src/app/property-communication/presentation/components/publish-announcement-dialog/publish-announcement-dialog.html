@@ -1,0 +1,113 @@
+<h2 mat-dialog-title>{{ 'communication.publish.title' | translate }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <mat-dialog-content>
+    <div class="form">
+      @if (store.error(); as error) {
+        <app-callout type="danger" icon="error" role="alert">{{
+          'communication.errors.' + error | translate
+        }}</app-callout>
+      }
+
+      <mat-button-toggle-group
+        class="type"
+        formControlName="type"
+        [attr.aria-label]="'communication.fields.type' | translate"
+      >
+        <mat-button-toggle [value]="NotificationType.Announcement">
+          <mat-icon aria-hidden="true">campaign</mat-icon>
+          {{ 'communication.types.ANNOUNCEMENT' | translate }}
+        </mat-button-toggle>
+        <mat-button-toggle [value]="NotificationType.Incident">
+          <mat-icon aria-hidden="true">report</mat-icon>
+          {{ 'communication.types.INCIDENT' | translate }}
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-radio-group
+        class="scope"
+        formControlName="scope"
+        [attr.aria-label]="'communication.publish.recipients' | translate"
+      >
+        <mat-radio-button value="ALL">{{
+          'communication.publish.whole_gallery' | translate
+        }}</mat-radio-button>
+        <mat-radio-button value="UNITS">{{
+          'communication.publish.selected_units' | translate
+        }}</mat-radio-button>
+      </mat-radio-group>
+
+      @if (form.controls.scope.value === 'UNITS') {
+        <mat-form-field>
+          <mat-label>{{ 'communication.publish.units' | translate }}</mat-label>
+          <mat-select formControlName="unitIds" multiple>
+            @for (unit of store.directory.units(); track unit.id) {
+              <mat-option [value]="unit.id">
+                {{ tenantOfUnitLabel(unit.id) }}
+                @if (!unit.isStore) {
+                  · {{ 'communication.publish.common_area' | translate }}
+                }
+              </mat-option>
+            }
+          </mat-select>
+          <mat-hint>{{ 'communication.publish.units_hint' | translate }}</mat-hint>
+          @if (form.controls.unitIds.hasError('required')) {
+            <mat-error>{{ 'communication.publish.units_required' | translate }}</mat-error>
+          }
+        </mat-form-field>
+        @if (includesCommonArea()) {
+          <app-callout type="info" icon="groups">{{
+            'communication.publish.common_area_notice' | translate
+          }}</app-callout>
+        }
+      }
+
+      <mat-form-field>
+        <mat-label>{{ 'communication.fields.title' | translate }}</mat-label>
+        <input matInput formControlName="title" [maxlength]="titleMaxLength" required />
+        @if (form.controls.title.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'communication.fields.body' | translate }}</mat-label>
+        <textarea
+          matInput
+          formControlName="body"
+          rows="4"
+          [maxlength]="bodyMaxLength"
+          required
+        ></textarea>
+        <mat-hint align="end">{{ form.controls.body.value.length }} / {{ bodyMaxLength }}</mat-hint>
+        @if (form.controls.body.hasError('required')) {
+          <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'communication.fields.channel' | translate }}</mat-label>
+        <mat-select formControlName="channel">
+          @for (channel of channels; track channel) {
+            <mat-option [value]="channel">{{
+              'communication.channels.' + channel | translate
+            }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close [disabled]="store.saving()">
+      {{ 'common.actions.cancel' | translate }}
+    </button>
+    <button matButton="filled" type="submit" [disabled]="store.saving()">
+      <mat-icon aria-hidden="true">send</mat-icon>
+      {{
+        (store.saving() ? 'communication.actions.sending' : 'communication.publish.send')
+          | translate
+      }}
+    </button>
+  </mat-dialog-actions>
+</form>
