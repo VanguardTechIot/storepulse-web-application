@@ -1,0 +1,148 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'subscriptions.status.page_title' | translate }}</h1>
+    <p>{{ 'subscriptions.status.subtitle' | translate }}</p>
+  </div>
+</header>
+
+@if (!store.loaded()) {
+  <app-subscription-state />
+} @else if (store.subscription(); as subscription) {
+  @if (store.isExpiringSoon() && !subscription.autoRenewal) {
+    <app-callout type="warn" icon="schedule" role="status">
+      <b>{{
+          'subscriptions.status.expires_in'
+            | translate
+            : {
+              days: subscription.daysUntilExpiration() ?? 0,
+              date: (subscription.billingPeriod?.endDate | localizedDate: 'date'),
+            }
+        }}</b>
+      {{ 'subscriptions.status.reactivate_hint' | translate }}
+    </app-callout>
+  } @else if (subscription.isExpired) {
+    <app-callout type="danger" icon="event_busy" role="alert">
+      {{ 'subscriptions.status.expired_hint' | translate }}
+    </app-callout>
+  }
+
+  <section class="card" aria-labelledby="current-plan">
+    <div class="overview">
+      <div>
+        <h2 id="current-plan" class="plan-name">
+          {{ 'subscriptions.plans.' + (store.currentPlan()?.code ?? '') + '.name' | translate }}
+          <app-subscription-status-badge [subscription]="subscription" />
+        </h2>
+        @if (store.currentPlan(); as plan) {
+          <p class="price">
+            <b>S/ {{ plan.priceFor(subscription.billingCycle).amount | localizedNumber: 0 }}</b>
+            / {{ 'subscriptions.cycles.' + subscription.billingCycle | translate }} ·
+            {{ 'subscriptions.status.expires_at' | translate }}
+            <b>{{ subscription.billingPeriod?.endDate | localizedDate: 'date' }}</b>
+          </p>
+        }
+      </div>
+      <dl class="metric">
+        <dt>{{ 'subscriptions.status.covered_units' | translate }}</dt>
+        <dd>
+          {{ store.monitoredUnitCount() }} /
+          {{
+            store.currentPlan()?.monitoredUnitLimit ??
+            ('subscriptions.plan_card.unlimited' | translate)
+          }}
+        </dd>
+        <mat-progress-bar mode="determinate" [value]="usage()" />
+      </dl>
+      <dl class="metric">
+        <dt>{{ 'subscriptions.status.payment_method' | translate }}</dt>
+        <dd class="mono">{{ subscription.paymentMethodLabel ?? '—' }}</dd>
+      </dl>
+    </div>
+
+    @if (subscription.isActive) {
+      <div class="renewal" [class.off]="!subscription.autoRenewal">
+        <mat-icon aria-hidden="true">{{
+            subscription.autoRenewal ? 'autorenew' : 'sync_disabled'
+          }}</mat-icon>
+        <div class="grow">
+          @if (subscription.autoRenewal) {
+            <b>{{ 'subscriptions.status.renewal_on' | translate }}</b>
+            <div class="muted">
+              {{
+                'subscriptions.status.next_charge'
+                  | translate
+                  : {
+                    date: (subscription.billingPeriod?.endDate | localizedDate: 'date'),
+                    method: subscription.paymentMethodLabel ?? '',
+                  }
+              }}
+            </div>
+          } @else {
+            <b>{{ 'subscriptions.status.renewal_off' | translate }}</b>
+            <div class="muted">
+              {{
+                'subscriptions.status.expires_on'
+                  | translate
+                  : { date: (subscription.billingPeriod?.endDate | localizedDate: 'date') }
+              }}
+            </div>
+          }
+        </div>
+        @if (subscription.autoRenewal) {
+          <button
+            matButton="outlined"
+            type="button"
+            [disabled]="store.processing()"
+            (click)="confirmingCancel.set(true)"
+          >
+            {{ 'subscriptions.status.cancel_renewal' | translate }}
+          </button>
+        } @else {
+          <button
+            matButton="filled"
+            type="button"
+            [disabled]="store.processing()"
+            (click)="reactivateRenewal()"
+          >
+            {{ 'subscriptions.status.reactivate_renewal' | translate }}
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="renewal off">
+        <mat-icon aria-hidden="true">info</mat-icon>
+        <div class="grow">{{ 'subscriptions.status.renew_needed' | translate }}</div>
+        <a matButton="filled" routerLink="/subscription/plans">{{
+            'subscriptions.status.choose_plan' | translate
+          }}</a>
+      </div>
+    }
+  </section>
+
+  <app-confirm-dialog
+    [open]="confirmingCancel()"
+    [title]="'subscriptions.cancel_dialog.title' | translate"
+    [message]="
+      'subscriptions.cancel_dialog.message'
+        | translate: { date: (subscription.billingPeriod?.endDate | localizedDate: 'date') }
+    "
+    [confirmLabel]="'subscriptions.status.cancel_renewal' | translate"
+    [tone]="'danger'"
+    [icon]="'alert'"
+    [busy]="store.processing()"
+    (confirmed)="cancelRenewal()"
+    (cancelled)="confirmingCancel.set(false)"
+  />
+} @else {
+  <section class="card state">
+    <mat-icon aria-hidden="true">workspace_premium</mat-icon>
+    <b>{{ 'subscriptions.status.none_title' | translate }}</b>
+    <span>{{
+        'subscriptions.status.none_message'
+          | translate: { gallery: store.gallery()?.name ?? '', count: store.monitoredUnitCount() }
+      }}</span>
+    <a matButton="filled" routerLink="/subscription/plans">{{
+        'subscriptions.status.choose_plan' | translate
+      }}</a>
+  </section>
+}
