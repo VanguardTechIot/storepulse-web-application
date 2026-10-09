@@ -1,0 +1,135 @@
+<header class="page-head">
+  <div>
+    <div class="crumbs">{{ 'analytics.dashboard.crumb' | translate }}</div>
+    <h1>{{ 'analytics.dashboard.title' | translate }}</h1>
+    <p>{{ 'analytics.dashboard.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button matButton="outlined" type="button" [disabled]="store.isLoading()" (click)="refresh()">
+      <mat-icon aria-hidden="true">refresh</mat-icon>{{ 'common.actions.refresh' | translate }}
+    </button>
+  </div>
+</header>
+
+@if (!store.ready()) {
+  @if (store.hasError()) {
+    <section class="card state" role="alert">
+      <mat-icon aria-hidden="true">error</mat-icon>
+      <b>{{ 'common.states.errorTitle' | translate }}</b>
+      <span>{{ 'common.states.errorMessage' | translate }}</span>
+      <button matButton="outlined" type="button" (click)="refresh()">
+        {{ 'common.actions.retry' | translate }}
+      </button>
+    </section>
+  } @else {
+    <section class="card state" role="status">
+      <mat-spinner diameter="32" aria-hidden="true" />
+      <span>{{ 'common.states.loading' | translate }}</span>
+    </section>
+  }
+} @else {
+  <div class="kpis">
+    <app-kpi-card
+      icon="gpp_maybe"
+      [tone]="(summary().activeIncidents ?? 0) > 0 ? 'danger' : 'success'"
+      [label]="'analytics.dashboard.kpis.active_incidents' | translate"
+      [value]="formatValue(summary().activeIncidents)"
+    >
+      <a class="link" [routerLink]="store.incidentsRoute">{{
+          'analytics.dashboard.kpis.view_incidents' | translate
+        }}</a>
+    </app-kpi-card>
+    <app-kpi-card
+      icon="bolt"
+      tone="warning"
+      [label]="'analytics.dashboard.kpis.energy' | translate"
+      [value]="formatValue(summary().electricity?.current)"
+      [unit]="summary().electricity?.unit ?? ''"
+    >
+      {{ variationText(summary().electricity) }}
+    </app-kpi-card>
+    <app-kpi-card
+      icon="water_drop"
+      tone="primary"
+      [label]="'analytics.dashboard.kpis.water' | translate"
+      [value]="formatValue(summary().water?.current)"
+      [unit]="summary().water?.unit ?? ''"
+    >
+      {{ variationText(summary().water) }}
+    </app-kpi-card>
+    <app-kpi-card
+      icon="wifi_off"
+      tone="violet"
+      [label]="'analytics.dashboard.kpis.disconnected' | translate"
+      [value]="formatValue(summary().disconnectedDevices)"
+      [unit]="summary().registeredDevices !== null ? '/ ' + summary().registeredDevices : ''"
+    >
+      <a class="link" [routerLink]="store.devicesRoute">{{
+          'analytics.dashboard.kpis.view_devices' | translate
+        }}</a>
+    </app-kpi-card>
+  </div>
+
+  @if (!summary().hasActivity) {
+    <section class="card state">
+      <mat-icon aria-hidden="true">insights</mat-icon>
+      <b>{{ 'analytics.dashboard.empty.title' | translate }}</b>
+      <span>{{ 'analytics.dashboard.empty.message' | translate }}</span>
+      <ol class="steps">
+        <li>{{ 'analytics.dashboard.empty.step_units' | translate }}</li>
+        <li>{{ 'analytics.dashboard.empty.step_devices' | translate }}</li>
+      </ol>
+    </section>
+  } @else {
+    <div class="main-grid">
+      <section class="card" aria-labelledby="consumption-title">
+        <div class="card-head">
+          <div>
+            <h2 id="consumption-title">{{ 'analytics.dashboard.chart.title' | translate }}</h2>
+            <p>{{ 'analytics.dashboard.chart.subtitle' | translate }}</p>
+          </div>
+          <div class="right">
+            <mat-button-toggle-group
+              [value]="utility()"
+              (change)="utility.set($event.value)"
+              [attr.aria-label]="'analytics.dashboard.chart.utility' | translate"
+            >
+              @for (option of utilities; track option) {
+                <mat-button-toggle [value]="option">{{
+                    'analytics.utilities.' + option | translate
+                  }}</mat-button-toggle>
+              }
+            </mat-button-toggle-group>
+          </div>
+        </div>
+        <app-consumption-chart
+          [series]="series()"
+          [ariaLabel]="'analytics.dashboard.chart.title' | translate"
+        />
+      </section>
+
+      <section class="card" aria-labelledby="recent-title">
+        <div class="card-head">
+          <div>
+            <h2 id="recent-title">{{ 'analytics.dashboard.recent.title' | translate }}</h2>
+            <p>{{ 'analytics.dashboard.recent.subtitle' | translate }}</p>
+          </div>
+          <div class="right">
+            <a class="link" routerLink="/dashboard/notifications">{{
+                'analytics.dashboard.recent.view_all' | translate
+              }}</a>
+          </div>
+        </div>
+        @if (recent().length === 0) {
+          <p class="state">{{ 'analytics.notifications.empty' | translate }}</p>
+        } @else {
+          <div class="notification-list">
+            @for (notification of recent(); track notification.id) {
+              <app-notification-item [notification]="notification" />
+            }
+          </div>
+        }
+      </section>
+    </div>
+  }
+}
