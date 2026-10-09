@@ -1,0 +1,37 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'subscriptions.plans_page.page_title' | translate }}</h1>
+    <p>
+      {{ 'subscriptions.plans_page.subtitle' | translate: { count: store.monitoredUnitCount() } }}
+    </p>
+  </div>
+  <div class="actions">
+    <mat-button-toggle-group
+      [value]="cycle()"
+      (change)="cycle.set($event.value)"
+      [attr.aria-label]="'subscriptions.plans_page.cycle' | translate"
+    >
+      @for (option of cycles; track option) {
+        <mat-button-toggle [value]="option">{{
+            'subscriptions.cycle_options.' + option | translate
+          }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  </div>
+</header>
+
+@if (!store.loaded()) {
+  <app-subscription-state />
+} @else {
+  <div class="plans">
+    @for (plan of store.plans(); track plan.id) {
+      <app-plan-card
+        [plan]="plan"
+        [cycle]="cycle()"
+        [current]="isCurrent(plan)"
+        [monitoredUnitCount]="store.monitoredUnitCount()"
+        (selected)="choose($event)"
+      />
+    }
+  </div>
+}

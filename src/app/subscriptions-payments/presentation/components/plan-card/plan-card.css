@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  background: var(--sp-surface);
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+}
+
+:host(.current) .plan {
+  border: 2px solid var(--sp-primary);
+  background: var(--sp-primary-soft);
+}
+
+header { display: flex; align-items: center; gap: 8px; }
+h3 { margin: 0; font-size: 16px; font-weight: 600; }
+p { margin: 0; }
+.segment, .per, .hint { color: var(--sp-text-muted); font-size: 13px; }
+.price b { font-size: 28px; font-weight: 700; }
+.limit { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+.features { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.features li { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+.features mat-icon, .limit mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--sp-success); }
+.limit mat-icon { color: var(--sp-primary); }

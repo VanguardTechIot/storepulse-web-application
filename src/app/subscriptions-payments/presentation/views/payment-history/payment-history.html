@@ -1,0 +1,54 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'subscriptions.payments.page_title' | translate }}</h1>
+    <p>{{ 'subscriptions.payments.subtitle' | translate }}</p>
+  </div>
+</header>
+
+@if (!store.loaded()) {
+  <app-subscription-state />
+} @else if (store.payments().length === 0) {
+  <section class="card state">
+    <mat-icon aria-hidden="true">receipt_long</mat-icon>
+    <b>{{ 'subscriptions.payments.empty' | translate }}</b>
+  </section>
+} @else {
+  <section class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>{{ 'subscriptions.payments.receipt' | translate }}</th>
+          <th>{{ 'subscriptions.payments.date' | translate }}</th>
+          <th>{{ 'subscriptions.payments.concept' | translate }}</th>
+          <th>{{ 'subscriptions.payments.method' | translate }}</th>
+          <th class="amount">{{ 'subscriptions.payments.amount' | translate }}</th>
+          <th>{{ 'subscriptions.payments.status' | translate }}</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (payment of store.payments(); track payment.id) {
+            <tr>
+              <td class="mono">{{ payment.receiptNumber ?? '—' }}</td>
+              <td>{{ payment.registeredAt | localizedDate: 'date' }}</td>
+              <td>
+                {{
+                  'subscriptions.plans.' + (store.planById(payment.planId)?.code ?? '') + '.name'
+                    | translate
+                }}
+                · {{ 'subscriptions.cycle_options.' + payment.billingCycle | translate }}
+              </td>
+              <td class="mono">{{ payment.methodLabel }}</td>
+              <td class="amount">S/ {{ payment.amount.amount | localizedNumber: 2 }}</td>
+              <td>
+                <span class="badge" [class]="statusTones[payment.status]">
+                  {{ 'subscriptions.payment_statuses.' + payment.status | translate }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}

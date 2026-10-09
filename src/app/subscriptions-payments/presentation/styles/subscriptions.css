@@ -1,0 +1,73 @@
+/* Subscriptions and Payments — shared styles of the views and components of the module.
+   Each component references this file with styleUrl, so the rules stay scoped to it. */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h1, h2, h3, p { margin: 0; }
+
+.page-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.page-head h1 { font-size: 22px; font-weight: 600; }
+.page-head p { margin-top: 4px; color: var(--sp-text-muted); }
+.page-head .actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.crumbs { font-size: 12px; color: var(--sp-text-muted); margin-bottom: 4px; }
+.crumbs a { color: var(--sp-primary); text-decoration: none; }
+
+.card {
+  background: var(--sp-surface);
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  box-shadow: var(--sp-shadow);
+  padding: 20px 24px;
+}
+.card-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.card-head h2 { font-size: 16px; font-weight: 600; }
+.card-head p { color: var(--sp-text-muted); font-size: 13px; margin-top: 2px; }
+.card-head .right { margin-left: auto; }
+
+.muted { color: var(--sp-text-muted); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+
+/* Current subscription (mock-ups 11 and 11c) */
+.overview { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); gap: 24px; }
+.overview .plan-name { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; }
+.overview .price { margin-top: 6px; color: var(--sp-text-muted); }
+.overview .price b { color: var(--sp-text); }
+.metric dt { font-size: 12px; color: var(--sp-text-muted); }
+.metric dd { margin: 4px 0 0; font-weight: 600; }
+.metric mat-progress-bar { margin-top: 8px; }
+.renewal { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--sp-border); }
+.renewal .grow { flex: 1; }
+.renewal mat-icon { color: var(--sp-primary); }
+.renewal.off mat-icon { color: var(--sp-warning); }
+
+/* Plans grid (mock-up 11) */
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+/* Payment history */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-size: 12px; font-weight: 600; color: var(--sp-text-muted); padding: 10px 12px; border-bottom: 1px solid var(--sp-border); white-space: nowrap; }
+td { padding: 12px; border-bottom: 1px solid var(--sp-border); }
+td.amount, th.amount { text-align: right; }
+
+/* Checkout (mock-up 11a) */
+.checkout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+.checkout form { display: flex; flex-direction: column; gap: 4px; }
+.checkout .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.summary-line { display: flex; justify-content: space-between; padding: 8px 0; }
+.summary-line.total { border-top: 1px solid var(--sp-border); margin-top: 8px; padding-top: 14px; font-size: 18px; font-weight: 600; }
+.secure { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--sp-text-muted); margin: 8px 0 16px; }
+.form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Loading, error and empty states */
+.state { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 16px; text-align: center; color: var(--sp-text-muted); }
+.state b { color: var(--sp-text); }
+.state mat-icon { font-size: 32px; width: 32px; height: 32px; color: var(--sp-primary); }
+
+@media (max-width: 960px) {
+  .overview, .plans, .checkout { grid-template-columns: 1fr; }
+}
