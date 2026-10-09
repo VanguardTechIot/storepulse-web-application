@@ -23,7 +23,13 @@ export const routes: Routes = [
       import('./shared/presentation/views/main-layout/main-layout').then((m) => m.MainLayout),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-      { path: 'dashboard', component: ComingSoon, data: { titleKey: 'nav.dashboard' } },
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./dashboard-analytics/dashboard-analytics.routes').then(
+            (m) => m.DASHBOARD_ANALYTICS_ROUTES,
+          ),
+      },
       {
         path: 'billing',
         loadChildren: () =>
