@@ -1,4 +1,4 @@
-import { NotificationType } from './notification-type.enum';
+import { NotificationType } from '../enums/notification-type.enum';
 import { Notification } from './notification.entity';
 import { groupRepeatedNotifications } from './notification-grouping';
 
@@ -14,7 +14,7 @@ describe('groupRepeatedNotifications', () => {
       at(minute),
     );
 
-  it('groups more than 3 events of the same type and device within 5 minutes (TS-30, scenario 2)', () => {
+  it('groups more than 3 events of the same type and device within 5 minutes', () => {
     const result = groupRepeatedNotifications([
       intrusion('n1', 0),
       intrusion('n2', 1),

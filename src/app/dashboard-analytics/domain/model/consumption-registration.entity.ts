@@ -1,6 +1,6 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
-import { ConsumptionValue } from './consumption-value.value-object';
-import { UtilityType } from './utility-type.enum';
+import { ConsumptionValue } from '../value-objects/consumption-value.value-object';
+import { UtilityType } from '../enums/utility-type.enum';
 
 /**
  * Aggregate root: consumption of water or electricity recorded by a utility meter for a period

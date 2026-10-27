@@ -2,7 +2,7 @@ import { ConsumptionRegistration } from '../model/consumption-registration.entit
 import { Notification } from '../model/notification.entity';
 
 /**
- * Access abstraction of Dashboard and Analytics. Mirrors TS-30 and TS-31: `/notifications` and the
+ * Access abstraction of Dashboard and Analytics: `/notifications` and the
  * consumption registrations that feed `/dashboard/{galleryId}/summary`.
  */
 export interface AnalyticsRepository {

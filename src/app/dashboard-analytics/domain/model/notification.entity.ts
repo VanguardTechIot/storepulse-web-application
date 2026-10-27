@@ -1,10 +1,10 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
-import { NotificationType } from './notification-type.enum';
+import { NotificationType } from '../enums/notification-type.enum';
 
 /**
  * Aggregate root: notification generated automatically from a critical event of another bounded
  * context (Service Execution and Monitoring, Resource and Asset Management, Consumption).
- * Repeated events of the same type are grouped into a single notification (TS-30).
+ * Repeated events of the same type are grouped into a single notification.
  */
 export class Notification implements BaseEntity {
   constructor(
