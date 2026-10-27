@@ -24,4 +24,9 @@ export const environment = {
   platformProviderTenantNotificationsEndpointPath: '/tenant-notifications',
   platformProviderCommunicationLogsEndpointPath: '/communication-logs',
   platformProviderTenantAssignmentsEndpointPath: '/tenant-assignments',
+
+  platformProviderTelemetryEndpointPath: '/telemetry',
+  platformProviderMonitoringRulesEndpointPath: '/monitoring-rules',
+  platformProviderAlertsEndpointPath: '/alerts',
+  platformProviderConsumptionEndpointPath: '/consumption',
 };

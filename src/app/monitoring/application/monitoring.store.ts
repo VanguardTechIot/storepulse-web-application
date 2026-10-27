@@ -1,13 +1,14 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { MONITORING_REPOSITORY } from '../infrastructure/monitoring.token';
-import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
+import { firstValueFrom } from 'rxjs';
+import { MonitoringApi } from '../infrastructure/monitoring-api';
+import { RESOURCE_ASSET_REPOSITORY } from '../../resource-asset-management/infrastructure/resource-asset.token';
 import { MonitoredResource } from '../domain/model/monitored-resource';
 import { Telemetry } from '../domain/model/telemetry.entity';
 import { Measurement } from '../domain/model/measurement.entity';
 import { MonitoringRule } from '../domain/model/monitoring-rule.entity';
 import { Alert } from '../domain/model/alert.entity';
 import { Consumption } from '../domain/model/consumption.entity';
-import { ConsumptionType, MeasurementType } from '../domain/model/measurement-type';
+import { ConsumptionType, MEASUREMENT_TYPES, MeasurementType } from '../domain/model/measurement-type';
 
 /** Alert joined with the rule, measurement and location that produced it. */
 export interface AlertDetails {
@@ -45,8 +46,8 @@ type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
  */
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
-  private readonly repository = inject(MONITORING_REPOSITORY);
-  private readonly resourceAssetContext = inject(ResourceAssetContextFacade);
+  private readonly monitoringApi = inject(MonitoringApi);
+  private readonly resourceAssetRepository = inject(RESOURCE_ASSET_REPOSITORY);
 
   private readonly status = signal<LoadStatus>('idle');
   /** True once the data has been loaded at least once; later refreshes keep showing it. */
@@ -147,11 +148,11 @@ export class MonitoringStore {
     this.status.set('loading');
     try {
       const [resources, telemetry, rules, alerts, consumption] = await Promise.all([
-        this.resourceAssetContext.getMonitoredResources(),
-        this.repository.listTelemetry(),
-        this.repository.listMonitoringRules(),
-        this.repository.listAlerts(),
-        this.repository.listConsumption(),
+        this.loadMonitoredResources(),
+        firstValueFrom(this.monitoringApi.getTelemetry()),
+        firstValueFrom(this.monitoringApi.getMonitoringRules()),
+        firstValueFrom(this.monitoringApi.getAlerts()),
+        firstValueFrom(this.monitoringApi.getConsumption()),
       ]);
       this.resources.set(resources);
       this.telemetry.set(telemetry);
@@ -179,7 +180,7 @@ export class MonitoringStore {
     const current = await this.refreshAlert(id);
     if (!current.canAcknowledge) return 'unchanged';
     const updated = current.acknowledge();
-    await this.repository.saveAlert(updated);
+    await firstValueFrom(this.monitoringApi.updateAlert(updated));
     this.replaceAlert(updated);
     return 'updated';
   }
@@ -189,7 +190,7 @@ export class MonitoringStore {
     const current = await this.refreshAlert(id);
     if (!current.canResolve) return 'unchanged';
     const updated = current.resolve(resolutionNote);
-    await this.repository.saveAlert(updated);
+    await firstValueFrom(this.monitoringApi.updateAlert(updated));
     this.replaceAlert(updated);
     return 'updated';
   }
@@ -198,15 +199,49 @@ export class MonitoringStore {
     const rule = this.ruleById().get(id);
     if (!rule || rule.enabled === enabled) return;
     const updated = enabled ? rule.enable() : rule.disable();
-    await this.repository.saveMonitoringRule(updated);
+    await firstValueFrom(this.monitoringApi.updateMonitoringRule(updated));
     this.rules.update((rules) => rules.map((r) => (r.id === updated.id ? updated : r)));
   }
 
   private async refreshAlert(id: string): Promise<Alert> {
-    const latest = await this.repository.findAlert(id);
-    if (!latest) throw new Error(`Alert ${id} not found`);
+    const latest = await firstValueFrom(this.monitoringApi.getAlertById(id));
     this.replaceAlert(latest);
     return latest;
+  }
+
+  private async loadMonitoredResources(): Promise<MonitoredResource[]> {
+    const [resources, assets, devices, sensors, meters] = await Promise.all([
+      this.resourceAssetRepository.listResources(),
+      this.resourceAssetRepository.listAssets(),
+      this.resourceAssetRepository.listIoTDevices(),
+      this.resourceAssetRepository.listSensors(),
+      this.resourceAssetRepository.listMeters(),
+    ]);
+    return resources.map((resource) => {
+      const asset = assets.find((a) => a.resourceId === resource.id && a.type === 'IOT_DEVICE');
+      const device = asset ? devices.find((d) => d.assetId === asset.id) : undefined;
+      const activeTypes = new Set<MeasurementType>(
+        [...sensors, ...meters]
+          .filter(
+            (component) => component.iotDeviceId === device?.id && component.status === 'ACTIVE',
+          )
+          .map((component) => component.type)
+          .filter((type): type is MeasurementType =>
+            MEASUREMENT_TYPES.includes(type as MeasurementType),
+          ),
+      );
+      return {
+        resourceId: resource.id,
+        name: resource.name,
+        description: resource.description,
+        floor: resource.location.floor,
+        reference: resource.location.reference,
+        deviceId: device?.id ?? null,
+        deviceSerialNumber: device?.serialNumber ?? null,
+        monitoringAvailable: resource.isActive && !!device?.isActive,
+        monitoredTypes: MEASUREMENT_TYPES.filter((type) => activeTypes.has(type)),
+      };
+    });
   }
 
   private replaceAlert(alert: Alert): void {

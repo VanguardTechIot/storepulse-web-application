@@ -2,7 +2,7 @@ import { MeasurementType } from './measurement-type';
 
 /**
  * Monitoring's own view of a resource and the device installed in it,
- * translated from Resource and Asset Management through the anti-corruption layer.
+ * translated from Resource and Asset Management.
  */
 export interface MonitoredResource {
   resourceId: string;
