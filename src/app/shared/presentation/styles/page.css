@@ -1,0 +1,111 @@
+/* Page layout shared by the views: header, cards, segmented tabs and links. */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-head h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.page-head p {
+  margin-top: 4px;
+  color: var(--sp-text-muted);
+}
+
+.page-head .actions {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.crumbs {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sp-text-muted);
+}
+
+.crumbs a,
+.link {
+  color: var(--sp-primary);
+  text-decoration: none;
+}
+
+.link {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--sp-border);
+}
+
+.card-head h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-head p {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--sp-text-muted);
+}
+
+.card-head .right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.card-pad {
+  padding: 20px;
+}
+
+.muted {
+  color: var(--sp-text-muted);
+}
+
+.mono {
+  font-family: var(--sp-font-mono);
+  font-size: 12px;
+}
+
+.tabs {
+  --mat-button-toggle-shape: 10px;
+  --mat-button-toggle-height: 32px;
+  --mat-button-toggle-label-text-font: var(--sp-font);
+  --mat-button-toggle-label-text-size: 13px;
+  --mat-button-toggle-label-text-weight: 600;
+  --mat-button-toggle-text-color: var(--sp-text-muted);
+  --mat-button-toggle-background-color: var(--sp-bg);
+  --mat-button-toggle-selected-state-background-color: var(--sp-surface);
+  --mat-button-toggle-selected-state-text-color: var(--sp-navy);
+  --mat-button-toggle-divider-color: transparent;
+  border-color: var(--sp-border);
+}
