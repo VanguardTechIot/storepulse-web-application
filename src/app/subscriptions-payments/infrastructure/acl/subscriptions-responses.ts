@@ -1,9 +1,9 @@
-import { BaseResource } from '../../shared/infrastructure/base-response';
-import { BillingCycle } from '../domain/model/billing-cycle.enum';
-import { PaymentMethod } from '../domain/model/payment-method.enum';
-import { PaymentStatus } from '../domain/model/payment-status.enum';
-import { PlanCode } from '../domain/model/subscription-plan.entity';
-import { SubscriptionStatus } from '../domain/model/subscription-status.enum';
+import { BaseResource } from '../../../shared/infrastructure/base-response';
+import { BillingCycle } from '../../domain/enums/billing-cycle.enum';
+import { PaymentMethod } from '../../domain/enums/payment-method.enum';
+import { PaymentStatus } from '../../domain/enums/payment-status.enum';
+import { PlanCode } from '../../domain/model/subscription-plan.entity';
+import { SubscriptionStatus } from '../../domain/enums/subscription-status.enum';
 
 export interface SubscriptionPlanResource extends BaseResource {
   code: PlanCode;
