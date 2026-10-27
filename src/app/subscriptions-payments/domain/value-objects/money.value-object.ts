@@ -1,4 +1,4 @@
-import { SubscriptionsError, SubscriptionsErrorCode } from './subscriptions-error';
+import { SubscriptionsError, SubscriptionsErrorCode } from '../model/subscriptions-error';
 
 /**
  * Amount and currency of a price or a charge. The amount is never negative.

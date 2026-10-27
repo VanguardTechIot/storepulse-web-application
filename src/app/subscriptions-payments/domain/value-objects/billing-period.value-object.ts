@@ -1,9 +1,9 @@
-import { BillingCycle } from './billing-cycle.enum';
-import { SubscriptionsError, SubscriptionsErrorCode } from './subscriptions-error';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { SubscriptionsError, SubscriptionsErrorCode } from '../model/subscriptions-error';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** Days before the expiration date in which the renewal is reported as near (US-45, scenario 2). */
+/** Days before the expiration date in which the renewal is reported as near. */
 export const EXPIRING_SOON_DAYS = 10;
 
 /**
@@ -36,7 +36,7 @@ export class BillingPeriod {
     return Math.max(0, Math.ceil((this.endDate.getTime() - reference.getTime()) / DAY_MS));
   }
 
-  /** Following period, used by the automatic renewal (US-48). */
+  /** Following period, used by the automatic renewal. */
   next(cycle: BillingCycle): BillingPeriod {
     return BillingPeriod.startingAt(this.endDate, cycle);
   }

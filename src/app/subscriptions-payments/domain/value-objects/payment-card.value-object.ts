@@ -1,10 +1,10 @@
-import { SubscriptionsError, SubscriptionsErrorCode } from './subscriptions-error';
+import { SubscriptionsError, SubscriptionsErrorCode } from '../model/subscriptions-error';
 
 export type CardBrand = 'VISA' | 'MASTERCARD' | 'AMEX' | 'OTHER';
 
 /**
  * Card typed in the checkout. Only the brand and the last four digits leave the browser:
- * the payment gateway processes the full number and StorePulse never stores it (mock-up 11a).
+ * the payment gateway processes the full number and StorePulse never stores it.
  */
 export class PaymentCard {
   readonly brand: CardBrand;

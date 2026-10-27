@@ -1,5 +1,5 @@
 /**
- * Periodicity of the charge (mock-up 11: Monthly / Annual).
+ * Periodicity of the charge.
  * The value doubles as the i18n key suffix (`subscriptions.cycles.<cycle>`).
  */
 export enum BillingCycle {

@@ -17,7 +17,7 @@ export interface SubscriptionsRepository {
   /** Payment history of the subscription, most recent first. */
   listPayments(subscriptionId: string): Promise<Payment[]>;
   /**
-   * Sends the charge to the payment gateway and returns it resolved (TS-27).
+   * Sends the charge to the payment gateway and returns it resolved.
    * Throws `gateway_unavailable` when the gateway does not answer.
    */
   registerPayment(command: RegisterPaymentCommand): Promise<Payment>;
