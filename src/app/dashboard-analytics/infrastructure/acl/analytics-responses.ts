@@ -1,6 +1,6 @@
-import { BaseResource } from '../../shared/infrastructure/base-response';
-import { NotificationType } from '../domain/model/notification-type.enum';
-import { UtilityType } from '../domain/model/utility-type.enum';
+import { BaseResource } from '../../../shared/infrastructure/base-response';
+import { NotificationType } from '../../domain/enums/notification-type.enum';
+import { UtilityType } from '../../domain/enums/utility-type.enum';
 
 export interface NotificationResource extends BaseResource {
   type: NotificationType;
