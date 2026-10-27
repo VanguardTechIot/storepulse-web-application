@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-export const MONITORING_ROUTES: Routes = [
+export const monitoringRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>

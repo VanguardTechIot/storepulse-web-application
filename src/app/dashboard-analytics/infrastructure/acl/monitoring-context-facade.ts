@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { MONITORING_REPOSITORY } from '../../../service-execution-monitoring/infrastructure/monitoring.token';
+import { MONITORING_REPOSITORY } from '../../../monitoring/infrastructure/monitoring.token';
 
 /**
  * Anti-corruption layer towards Service Execution and Monitoring: only the number of incidents
