@@ -2,50 +2,19 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
-import { YearlyConsumptionSeries } from '../../../application/analytics.store';
+import { YearlyConsumptionSeries } from '../../../domain/model/yearly-consumption-series';
 
-const MONTH_KEYS = [
-  'jan',
-  'feb',
-  'mar',
-  'apr',
-  'may',
-  'jun',
-  'jul',
-  'aug',
-  'sep',
-  'oct',
-  'nov',
-  'dec',
-];
-/** Previous year in a muted tone, current year in the primary color of the theme. */
-const COLORS = ['#cbd5e1', '#2563eb'];
+// Chart.js paints on a canvas and cannot read CSS variables: previous year muted, current year cyan.
+const COLORS = ['#5b6b82', '#0ea5e9'];
+const FONT = { family: "'Inter', sans-serif", size: 12 };
 
-/**
- * Monthly consumption of the gallery, current year against the previous one (mock-up 04).
- */
+/** Monthly line chart that compares the current year with the previous one. */
 @Component({
   selector: 'app-consumption-chart',
   imports: [BaseChartDirective],
   providers: [provideCharts(withDefaultRegisterables())],
-  template: `
-    <div class="chart">
-      <canvas
-        baseChart
-        type="bar"
-        [data]="data()"
-        [options]="options()"
-        [attr.aria-label]="ariaLabel()"
-        role="img"
-      ></canvas>
-    </div>
-  `,
-  styles: `
-    .chart {
-      position: relative;
-      height: 280px;
-    }
-  `,
+  templateUrl: './consumption-chart.html',
+  styleUrl: './consumption-chart.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConsumptionChart {
@@ -54,26 +23,38 @@ export class ConsumptionChart {
   readonly series = input.required<YearlyConsumptionSeries[]>();
   readonly ariaLabel = input('');
 
-  protected readonly data = computed<ChartConfiguration<'bar'>['data']>(() => ({
-    labels: MONTH_KEYS.map((key) => this.i18n.t('analytics.months.' + key)),
+  protected readonly data = computed<ChartConfiguration<'line'>['data']>(() => ({
+    labels: Array.from({ length: 12 }, (_, month) =>
+      new Date(2000, month, 1).toLocaleString(this.i18n.lang(), { month: 'short' }),
+    ),
     datasets: this.series().map((serie, i) => ({
       label: String(serie.year),
       data: serie.values,
+      borderColor: COLORS[i % COLORS.length],
       backgroundColor: COLORS[i % COLORS.length],
-      borderRadius: 4,
-      maxBarThickness: 18,
+      borderWidth: 2,
+      pointRadius: 3,
+      tension: 0.3,
+      spanGaps: true,
     })),
   }));
 
-  protected readonly options = computed<ChartConfiguration<'bar'>['options']>(() => {
+  protected readonly options = computed<ChartConfiguration<'line'>['options']>(() => {
     const unit = this.series().at(-1)?.unit ?? '';
     const locale = this.i18n.lang();
     return {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'top', align: 'end', labels: { boxWidth: 12, boxHeight: 12 } },
+        legend: {
+          position: 'top',
+          align: 'end',
+          labels: { boxWidth: 10, boxHeight: 10, color: '#5b6b82', font: FONT },
+        },
         tooltip: {
+          backgroundColor: '#0f172a',
+          titleFont: FONT,
+          bodyFont: FONT,
           callbacks: {
             label: (ctx) =>
               `${ctx.dataset.label}: ${Number(ctx.parsed.y).toLocaleString(locale)} ${unit}`,
@@ -81,11 +62,17 @@ export class ConsumptionChart {
         },
       },
       scales: {
-        x: { grid: { display: false } },
+        x: { grid: { display: false }, ticks: { color: '#5b6b82', font: FONT } },
         y: {
-          beginAtZero: true,
-          title: { display: true, text: unit },
-          ticks: { callback: (value) => Number(value).toLocaleString(locale) },
+          beginAtZero: false,
+          grid: { color: '#e2e8f0' },
+          border: { dash: [4, 4] },
+          title: { display: true, text: unit, color: '#5b6b82', font: FONT },
+          ticks: {
+            color: '#5b6b82',
+            font: FONT,
+            callback: (value) => Number(value).toLocaleString(locale),
+          },
         },
       },
     };
