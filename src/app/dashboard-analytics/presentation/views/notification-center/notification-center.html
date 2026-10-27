@@ -1,4 +1,4 @@
-<header class="page-head">
+<header id="notifications-header" class="page-head">
   <div>
     <div class="crumbs">
       <a routerLink="/dashboard">{{ 'analytics.dashboard.crumb' | translate }}</a> /
@@ -9,36 +9,29 @@
   </div>
   <div class="actions">
     <button
+      id="mark-read-button"
       matButton="outlined"
       type="button"
       [disabled]="store.unreadCount() === 0"
-      (click)="store.markAllAsRead()"
+      (click)="markAllAsRead()"
     >
-      <mat-icon aria-hidden="true">done_all</mat-icon
-      >{{ 'analytics.notifications.mark_all_read' | translate }}
+      <mat-icon aria-hidden="true">done_all</mat-icon>
+      {{ 'analytics.notifications.mark_all_read' | translate }}
     </button>
   </div>
 </header>
 
 @if (!store.ready()) {
-  @if (store.hasError()) {
-    <section class="card state" role="alert">
-      <mat-icon aria-hidden="true">error</mat-icon>
-      <b>{{ 'common.states.errorTitle' | translate }}</b>
-      <button matButton="outlined" type="button" (click)="refresh()">
-        {{ 'common.actions.retry' | translate }}
-      </button>
-    </section>
-  } @else {
-    <section class="card state" role="status">
-      <mat-spinner diameter="32" aria-hidden="true" />
-      <span>{{ 'common.states.loading' | translate }}</span>
-    </section>
-  }
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </mat-card>
 } @else {
-  <section class="card">
+  <mat-card id="notifications-card" appearance="outlined">
     <div class="card-head">
       <mat-button-toggle-group
+        id="filter-toggle"
+        class="tabs"
+        hideSingleSelectionIndicator
         [value]="filter()"
         (change)="filter.set($event.value)"
         [attr.aria-label]="'analytics.notifications.filter' | translate"
@@ -51,20 +44,18 @@
       </mat-button-toggle-group>
     </div>
 
-    @if (days().length === 0) {
-      <div class="state">
-        <mat-icon aria-hidden="true">notifications_off</mat-icon>
-        <b>{{ 'analytics.notifications.empty' | translate }}</b>
-      </div>
-    } @else {
-      @for (day of days(); track day.key) {
-        <h3 class="day">{{ dayLabel(day.date) ?? (day.date | localizedDate: 'date') }}</h3>
-        <div class="notification-list">
-          @for (notification of day.notifications; track notification.id) {
-            <app-notification-item [notification]="notification" />
-          }
-        </div>
+    @for (day of days(); track day.key) {
+      <h3 [id]="'day-' + day.key" class="day">
+        {{ dayLabel(day.date) ?? (day.date | localizedDate: 'date') }}
+      </h3>
+      @for (notification of day.notifications; track notification.id) {
+        <app-notification-item [id]="notification.id" [notification]="notification" />
       }
+    } @empty {
+      <app-page-state
+        icon="notifications_off"
+        [title]="'analytics.notifications.empty' | translate"
+      />
     }
-  </section>
+  </mat-card>
 }
