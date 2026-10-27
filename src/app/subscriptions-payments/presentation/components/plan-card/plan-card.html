@@ -1,8 +1,10 @@
-<article class="plan">
+<mat-card appearance="outlined" class="plan">
   <header>
     <h3>{{ 'subscriptions.plans.' + plan().code + '.name' | translate }}</h3>
     @if (current()) {
-      <span class="badge badge--success">{{ 'subscriptions.plan_card.current' | translate }}</span>
+      <app-status-chip tone="success">{{
+          'subscriptions.plan_card.current' | translate
+        }}</app-status-chip>
     }
   </header>
   <p class="segment">{{ 'subscriptions.plans.' + plan().code + '.segment' | translate }}</p>
@@ -53,4 +55,4 @@
       </p>
     }
   }
-</article>
+</mat-card>

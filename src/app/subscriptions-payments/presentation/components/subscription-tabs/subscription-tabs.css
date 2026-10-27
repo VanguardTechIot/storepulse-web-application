@@ -1,0 +1,11 @@
+:host {
+  --mat-tab-label-text-font: var(--sp-font);
+  --mat-tab-label-text-size: 14px;
+  --mat-tab-label-text-weight: 600;
+  --mat-tab-label-text-tracking: 0.02em;
+  --mat-tab-inactive-label-text-color: var(--sp-text-muted);
+  --mat-tab-active-label-text-color: var(--sp-primary);
+  --mat-tab-active-indicator-color: var(--sp-accent);
+  --mat-tab-divider-color: var(--sp-border);
+  display: block;
+}

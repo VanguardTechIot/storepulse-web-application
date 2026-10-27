@@ -1,0 +1,23 @@
+<mat-card id="state-card" appearance="outlined">
+  @if (store.error(); as error) {
+    <app-page-state
+      status="error"
+      [icon]="error === noGallery ? 'storefront' : 'error'"
+      [title]="'subscriptions.errors.' + error | translate"
+      [retryable]="error !== noGallery"
+      (retry)="store.load()"
+    >
+      @if (error === noGallery) {
+        <a
+          id="register-gallery-link"
+          matButton="filled"
+          [routerLink]="store.galleryRegistrationRoute"
+        >
+          {{ 'subscriptions.status.register_gallery' | translate }}
+        </a>
+      }
+    </app-page-state>
+  } @else {
+    <app-page-state status="loading" />
+  }
+</mat-card>
