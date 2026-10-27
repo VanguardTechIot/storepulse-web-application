@@ -34,7 +34,6 @@ const HISTORY_PERIODS = 12;
  */
 @Component({
   selector: 'app-consumption',
-  host: { class: 'monitoring-page' },
   imports: [
     Icon,
     ViewState,
@@ -45,6 +44,7 @@ const HISTORY_PERIODS = 12;
     MeasurementTypeLabel,
   ],
   templateUrl: './consumption.html',
+  styleUrl: './consumption.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConsumptionView extends MonitoringView {

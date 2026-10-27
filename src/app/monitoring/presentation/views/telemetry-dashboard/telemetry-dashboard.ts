@@ -26,7 +26,6 @@ const MEASUREMENTS_PAGE_SIZE = 10;
  */
 @Component({
   selector: 'app-telemetry-dashboard',
-  host: { class: 'monitoring-page' },
   imports: [
     RouterLink,
     Icon,
@@ -38,6 +37,7 @@ const MEASUREMENTS_PAGE_SIZE = 10;
     MeasurementTypeLabel,
   ],
   templateUrl: './telemetry-dashboard.html',
+  styleUrl: './telemetry-dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TelemetryDashboard extends MonitoringView {

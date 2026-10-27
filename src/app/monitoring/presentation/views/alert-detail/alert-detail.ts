@@ -23,7 +23,6 @@ export const RESOLUTION_NOTE_MAX_LENGTH = 500;
  */
 @Component({
   selector: 'app-alert-detail',
-  host: { class: 'monitoring-page' },
   imports: [
     RouterLink,
     UpperCasePipe,
@@ -38,6 +37,7 @@ export const RESOLUTION_NOTE_MAX_LENGTH = 500;
     AlertStatusBadge,
   ],
   templateUrl: './alert-detail.html',
+  styleUrl: './alert-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertDetail extends MonitoringView {

@@ -24,7 +24,6 @@ const ALERTS_PAGE_SIZE = 8;
  */
 @Component({
   selector: 'app-alert-list',
-  host: { class: 'monitoring-page' },
   imports: [
     RouterLink,
     UpperCasePipe,
@@ -39,6 +38,7 @@ const ALERTS_PAGE_SIZE = 8;
     AlertStatusBadge,
   ],
   templateUrl: './alert-list.html',
+  styleUrl: './alert-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertList extends MonitoringView {

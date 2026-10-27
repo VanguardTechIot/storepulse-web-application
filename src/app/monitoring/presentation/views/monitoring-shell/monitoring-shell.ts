@@ -12,7 +12,7 @@ import { MonitoringTabs } from '../../components/monitoring-tabs/monitoring-tabs
     <app-monitoring-tabs />
     <router-outlet />
   `,
-  host: { class: 'monitoring-shell' },
+  styleUrl: './monitoring-shell.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitoringShell {}

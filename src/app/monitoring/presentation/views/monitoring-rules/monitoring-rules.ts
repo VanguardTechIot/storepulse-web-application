@@ -15,7 +15,6 @@ import { MonitoringView } from '../monitoring-view';
  */
 @Component({
   selector: 'app-monitoring-rules',
-  host: { class: 'monitoring-page' },
   imports: [
     Icon,
     ViewState,
@@ -26,6 +25,7 @@ import { MonitoringView } from '../monitoring-view';
     MeasurementTypeLabel,
   ],
   templateUrl: './monitoring-rules.html',
+  styleUrl: './monitoring-rules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitoringRules extends MonitoringView {

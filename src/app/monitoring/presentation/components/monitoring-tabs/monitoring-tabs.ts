@@ -33,6 +33,7 @@ interface MonitoringTab {
       }
     </nav>
   `,
+  styleUrl: './monitoring-tabs.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitoringTabs {
