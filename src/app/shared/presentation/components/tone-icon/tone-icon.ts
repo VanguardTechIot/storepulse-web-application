@@ -12,7 +12,8 @@ export type Tone = 'primary' | 'info' | 'danger' | 'warning' | 'success' | 'viol
   host: {
     '[style.--tone]': "'var(--sp-' + tone() + ')'",
     '[style.--tone-soft]': "'var(--sp-' + tone() + '-soft)'",
-    '[style.--size.px]': 'size()',
+    '[style.width.px]': 'size()',
+    '[style.height.px]': 'size()',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

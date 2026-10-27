@@ -2,8 +2,6 @@
   display: grid;
   flex: 0 0 auto;
   place-items: center;
-  width: var(--size);
-  height: var(--size);
   border-radius: var(--sp-radius-sm);
   background: var(--tone-soft);
   color: var(--tone);
