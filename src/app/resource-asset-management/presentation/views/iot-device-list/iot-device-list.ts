@@ -27,7 +27,6 @@ const STATUS_TONES: Record<DeviceDisplayStatus, string> = {
  */
 @Component({
   selector: 'app-iot-device-list',
-  host: { class: 'monitoring-page' },
   imports: [
     Icon,
     ViewState,
@@ -38,6 +37,7 @@ const STATUS_TONES: Record<DeviceDisplayStatus, string> = {
     RegisterDeviceDialog,
   ],
   templateUrl: './iot-device-list.html',
+  styleUrl: './iot-device-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IoTDeviceList {
