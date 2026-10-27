@@ -1,0 +1,12 @@
+:host { --shadow-lg: 0 20px 48px rgba(16, 24, 40, .18), 0 4px 12px rgba(16, 24, 40, .08); }
+.toast-stack { position: fixed; z-index: 60; right: 24px; top: 80px; display: flex; flex-direction: column; gap: 10px; width: min(380px, calc(100vw - 32px)); }
+.toast { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; background: #1f2937; color: #fff; border-radius: 12px; box-shadow: var(--shadow-lg); font-size: 13px; }
+.toast[data-tone='success'] > app-icon { color: #4ade80; }
+.toast[data-tone='error'] > app-icon { color: #f87171; }
+.toast[data-tone='warning'] > app-icon { color: #fbbf24; }
+.toast[data-tone='info'] > app-icon { color: #93c5fd; }
+.toast-text { flex: 1; min-width: 0; }
+.toast-text b { display: block; }
+.toast small { display: block; color: #d1d5db; font-size: 12px; }
+.icon-plain { display: inline-flex; padding: 4px; border: none; border-radius: 6px; background: none; color: #d1d5db; }
+.icon-plain:hover { color: #fff; background: rgba(255, 255, 255, .1); }

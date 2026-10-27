@@ -33,6 +33,7 @@ const TONE_ICONS: Record<ToastTone, IconName> = {
       }
     </div>
   `,
+  styleUrl: './toast-host.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastHost {

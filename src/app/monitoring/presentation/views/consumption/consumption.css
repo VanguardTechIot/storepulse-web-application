@@ -1,0 +1,111 @@
+:host { --hover: #f3f4f6; --blue-50: #eff6ff; --blue-t: #1d4ed8; --radius: 8px; --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+:host { display: flex; flex-direction: column; gap: 24px; }
+:host :is(h1, h2, h3, p, ol, ul) { margin: 0; padding: 0; }
+:host ::ng-deep button { background: none; border: none; color: inherit; }
+:host ::ng-deep button:disabled { cursor: not-allowed; }
+:host ::ng-deep svg { flex-shrink: 0; }
+:host .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+:host .page-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+:host .crumbs { font-size: 12px; color: var(--sp-text-muted); font-weight: 500; margin-bottom: 4px; }
+:host .crumbs a { color: var(--sp-primary); }
+:host .crumbs a:hover { text-decoration: underline; }
+:host .page-head h1 { font-size: 22px; font-weight: 600; line-height: 1.3; }
+:host .page-head p { color: var(--sp-text-muted); margin-top: 4px; }
+:host .page-head .actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+:host ::ng-deep .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: var(--radius); font-size: 14px; font-weight: 500; border: 1px solid var(--sp-border); background: var(--sp-surface); color: var(--sp-text); white-space: nowrap; }
+:host ::ng-deep .btn:disabled { opacity: .5; }
+:host ::ng-deep .btn-outline { background: var(--sp-surface); }
+:host ::ng-deep .btn-outline:not(:disabled):hover { background: var(--hover); }
+:host ::ng-deep .btn-sm { height: 32px; padding: 0 12px; font-size: 13px; }
+:host .card { background: var(--sp-surface); border: 1px solid var(--sp-border); border-radius: var(--sp-radius); box-shadow: var(--sp-shadow); overflow: hidden; }
+:host .card-pad { padding: 20px; }
+:host .card-head { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--sp-border); }
+:host .card-head.wrap { flex-wrap: wrap; }
+:host .card-head h3 { font-size: 16px; font-weight: 600; }
+:host .card-head p { font-size: 12px; color: var(--sp-text-muted); }
+:host .card-head .right { margin-left: auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+:host ::ng-deep .grid { display: grid; gap: 16px; }
+:host .g-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+:host .row { display: flex; gap: 24px; align-items: flex-start; }
+:host .grow { flex: 1; min-width: 0; }
+:host .stack-sm { display: flex; flex-direction: column; gap: 16px; }
+:host .side-card { width: 360px; flex-shrink: 0; }
+
+:host .kpi { padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+:host .kpi .top { display: flex; align-items: center; gap: 10px; color: var(--sp-text-muted); font-size: 13px; font-weight: 500; }
+:host .kpi .ico { width: 34px; height: 34px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+:host .kpi .val { font-size: 24px; font-weight: 700; line-height: 1.1; }
+:host .kpi .val small { font-size: 14px; font-weight: 500; color: var(--sp-text-muted); margin-left: 4px; }
+:host .kpi .delta { font-size: 12px; font-weight: 500; }
+:host .up { color: var(--sp-success); }
+:host .warn { color: var(--sp-warning); }
+:host .muted { color: var(--sp-text-muted); }
+:host ::ng-deep .li-ico { width: 36px; height: 36px; border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+:host ::ng-deep .ico-cyan { background: var(--sp-primary-soft); color: var(--sp-primary); }
+:host ::ng-deep .ico-amber { background: var(--sp-warning-soft); color: var(--sp-warning); }
+:host ::ng-deep .ico-red { background: var(--sp-danger-soft); color: var(--sp-danger); }
+:host ::ng-deep .ico-blue { background: var(--blue-50); color: var(--blue-t); }
+:host .ico-violet { background: var(--sp-violet-soft); color: var(--sp-violet); }
+:host .table-wrap { position: relative; overflow-x: auto; }
+:host table { width: 100%; border-collapse: collapse; font-size: 13px; }
+:host th { text-align: left; font-size: 12px; font-weight: 600; color: var(--sp-text-muted); text-transform: uppercase; letter-spacing: .04em; padding: 12px 16px; background: var(--sp-bg); border-bottom: 1px solid var(--sp-border); white-space: nowrap; }
+:host td { padding: 14px 16px; border-bottom: 1px solid var(--sp-border); vertical-align: middle; }
+:host tr:last-child td { border-bottom: none; }
+:host tbody tr:hover td { background: var(--hover); }
+:host ::ng-deep td b { font-weight: 600; white-space: nowrap; }
+:host td.mono { white-space: nowrap; }
+:host .mono { font-family: var(--font-mono); font-size: 12px; }
+:host .sub { display: block; font-size: 12px; color: var(--sp-text-muted); font-weight: 400; }
+:host .t-right { text-align: right; }
+:host tr.selectable { cursor: pointer; }
+:host tr.selected td { background: var(--sp-primary-soft); }
+:host tr.selected td:first-child { box-shadow: inset 3px 0 0 var(--sp-primary); }
+:host .select { height: 36px; padding: 0 32px 0 12px; border: 1px solid var(--sp-border); border-radius: var(--radius); font: inherit; font-size: 13px; color: var(--sp-text); background: var(--sp-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center; appearance: none; max-width: 100%; cursor: pointer; }
+:host .select:focus { border-color: var(--sp-primary); outline: 2px solid var(--sp-primary); outline-offset: 1px; }
+:host .select-field { position: relative; display: inline-flex; align-items: center; }
+:host .select-field.with-icon app-icon { position: absolute; left: 12px; pointer-events: none; }
+:host .select-field.with-icon .select { padding-left: 36px; font-weight: 500; }
+:host .tabs { display: inline-flex; gap: 4px; padding: 4px; background: var(--sp-bg); border: 1px solid var(--sp-border); border-radius: 10px; flex-wrap: wrap; }
+:host .tabs button { padding: 6px 14px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--sp-text-muted); white-space: nowrap; }
+:host .tabs button:not(:disabled):hover { color: var(--sp-text); }
+:host .tabs button.on { background: var(--sp-surface); color: var(--sp-text); font-weight: 600; box-shadow: var(--sp-shadow); }
+:host .tabs button:disabled { opacity: .45; }
+:host .hint { font-size: 12px; color: var(--sp-text-muted); }
+:host .legend { display: flex; gap: 16px; font-size: 12px; color: var(--sp-text-muted); }
+:host .legend span { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+:host .legend-bar { width: 10px; height: 10px; border-radius: 3px; background: var(--sp-primary); display: inline-block; }
+:host .legend-line { width: 14px; height: 0; border-top: 2px dashed var(--sp-text-muted); display: inline-block; }
+:host .callout { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+:host .callout.banner { align-items: center; flex-wrap: wrap; }
+:host .callout.info { background: var(--blue-50); color: var(--blue-t); }
+:host .callout.warn { background: var(--sp-warning-soft); color: var(--sp-warning); }
+:host .callout b { margin-right: 4px; }
+:host ::ng-deep .empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 48px 24px; color: var(--sp-text-muted); }
+:host ::ng-deep .empty .li-ico { width: 56px; height: 56px; border-radius: 16px; }
+:host ::ng-deep .empty b { color: var(--sp-text); font-size: 16px; }
+:host ::ng-deep .spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; display: inline-block; animation: monitoring-spin .8s linear infinite; }
+:host ::ng-deep .spinner-lg { width: 32px; height: 32px; border-width: 3px; color: var(--sp-primary); }
+@media (prefers-reduced-motion: reduce) { :host ::ng-deep .spinner { animation-duration: 2s; } }
+:host .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; font-size: 13px; }
+:host .kv.kv-1 { grid-template-columns: 1fr; }
+:host .kv > div > span:first-child { color: var(--sp-text-muted); display: block; font-size: 12px; margin-bottom: 2px; }
+:host .kv b { font-weight: 600; }
+:host .kv b.big { display: block; font-size: 22px; }
+:host .kv b.big.warn { color: var(--sp-warning); }
+:host .kv b.big.up { color: var(--sp-success); }
+@media (max-width: 1279px) {
+  :host .row { flex-direction: column; align-items: stretch; }
+  :host .side-card { width: auto; }
+}
+
+@media (max-width: 1023px) {
+  :host .g-3 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 639px) {
+  :host .page-head .actions { margin-left: 0; }
+  :host .select-field,
+  :host .select-field .select { width: 100%; }
+}
+@keyframes monitoring-spin { to { transform: rotate(360deg); } }

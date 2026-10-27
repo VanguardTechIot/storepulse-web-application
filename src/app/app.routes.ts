@@ -45,9 +45,7 @@ export const routes: Routes = [
       {
         path: 'monitoring',
         loadChildren: () =>
-          import('./service-execution-monitoring/presentation/monitoring.routes').then(
-            (m) => m.MONITORING_ROUTES,
-          ),
+          import('./monitoring/presentation/monitoring.routes').then((m) => m.monitoringRoutes),
       },
       {
         path: 'commercial-units',
