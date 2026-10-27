@@ -1,0 +1,24 @@
+<h2 mat-dialog-title class="title">
+  <mat-icon aria-hidden="true" [class.danger]="data.tone === 'danger'">{{
+      data.icon ?? 'help'
+    }}</mat-icon>
+  {{ data.title }}
+</h2>
+<mat-dialog-content>
+  <p class="message">{{ data.message }}</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button id="cancel-button" matButton type="button" [mat-dialog-close]="false">
+    {{ 'common.actions.cancel' | translate }}
+  </button>
+  <button
+    id="confirm-button"
+    matButton="filled"
+    type="button"
+    cdkFocusInitial
+    [class.danger-button]="data.tone === 'danger'"
+    [mat-dialog-close]="true"
+  >
+    {{ data.confirmLabel }}
+  </button>
+</mat-dialog-actions>
