@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { GalleryReference } from '../domain/model/gallery-reference';
 import { Payment } from '../domain/model/payment.entity';
-import { PaymentCard } from '../domain/model/payment-card.value-object';
+import { PaymentCard } from '../domain/value-objects/payment-card.value-object';
 import { RegisterPaymentCommand } from '../domain/model/register-payment.command';
 import { RequestSubscriptionCommand } from '../domain/model/request-subscription.command';
 import { Subscription } from '../domain/model/subscription.entity';
@@ -9,11 +9,11 @@ import { SubscriptionPlan } from '../domain/model/subscription-plan.entity';
 import { SubscriptionsError, SubscriptionsErrorCode } from '../domain/model/subscriptions-error';
 import { IamContextFacade } from '../infrastructure/acl/iam-context-facade';
 import { PropertyContextFacade } from '../infrastructure/acl/property-context-facade';
-import { SUBSCRIPTIONS_REPOSITORY } from '../infrastructure/subscriptions.token';
+import { SUBSCRIPTIONS_REPOSITORY } from '../infrastructure/repositories/subscriptions.token';
 
 /**
  * Application service of Subscriptions and Payments: coordinates the use cases of the gallery
- * subscription (US-44 to US-47) and keeps its state.
+ * subscription and keeps its state.
  *
  * Each command resolves to `true` when it succeeds. On failure it resolves to `false` and exposes
  * the reason in `error` (a `SubscriptionsErrorCode`, translated as `subscriptions.errors.<code>`).
@@ -48,7 +48,7 @@ export class SubscriptionsStore {
 
   readonly monitoredUnitCount = computed(() => this.galleryState()?.monitoredUnitCount ?? 0);
 
-  /** US-45: the renewal is near (or the automatic renewal was turned off and it will expire). */
+  /** The renewal is near, or the automatic renewal was turned off and it will expire. */
   readonly isExpiringSoon = computed(() => this.subscriptionState()?.isExpiringSoon() ?? false);
 
   planById(planId: string): SubscriptionPlan | undefined {
@@ -80,7 +80,7 @@ export class SubscriptionsStore {
 
   // ---------- Commands ----------
   /**
-   * US-44: contracts the plan (or changes to it) and pays it. The subscription is activated only
+   * Contracts the plan (or changes to it) and pays it. The subscription is activated only
    * when the gateway accepts the charge; a rejected charge leaves the current state untouched.
    */
   subscribe(command: RequestSubscriptionCommand): Promise<boolean> {
@@ -126,7 +126,7 @@ export class SubscriptionsStore {
     });
   }
 
-  /** US-46: turns off the automatic renewal; the subscription stays valid until it expires. */
+  /** Turns off the automatic renewal; the subscription stays valid until it expires. */
   cancelRenewal(): Promise<boolean> {
     return this.execute(this.processing, async () => {
       const updated = this.requireSubscription().cancelRenewal();
@@ -134,7 +134,7 @@ export class SubscriptionsStore {
     });
   }
 
-  /** US-47: turns the automatic renewal back on while the subscription is still valid. */
+  /** Turns the automatic renewal back on while the subscription is still valid. */
   reactivateRenewal(): Promise<boolean> {
     return this.execute(this.processing, async () => {
       const updated = this.requireSubscription().reactivateRenewal();
