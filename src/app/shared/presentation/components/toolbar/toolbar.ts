@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AuthenticationSection } from '../../../../identity-access-management/presentation/components/authentication-section/authentication-section';
+import { AuthenticationSection } from '../../../../iam/presentation/components/authentication-section/authentication-section';
 import { TranslationService } from '../../../infrastructure/i18n/translation.service';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
 import { RouterLink } from '@angular/router';

@@ -1,7 +1,7 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { IamStore } from '../../../identity-access-management/application/iam.store';
-import { Role } from '../../../identity-access-management/domain/model/role.enum';
-import { iamNav } from '../../../identity-access-management/presentation/iam.nav';
+import { IamStore } from '../../../iam/application/iam.store';
+import { Role } from '../../../iam/domain/model/role.enum';
+import { iamNav } from '../../../iam/presentation/iam.nav';
 import { AccountRole } from '../../domain/model/account-role.enum';
 import { ProfileOwner } from '../../domain/model/profile-owner';
 

@@ -1,5 +1,5 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { IamStore } from '../../../identity-access-management/application/iam.store';
+import { IamStore } from '../../../iam/application/iam.store';
 
 /**
  * Anti-corruption layer towards Identity and Access Management: the signed-in gallery
