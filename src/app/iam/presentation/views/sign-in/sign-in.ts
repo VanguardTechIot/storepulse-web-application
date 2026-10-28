@@ -35,13 +35,18 @@ import { emailValidator } from '../../iam.validators';
   templateUrl: './sign-in.html',
 })
 export class SignIn {
+  /** IAM application state used to authenticate the user. */
   protected readonly store = inject(IamStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  /** Navigation commands for IAM pages. */
   protected readonly iamNav = iamNav;
+  /** Whether the password is currently hidden in the form. */
   protected readonly hidePassword = signal(true);
+  /** Indicates that the user has just changed their password. */
   protected readonly passwordChanged = this.route.snapshot.queryParamMap.has('passwordChanged');
+  /** Form containing the user's credentials and session persistence preference. */
   protected readonly form = new FormGroup({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, emailValidator] }),
     password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -52,6 +57,9 @@ export class SignIn {
     this.store.clearError();
   }
 
+  /**
+   * Validates the form, signs the user in, and navigates to the requested or default page.
+   */
   protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -63,7 +71,11 @@ export class SignIn {
     }
   }
 
-  /** Goes back to the page that required the session, accepting only in-app paths. */
+  /**
+   * Gets the in-app return URL or falls back to the dashboard.
+   *
+   * @returns A safe in-app URL to navigate to after sign-in.
+   */
   private returnUrl(): string {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
     if (returnUrl?.startsWith('/') && !returnUrl.startsWith('//')) return returnUrl;
