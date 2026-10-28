@@ -2209,6 +2209,478 @@
       "value": 0.181,
       "unit": "m³",
       "recordedAt": "2026-09-29T18:00:00Z"
+    },
+    {
+      "id": "msr-00196",
+      "telemetryId": "tel-00001",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00197",
+      "telemetryId": "tel-00002",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00198",
+      "telemetryId": "tel-00003",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00199",
+      "telemetryId": "tel-00004",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00200",
+      "telemetryId": "tel-00005",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00201",
+      "telemetryId": "tel-00006",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00202",
+      "telemetryId": "tel-00007",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00203",
+      "telemetryId": "tel-00008",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00204",
+      "telemetryId": "tel-00009",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00205",
+      "telemetryId": "tel-00010",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00206",
+      "telemetryId": "tel-00011",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00207",
+      "telemetryId": "tel-00012",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00208",
+      "telemetryId": "tel-00013",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00209",
+      "telemetryId": "tel-00014",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00210",
+      "telemetryId": "tel-00015",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00211",
+      "telemetryId": "tel-00016",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00212",
+      "telemetryId": "tel-00017",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00213",
+      "telemetryId": "tel-00018",
+      "type": "MOTION",
+      "value": 1,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00214",
+      "telemetryId": "tel-00019",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00215",
+      "telemetryId": "tel-00020",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00216",
+      "telemetryId": "tel-00021",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00217",
+      "telemetryId": "tel-00022",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00218",
+      "telemetryId": "tel-00023",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00219",
+      "telemetryId": "tel-00024",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00220",
+      "telemetryId": "tel-00025",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00221",
+      "telemetryId": "tel-00026",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00222",
+      "telemetryId": "tel-00027",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00223",
+      "telemetryId": "tel-00028",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00224",
+      "telemetryId": "tel-00029",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00225",
+      "telemetryId": "tel-00030",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00226",
+      "telemetryId": "tel-00031",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00227",
+      "telemetryId": "tel-00032",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00228",
+      "telemetryId": "tel-00033",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00229",
+      "telemetryId": "tel-00034",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00230",
+      "telemetryId": "tel-00035",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00231",
+      "telemetryId": "tel-00036",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00232",
+      "telemetryId": "tel-00037",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00233",
+      "telemetryId": "tel-00038",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00234",
+      "telemetryId": "tel-00039",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00235",
+      "telemetryId": "tel-00040",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00236",
+      "telemetryId": "tel-00041",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00237",
+      "telemetryId": "tel-00042",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00238",
+      "telemetryId": "tel-00043",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00239",
+      "telemetryId": "tel-00044",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00240",
+      "telemetryId": "tel-00045",
+      "type": "MOTION",
+      "value": 1,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00241",
+      "telemetryId": "tel-00046",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00242",
+      "telemetryId": "tel-00047",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00243",
+      "telemetryId": "tel-00048",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00244",
+      "telemetryId": "tel-00049",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00245",
+      "telemetryId": "tel-00050",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00246",
+      "telemetryId": "tel-00051",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00247",
+      "telemetryId": "tel-00052",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00248",
+      "telemetryId": "tel-00053",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00249",
+      "telemetryId": "tel-00054",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00250",
+      "telemetryId": "tel-00055",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-09-28T17:00:00Z"
+    },
+    {
+      "id": "msr-00251",
+      "telemetryId": "tel-00056",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-09-28T21:00:00Z"
+    },
+    {
+      "id": "msr-00252",
+      "telemetryId": "tel-00057",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-03T11:00:00Z"
+    },
+    {
+      "id": "msr-00253",
+      "telemetryId": "tel-00058",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-02T05:00:00Z"
+    },
+    {
+      "id": "msr-00254",
+      "telemetryId": "tel-00059",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-09-29T18:00:00Z"
     }
   ],
   "monitoringRules": [

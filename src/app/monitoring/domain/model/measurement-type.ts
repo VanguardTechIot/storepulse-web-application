@@ -1,9 +1,9 @@
 /**
  * Measurement types defined for StorePulse telemetry.
  */
-export type MeasurementType = 'TEMPERATURE' | 'HUMIDITY' | 'WATER' | 'ELECTRICITY';
+export type MeasurementType = 'TEMPERATURE' | 'HUMIDITY' | 'WATER' | 'ELECTRICITY' | 'MOTION';
 
-export const MEASUREMENT_TYPES: readonly MeasurementType[] = ['TEMPERATURE', 'HUMIDITY', 'ELECTRICITY', 'WATER'];
+export const MEASUREMENT_TYPES: readonly MeasurementType[] = ['TEMPERATURE', 'HUMIDITY', 'ELECTRICITY', 'WATER', 'MOTION'];
 
 /** Measurement types that represent utility consumption. */
 export type ConsumptionType = Extract<MeasurementType, 'ELECTRICITY' | 'WATER'>;
@@ -16,4 +16,5 @@ export const MEASUREMENT_UNITS: Record<MeasurementType, string> = {
   HUMIDITY: '%',
   ELECTRICITY: 'kWh',
   WATER: 'm³',
+  MOTION: '',
 };

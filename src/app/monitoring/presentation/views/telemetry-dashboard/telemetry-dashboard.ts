@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { Icon } from '../../../../shared/presentation/components/icon/icon';
 import { ViewState } from '../../../../shared/presentation/components/view-state/view-state';
 import { paginate, Paginator } from '../../../../shared/presentation/components/paginator/paginator';
@@ -15,7 +14,7 @@ type StateFilter = 'ALL' | Exclude<ResourceMonitoringState, 'NORMAL'>;
 
 const STATE_TONES: Record<ResourceMonitoringState, string> = {
   NORMAL: 'badge--success',
-  OPEN_ALERT: 'badge--danger',
+  MOTION_DETECTED: 'badge--warning',
   NO_MONITORING: 'badge--violet',
 };
 
@@ -27,7 +26,6 @@ const MEASUREMENTS_PAGE_SIZE = 10;
 @Component({
   selector: 'app-telemetry-dashboard',
   imports: [
-    RouterLink,
     Icon,
     ViewState,
     Paginator,
@@ -43,7 +41,7 @@ const MEASUREMENTS_PAGE_SIZE = 10;
 export class TelemetryDashboard extends MonitoringView {
   protected readonly stateTones = STATE_TONES;
   protected readonly measurementTypes = MEASUREMENT_TYPES;
-  protected readonly stateFilters: StateFilter[] = ['ALL', 'OPEN_ALERT', 'NO_MONITORING'];
+  protected readonly stateFilters: StateFilter[] = ['ALL', 'MOTION_DETECTED', 'NO_MONITORING'];
   protected readonly pageSize = MEASUREMENTS_PAGE_SIZE;
 
   protected readonly stateFilter = signal<StateFilter>('ALL');
@@ -53,6 +51,9 @@ export class TelemetryDashboard extends MonitoringView {
 
   protected readonly monitoredCount = computed(
     () => this.store.resourceStatuses().filter((s) => s.state !== 'NO_MONITORING').length,
+  );
+  protected readonly motionDetectedCount = computed(
+    () => this.store.resourceStatuses().filter((s) => s.state === 'MOTION_DETECTED').length,
   );
   protected readonly withoutMonitoringCount = computed(
     () => this.store.resourceStatuses().filter((s) => s.state === 'NO_MONITORING').length,

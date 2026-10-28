@@ -26,7 +26,6 @@ export const environment = {
   platformProviderTenantAssignmentsEndpointPath: '/tenant-assignments',
 
   platformProviderTelemetryEndpointPath: '/telemetry',
-  platformProviderMonitoringRulesEndpointPath: '/monitoring-rules',
   platformProviderAlertsEndpointPath: '/alerts',
   platformProviderConsumptionEndpointPath: '/consumption',
 
