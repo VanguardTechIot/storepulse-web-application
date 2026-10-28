@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
 import { ToastService } from '../../../../shared/presentation/components/toast-host/toast.service';
+import { StatusChip } from '../../../../shared/presentation/components/status-chip/status-chip';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { ProfilesStore } from '../../../application/profiles.store';
 import { AccountRole } from '../../../domain/model/account-role.enum';
@@ -31,6 +32,7 @@ import { ProfileAvatar } from '../profile-avatar/profile-avatar';
     MatInputModule,
     ProfileAvatar,
     ReactiveFormsModule,
+    StatusChip,
     TranslatePipe,
   ],
   templateUrl: './profile-photo-card.html',
