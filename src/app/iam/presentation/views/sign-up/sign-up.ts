@@ -38,7 +38,6 @@ import { emailValidator, passwordPolicyValidator } from '../../iam.validators';
     TranslatePipe,
   ],
   templateUrl: './sign-up.html',
-  styleUrl: './sign-up.css',
 })
 export class SignUp {
   /** IAM application state used to register the user. */

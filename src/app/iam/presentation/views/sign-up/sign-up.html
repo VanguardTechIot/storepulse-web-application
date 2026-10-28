@@ -1,13 +1,13 @@
-<app-authentication-layout width="wide">
+<app-authentication-layout>
   <ng-container ngProjectAs="[authTop]">
     <span>{{ 'iam.sign_up.has_account' | translate }}</span>
     <a matButton="outlined" [routerLink]="iamNav.signIn()">{{ 'iam.sign_up.sign_in' | translate }}</a>
   </ng-container>
 
   <!-- Gallery (Property Management) and Plan (Subscriptions and Payments) continue the flow. -->
-  <mat-stepper linear class="stepper" [aria-label]="'iam.sign_up.steps.label' | translate">
+  <mat-stepper linear [aria-label]="'iam.sign_up.steps.label' | translate">
     <mat-step [label]="'iam.sign_up.steps.account' | translate" [completed]="false">
-      <div class="step-content">
+      <div class="auth-form">
         <h1>{{ 'iam.sign_up.title' | translate }}</h1>
         <p class="auth-subtitle">{{ 'iam.sign_up.subtitle' | translate }}</p>
 
@@ -65,15 +65,15 @@
           </mat-form-field>
           <app-password-requirements id="password-requirements" [password]="password()" />
 
-          <mat-checkbox class="terms" formControlName="acceptTerms" required>
+          <mat-checkbox formControlName="acceptTerms" required>
             {{ 'iam.sign_up.accept_terms' | translate }}
             <a [routerLink]="appNav.termsAndConditions" target="_blank">{{ 'common.footer.terms' | translate }}</a>
           </mat-checkbox>
           @if (form.controls.acceptTerms.invalid && form.controls.acceptTerms.touched) {
-            <mat-error class="terms-error" role="alert">{{ 'iam.sign_up.accept_terms_required' | translate }}</mat-error>
+            <mat-error role="alert">{{ 'iam.sign_up.accept_terms_required' | translate }}</mat-error>
           }
 
-          <button matButton="filled" class="auth-cta" type="submit" [disabled]="store.loading()">
+          <button matButton="filled" type="submit" [disabled]="store.loading()">
             {{ (store.loading() ? 'iam.sign_up.submitting' : 'iam.sign_up.submit') | translate }}
             <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
           </button>
