@@ -1,12 +1,9 @@
 <mat-card appearance="outlined">
   <mat-card-header>
-    <h2 matCardTitle>{{ 'profiles.subscription.title' | translate }}</h2>
-    <a matButton class="manage" [routerLink]="store.manageSubscriptionRoute">
-      {{ 'profiles.subscription.manage' | translate }}
-    </a>
+    <mat-card-title role="heading" aria-level="2">{{ 'profiles.subscription.title' | translate }}</mat-card-title>
   </mat-card-header>
 
-  <mat-card-content class="content">
+  <mat-card-content>
     @if (store.subscription(); as subscription) {
       <dl class="summary">
         <div>
@@ -16,9 +13,9 @@
         <div>
           <dt>{{ 'profiles.subscription.status' | translate }}</dt>
           <dd>
-            <span class="badge" [class]="statusTones[subscription.status]">
+            <app-status-chip [tone]="statusTones[subscription.status]">
               {{ 'profiles.subscription.statuses.' + subscription.status | translate }}
-            </span>
+            </app-status-chip>
           </dd>
         </div>
         <div>
@@ -41,7 +38,11 @@
         </app-callout>
       }
     } @else {
-      <p class="empty">{{ 'profiles.subscription.none' | translate }}</p>
+      <p>{{ 'profiles.subscription.none' | translate }}</p>
     }
   </mat-card-content>
+
+  <mat-card-actions align="end">
+    <a matButton [routerLink]="store.manageSubscriptionRoute">{{ 'profiles.subscription.manage' | translate }}</a>
+  </mat-card-actions>
 </mat-card>
