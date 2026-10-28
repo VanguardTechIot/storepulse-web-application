@@ -2,7 +2,7 @@
   <header>
     <h3>{{ 'subscriptions.plans.' + plan().code + '.name' | translate }}</h3>
     @if (current()) {
-      <app-status-chip tone="success">{{
+      <app-status-chip [tone]="'success'">{{
           'subscriptions.plan_card.current' | translate
         }}</app-status-chip>
     }
