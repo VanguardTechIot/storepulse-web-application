@@ -39,9 +39,12 @@ export class ProfileDetailsForm {
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(TranslationService);
 
+  /** Profile whose personal and contact details are edited by this form. */
   readonly profile = input.required<Profile>();
 
+  /** Maximum permitted length of the first and last name fields. */
   protected readonly nameMaxLength = Profile.nameMaxLength;
+  /** Form containing editable profile details. */
   protected readonly form = new FormGroup({
     firstName: new FormControl('', {
       nonNullable: true,
@@ -68,11 +71,17 @@ export class ProfileDetailsForm {
     });
   }
 
+  /** Discards unsaved edits and restores the current profile values. */
   protected discard(): void {
     this.store.clearError();
     this.fill(this.profile());
   }
 
+  /**
+   * Validates and saves the edited profile details.
+   *
+   * On success, the form is updated with the saved profile and a confirmation toast is shown.
+   */
   protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -87,6 +96,11 @@ export class ProfileDetailsForm {
     }
   }
 
+  /**
+   * Populates the form from a profile and marks it pristine.
+   *
+   * @param profile - Profile whose details should be displayed.
+   */
   private fill(profile: Profile): void {
     this.form.reset({
       firstName: profile.firstName,
