@@ -37,7 +37,7 @@
     <app-kpi-card
       id="energy-card"
       icon="bolt"
-      tone="warning"
+      [tone]="'warning'"
       [label]="'analytics.dashboard.kpis.energy' | translate"
       [value]="formatValue(summary().electricity?.current)"
       [unit]="summary().electricity?.unit ?? ''"
@@ -49,7 +49,7 @@
     <app-kpi-card
       id="water-card"
       icon="water_drop"
-      tone="info"
+      [tone]="'info'"
       [label]="'analytics.dashboard.kpis.water' | translate"
       [value]="formatValue(summary().water?.current)"
       [unit]="summary().water?.unit ?? ''"
@@ -61,7 +61,7 @@
     <app-kpi-card
       id="devices-card"
       icon="wifi_off"
-      tone="violet"
+      [tone]="'violet'"
       [label]="'analytics.dashboard.kpis.disconnected' | translate"
       [value]="formatValue(summary().disconnectedDevices)"
       [unit]="summary().registeredDevices !== null ? '/ ' + summary().registeredDevices : ''"
@@ -97,7 +97,7 @@
             <mat-button-toggle-group
               id="utility-toggle"
               class="tabs"
-              hideSingleSelectionIndicator
+              [hideSingleSelectionIndicator]="true"
               [value]="utility()"
               (change)="utility.set($event.value)"
               [attr.aria-label]="'analytics.dashboard.chart.utility' | translate"

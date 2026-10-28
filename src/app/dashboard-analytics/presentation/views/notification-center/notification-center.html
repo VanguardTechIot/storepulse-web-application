@@ -31,7 +31,7 @@
       <mat-button-toggle-group
         id="filter-toggle"
         class="tabs"
-        hideSingleSelectionIndicator
+        [hideSingleSelectionIndicator]="true"
         [value]="filter()"
         (change)="filter.set($event.value)"
         [attr.aria-label]="'analytics.notifications.filter' | translate"
