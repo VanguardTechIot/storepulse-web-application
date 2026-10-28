@@ -4,7 +4,11 @@ import { appNav } from '../../shared/routing/app-nav';
 import { IamStore } from '../application/iam.store';
 import { iamNav } from './iam.nav';
 
-/** Protects the authenticated area: guests are sent to Log In and come back afterwards. */
+/**
+ * Protects authenticated routes and redirects guests to sign-in.
+ *
+ * The requested URL is preserved so users can return after signing in.
+ */
 export const authenticationGuard: CanActivateFn = (_route, state) => {
   const store = inject(IamStore);
   const router = inject(Router);
@@ -14,14 +18,18 @@ export const authenticationGuard: CanActivateFn = (_route, state) => {
   );
 };
 
-/** Keeps signed-in users out of the welcome, Log In and registration screens. */
+/**
+ * Prevents signed-in users from accessing the welcome, sign-in, and registration pages.
+ */
 export const guestGuard: CanActivateFn = () => {
   const store = inject(IamStore);
   const router = inject(Router);
   return !store.isSignedIn() || router.createUrlTree(appNav.dashboard);
 };
 
-/** The code can only be entered after it was requested in this visit. */
+/**
+ * Requires an active password recovery before allowing access to the reset page.
+ */
 export const passwordRecoveryGuard: CanActivateFn = () => {
   const store = inject(IamStore);
   const router = inject(Router);

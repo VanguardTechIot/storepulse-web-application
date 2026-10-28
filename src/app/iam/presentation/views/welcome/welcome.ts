@@ -26,5 +26,6 @@ import { iamNav } from '../../iam.nav';
   styleUrl: './welcome.css',
 })
 export class Welcome {
+  /** Navigation commands for IAM pages. */
   protected readonly iamNav = iamNav;
 }
