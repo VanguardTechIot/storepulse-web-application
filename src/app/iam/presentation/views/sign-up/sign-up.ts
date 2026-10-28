@@ -41,12 +41,17 @@ import { emailValidator, passwordPolicyValidator } from '../../iam.validators';
   styleUrl: './sign-up.css',
 })
 export class SignUp {
+  /** IAM application state used to register the user. */
   protected readonly store = inject(IamStore);
   private readonly router = inject(Router);
 
+  /** Navigation commands for IAM pages. */
   protected readonly iamNav = iamNav;
+  /** Navigation commands for the main application. */
   protected readonly appNav = appNav;
+  /** Whether the password is currently hidden in the form. */
   protected readonly hidePassword = signal(true);
+  /** Form containing the user's registration details and terms acceptance. */
   protected readonly form = new FormGroup({
     fullName: new FormControl('', {
       nonNullable: true,
@@ -59,6 +64,7 @@ export class SignUp {
     }),
     acceptTerms: new FormControl(false, { nonNullable: true, validators: [Validators.requiredTrue] }),
   });
+  /** Current password value used by the password requirements checklist. */
   protected readonly password = toSignal(this.form.controls.password.valueChanges, {
     initialValue: '',
   });
@@ -67,6 +73,9 @@ export class SignUp {
     this.store.clearError();
   }
 
+  /**
+   * Validates the form, registers the user, and navigates to gallery registration on success.
+   */
   protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
