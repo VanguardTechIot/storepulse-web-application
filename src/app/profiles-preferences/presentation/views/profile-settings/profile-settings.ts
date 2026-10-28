@@ -30,6 +30,7 @@ import { SubscriptionSummaryCard } from '../../components/subscription-summary-c
   styleUrl: './profile-settings.css',
 })
 export class ProfileSettings {
+  /** Profiles state used to load and manage the profile and subscription. */
   protected readonly store = inject(ProfilesStore);
   private readonly router = inject(Router);
 
@@ -37,6 +38,7 @@ export class ProfileSettings {
     void this.store.load();
   }
 
+  /** Signs out the user and navigates to the sign-in page. */
   protected signOut(): void {
     this.store.signOut();
     void this.router.navigate(this.store.signInRoute);
