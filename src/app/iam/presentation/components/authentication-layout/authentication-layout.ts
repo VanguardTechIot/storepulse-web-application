@@ -33,7 +33,10 @@ export class AuthenticationLayout {
   /** `wide` fits the registration forms (mock-ups 03 and 03b). */
   readonly width = input<'default' | 'wide'>('default');
 
+  /** Navigation commands for the main application. */
   protected readonly appNav = appNav;
+  /** Unit identifiers displayed in the decorative building panel. */
   protected readonly units = ['B-01', 'B-02', 'B-03', 'B-04', 'B-09', 'B-10', 'B-11', 'B-12'];
+  /** Unit identifier highlighted with an alert in the decorative panel. */
   protected readonly alertUnit = 'B-12';
 }

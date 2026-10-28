@@ -32,12 +32,16 @@ export class AuthenticationSection {
   private readonly store = inject(IamStore);
   private readonly router = inject(Router);
 
+  /** Navigation commands for the main application. */
   protected readonly appNav = appNav;
+  /** Currently authenticated user. */
   protected readonly user = this.store.currentUser;
+  /** Initials derived from the current user's email address. */
   protected readonly initials = computed(
     () => this.user()?.email.slice(0, 2).toUpperCase() ?? '',
   );
 
+  /** Signs out the user and navigates to the sign-in page. */
   protected signOut(): void {
     this.store.signOut();
     void this.router.navigate(iamNav.signIn());
