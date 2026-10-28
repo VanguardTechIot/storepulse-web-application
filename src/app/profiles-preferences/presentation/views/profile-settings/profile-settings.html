@@ -3,10 +3,12 @@
     <h1>{{ 'profiles.profile.page_title' | translate }}</h1>
     <p>{{ 'profiles.profile.subtitle' | translate }}</p>
   </div>
-  <button matButton="outlined" type="button" class="sign-out" (click)="signOut()">
-    <mat-icon aria-hidden="true">logout</mat-icon>
-    {{ 'profiles.profile.sign_out' | translate }}
-  </button>
+  <div class="actions">
+    <button matButton="outlined" type="button" (click)="signOut()">
+      <mat-icon aria-hidden="true">logout</mat-icon>
+      {{ 'profiles.profile.sign_out' | translate }}
+    </button>
+  </div>
 </header>
 
 @if (store.profile(); as profile) {
@@ -22,17 +24,7 @@
     </div>
   </div>
 } @else if (store.error(); as error) {
-  <div class="state" role="alert">
-    <mat-icon class="state-icon" aria-hidden="true">error</mat-icon>
-    <b>{{ 'profiles.errors.' + error | translate }}</b>
-    <button matButton="outlined" type="button" (click)="store.load()">
-      <mat-icon aria-hidden="true">refresh</mat-icon>
-      {{ 'common.actions.retry' | translate }}
-    </button>
-  </div>
+  <app-page-state status="error" [title]="'profiles.errors.' + error | translate" (retry)="store.load()" />
 } @else {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state status="loading" />
 }

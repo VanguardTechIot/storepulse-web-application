@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { ProfilesStore } from '../../../application/profiles.store';
 import { ProfileDetailsForm } from '../../components/profile-details-form/profile-details-form';
@@ -20,14 +20,14 @@ import { SubscriptionSummaryCard } from '../../components/subscription-summary-c
     Callout,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
+    PageState,
     ProfileDetailsForm,
     ProfilePhotoCard,
     SubscriptionSummaryCard,
     TranslatePipe,
   ],
   templateUrl: './profile-settings.html',
-  styleUrl: './profile-settings.css',
+  styleUrls: ['../../../../shared/presentation/styles/page.css', './profile-settings.css'],
 })
 export class ProfileSettings {
   /** Profiles state used to load and manage the profile and subscription. */
