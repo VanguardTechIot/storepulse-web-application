@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,10 +36,6 @@ export class AuthenticationSection {
   protected readonly appNav = appNav;
   /** Currently authenticated user. */
   protected readonly user = this.store.currentUser;
-  /** Initials derived from the current user's email address. */
-  protected readonly initials = computed(
-    () => this.user()?.email.slice(0, 2).toUpperCase() ?? '',
-  );
 
   /** Signs out the user and navigates to the sign-in page. */
   protected signOut(): void {
