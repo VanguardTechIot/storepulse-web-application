@@ -6,8 +6,15 @@ const supportedProtocols = ['http:', 'https:'];
  * (mock-up 12); the REST API answers 415 to any other format (TS-04).
  */
 export class ProfilePhoto {
+  /** Validated URL of the profile photo. */
   readonly url: string;
 
+  /**
+   * Creates a profile photo value object.
+   *
+   * @param url - HTTP or HTTPS URL ending in a supported image extension.
+   * @throws {Error} If the URL is invalid or the image format is unsupported.
+   */
   constructor(url: string) {
     if (!ProfilePhoto.isValid(url)) {
       throw new Error(`Unsupported profile photo: ${url}`);
@@ -15,6 +22,12 @@ export class ProfilePhoto {
     this.url = url.trim();
   }
 
+  /**
+   * Checks whether a URL uses a supported protocol and image extension.
+   *
+   * @param url - Photo URL to validate.
+   * @returns `true` if the URL points to a JPG or PNG image over HTTP(S); otherwise, `false`.
+   */
   static isValid(url: string): boolean {
     let parsed: URL;
     try {
