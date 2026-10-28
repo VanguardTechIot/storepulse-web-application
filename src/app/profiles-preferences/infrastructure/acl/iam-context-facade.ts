@@ -18,19 +18,25 @@ const roles: Record<Role, AccountRole> = {
 export class IamContextFacade {
   private readonly iamStore = inject(IamStore);
 
-  /** Where the profile page goes after Log Out (US-04). */
+  /** Router commands for the sign-in page shown after sign-out. */
   readonly signInRoute = iamNav.signIn();
 
+  /** Current signed-in account represented as a profile owner, or `null` if signed out. */
   readonly currentOwner = computed<ProfileOwner | null>(() => {
     const user = this.iamStore.currentUser();
     return user ? { userId: user.id, role: roles[user.role] } : null;
   });
 
+  /** Signs out the current user through the IAM context. */
   signOut(): void {
     this.iamStore.signOut();
   }
 
-  /** The profile email is also the sign-in email, so the session must show the new one. */
+  /**
+   * Synchronizes a changed profile email with the signed-in account.
+   *
+   * @param email - Updated email address.
+   */
   syncAccountEmail(email: string): void {
     this.iamStore.syncAccountEmail(email);
   }

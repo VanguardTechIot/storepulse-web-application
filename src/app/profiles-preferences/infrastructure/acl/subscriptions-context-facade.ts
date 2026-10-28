@@ -12,9 +12,14 @@ import { SubscriptionSummary } from '../../domain/model/subscription-summary.val
  */
 @Injectable({ providedIn: 'root' })
 export class SubscriptionsContextFacade {
-  /** Subscription screen, where the administrator manages the plan and its renewal. */
+  /** Router commands for managing the subscription plan and its renewal. */
   readonly manageRoute = ['/subscription'];
 
+  /**
+   * Retrieves the gallery subscription summary.
+   *
+   * @returns A promise that resolves to the subscription summary, or `null` if unavailable.
+   */
   async getSubscriptionSummary(): Promise<SubscriptionSummary | null> {
     return new SubscriptionSummary({
       plan: SubscriptionPlan.Commercial,
