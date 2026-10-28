@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -15,15 +16,15 @@ import { ToastService } from '../../../../shared/presentation/components/toast-h
 import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { SubscriptionsStore } from '../../../application/subscriptions.store';
-import { BillingCycle } from '../../../domain/model/billing-cycle.enum';
-import { PaymentMethod } from '../../../domain/model/payment-method.enum';
+import { BillingCycle } from '../../../domain/enums/billing-cycle.enum';
+import { PaymentMethod } from '../../../domain/enums/payment-method.enum';
 import { RequestSubscriptionCommand } from '../../../domain/model/request-subscription.command';
 import { SubscriptionState } from '../../components/subscription-state/subscription-state';
-import { cardExpiryValidator, cardNumberValidator } from '../../subscriptions.validators';
+import { cardExpiryValidator, cardNumberValidator } from './subscriptions.validators';
 
 /**
  * Checkout of a plan: card data, total of the cycle and payment through the gateway
- * (US-44, TS-27, mock-up 11a). The subscription is activated only if the charge is accepted.
+ * The subscription is activated only if the charge is accepted.
  */
 @Component({
   selector: 'app-subscription-checkout',
@@ -41,9 +42,14 @@ import { cardExpiryValidator, cardNumberValidator } from '../../subscriptions.va
     SubscriptionState,
     TranslatePipe,
     LocalizedNumberPipe,
+    MatCardModule,
   ],
   templateUrl: './subscription-checkout.html',
-  styleUrl: '../../styles/subscriptions.css',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+    '../subscriptions.css',
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionCheckout {

@@ -1,5 +1,5 @@
 import { ValidatorFn } from '@angular/forms';
-import { PaymentCard } from '../domain/model/payment-card.value-object';
+import { PaymentCard } from '../../../domain/value-objects/payment-card.value-object';
 
 /** Form validators backed by the domain rules, so the UI and the model never disagree. */
 export const cardNumberValidator: ValidatorFn = (control) =>

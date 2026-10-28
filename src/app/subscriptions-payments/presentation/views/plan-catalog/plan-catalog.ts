@@ -3,19 +3,19 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { SubscriptionsStore } from '../../../application/subscriptions.store';
-import { BillingCycle } from '../../../domain/model/billing-cycle.enum';
+import { BillingCycle } from '../../../domain/enums/billing-cycle.enum';
 import { SubscriptionPlan } from '../../../domain/model/subscription-plan.entity';
 import { PlanCard } from '../../components/plan-card/plan-card';
 import { SubscriptionState } from '../../components/subscription-state/subscription-state';
 
 /**
- * Catalog of plans tiered by monitored units, with monthly or annual prices (US-44, mock-up 11).
+ * Catalog of plans tiered by monitored units, with monthly or annual prices.
  */
 @Component({
   selector: 'app-plan-catalog',
   imports: [MatButtonToggleModule, PlanCard, SubscriptionState, TranslatePipe],
   templateUrl: './plan-catalog.html',
-  styleUrl: '../../styles/subscriptions.css',
+  styleUrls: ['../../../../shared/presentation/styles/page.css', '../subscriptions.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanCatalog {
