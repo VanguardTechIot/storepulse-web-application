@@ -9,6 +9,7 @@ export const MEASUREMENT_TYPE_ICONS: Record<MeasurementType, { icon: IconName; t
   HUMIDITY: { icon: 'humidity', tone: 'ico-cyan' },
   ELECTRICITY: { icon: 'bolt', tone: 'ico-amber' },
   WATER: { icon: 'drop', tone: 'ico-blue' },
+  MOTION: { icon: 'eye', tone: 'ico-violet' },
 };
 
 /**
