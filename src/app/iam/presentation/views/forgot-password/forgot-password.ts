@@ -32,10 +32,13 @@ import { emailValidator } from '../../iam.validators';
   templateUrl: './forgot-password.html',
 })
 export class ForgotPassword {
+  /** IAM application state used to request the password reset. */
   protected readonly store = inject(IamStore);
   private readonly router = inject(Router);
 
+  /** Navigation commands for IAM pages. */
   protected readonly iamNav = iamNav;
+  /** Form containing the email address for the reset request. */
   protected readonly form = new FormGroup({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, emailValidator] }),
   });
@@ -44,6 +47,9 @@ export class ForgotPassword {
     this.store.clearError();
   }
 
+  /**
+   * Validates the form, requests a reset code, and navigates to the reset page on success.
+   */
   protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

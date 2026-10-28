@@ -40,13 +40,19 @@ import { passwordPolicyValidator, resetCodeValidator } from '../../iam.validator
   styleUrl: './reset-password.css',
 })
 export class ResetPassword {
+  /** IAM application state used to validate and complete password recovery. */
   protected readonly store = inject(IamStore);
   private readonly router = inject(Router);
 
+  /** Navigation commands for IAM pages. */
   protected readonly iamNav = iamNav;
+  /** Validity period for a password recovery code, in minutes. */
   protected readonly validityInMinutes = PasswordRecovery.validityInMinutes;
+  /** Whether the new password is currently hidden in the form. */
   protected readonly hidePassword = signal(true);
+  /** Whether a new reset code has been requested successfully. */
   protected readonly codeResent = signal(false);
+  /** Form containing the reset code and new password. */
   protected readonly form = new FormGroup({
     code: new FormControl('', { nonNullable: true, validators: [Validators.required, resetCodeValidator] }),
     newPassword: new FormControl('', {
@@ -54,19 +60,24 @@ export class ResetPassword {
       validators: [Validators.required, passwordPolicyValidator],
     }),
   });
+  /** Current new-password value for the password requirements checklist. */
   protected readonly newPassword = toSignal(this.form.controls.newPassword.valueChanges, {
     initialValue: '',
   });
 
+  /** Current time, updated every second for the expiration countdown. */
   private readonly now = toSignal(interval(1000).pipe(map(() => Date.now())), {
     initialValue: Date.now(),
   });
+  /** Seconds remaining until the current recovery code expires. */
   private readonly remainingSeconds = computed(() => {
     const expiresAt = this.store.passwordRecovery()?.expiresAt;
     if (!expiresAt) return 0;
     return Math.max(0, Math.ceil((expiresAt.getTime() - this.now()) / 1000));
   });
+  /** Whether the current recovery code has expired. */
   protected readonly codeExpired = computed(() => this.remainingSeconds() === 0);
+  /** Remaining validity time formatted as minutes and seconds. */
   protected readonly remainingTime = computed(() => {
     const seconds = this.remainingSeconds();
     return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
@@ -76,6 +87,9 @@ export class ResetPassword {
     this.store.clearError();
   }
 
+  /**
+   * Validates the form and submits the password reset request.
+   */
   protected async submit(): Promise<void> {
     const recovery = this.store.passwordRecovery();
     if (this.form.invalid || !recovery) {
@@ -89,6 +103,9 @@ export class ResetPassword {
     }
   }
 
+  /**
+   * Requests another recovery code and clears the previously entered code on success.
+   */
   protected async resendCode(): Promise<void> {
     const recovery = this.store.passwordRecovery();
     if (!recovery) return;
