@@ -12,7 +12,7 @@
     <mat-card-title>{{ profile().fullName }}</mat-card-title>
     <mat-card-subtitle>{{ profile().email }}</mat-card-subtitle>
     @if (role(); as role) {
-      <app-status-chip tone="primary">{{ 'profiles.roles.' + role | translate }}</app-status-chip>
+      <app-status-chip [tone]="'primary'">{{ 'profiles.roles.' + role | translate }}</app-status-chip>
     }
 
     @if (editing()) {

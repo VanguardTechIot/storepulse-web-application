@@ -5,7 +5,7 @@
   </ng-container>
 
   <!-- Gallery (Property Management) and Plan (Subscriptions and Payments) continue the flow. -->
-  <mat-stepper linear [aria-label]="'iam.sign_up.steps.label' | translate">
+  <mat-stepper [linear]="true" [aria-label]="'iam.sign_up.steps.label' | translate">
     <mat-step [label]="'iam.sign_up.steps.account' | translate" [completed]="false">
       <div class="auth-form">
         <h1>{{ 'iam.sign_up.title' | translate }}</h1>

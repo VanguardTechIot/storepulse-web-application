@@ -24,7 +24,7 @@
     </div>
   </div>
 } @else if (store.error(); as error) {
-  <app-page-state status="error" [title]="'profiles.errors.' + error | translate" (retry)="store.load()" />
+  <app-page-state [status]="'error'" [title]="'profiles.errors.' + error | translate" (retry)="store.load()" />
 } @else {
-  <app-page-state status="loading" />
+  <app-page-state [status]="'loading'" />
 }

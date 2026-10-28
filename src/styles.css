@@ -42,7 +42,7 @@ html,
 body {
   margin: 0;
   height: 100%;
-  font-family: var(--sp-font);
+  font-family: var(--sp-font), sans-serif;
   font-size: 14px;
   color: var(--sp-text);
   background: var(--sp-bg);
