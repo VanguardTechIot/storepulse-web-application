@@ -50,3 +50,5 @@ Thumbs.db
 /.firebaserc
 /firebase.json
 /skills-lock.json
+/.firebase/
+/.vscode/
