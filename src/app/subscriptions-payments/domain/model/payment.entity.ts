@@ -1,8 +1,8 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
-import { BillingCycle } from './billing-cycle.enum';
-import { Money } from './money.value-object';
-import { PaymentMethod } from './payment-method.enum';
-import { PaymentStatus } from './payment-status.enum';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { Money } from '../value-objects/money.value-object';
+import { PaymentMethod } from '../enums/payment-method.enum';
+import { PaymentStatus } from '../enums/payment-status.enum';
 
 /**
  * Aggregate root: charge that supports a subscription. Immutable once the gateway resolves it.

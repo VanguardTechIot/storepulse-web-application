@@ -1,0 +1,21 @@
+<app-tone-icon [icon]="style().icon" [tone]="style().tone" />
+<div class="body">
+  <b>
+    {{ notification().message }}
+    @if (notification().isGrouped) {
+      <app-status-chip>{{
+          'analytics.notifications.grouped' | translate: { count: notification().occurrences }
+        }}</app-status-chip>
+    }
+  </b>
+  <span class="sub">
+    {{ 'analytics.notification_types.' + notification().type | translate }} ·
+    {{ notification().location }}
+  </span>
+</div>
+<time [attr.datetime]="notification().generatedAt.toISOString()">{{
+    notification().generatedAt | localizedDate: 'time'
+  }}</time>
+@if (!notification().read) {
+  <span class="dot" [attr.aria-label]="'analytics.notifications.unread' | translate"></span>
+}

@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { StatusChip } from '../../../../shared/presentation/components/status-chip/status-chip';
 import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
-import { BillingCycle } from '../../../domain/model/billing-cycle.enum';
+import { BillingCycle } from '../../../domain/enums/billing-cycle.enum';
 import { SubscriptionPlan } from '../../../domain/model/subscription-plan.entity';
 
 /**
@@ -11,7 +13,14 @@ import { SubscriptionPlan } from '../../../domain/model/subscription-plan.entity
  */
 @Component({
   selector: 'app-plan-card',
-  imports: [MatButtonModule, MatIconModule, TranslatePipe, LocalizedNumberPipe],
+  imports: [
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    StatusChip,
+    TranslatePipe,
+    LocalizedNumberPipe,
+  ],
   templateUrl: './plan-card.html',
   styleUrl: './plan-card.css',
   host: { '[class.current]': 'current()' },

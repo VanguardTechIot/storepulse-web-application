@@ -1,6 +1,6 @@
 import { Notification } from './notification.entity';
 
-/** TS-30, scenario 2: more than 3 events of the same type and device within 5 minutes. */
+/** More than 3 events of the same type and device within 5 minutes are grouped. */
 export const GROUPING_WINDOW_MS = 5 * 60 * 1000;
 export const GROUPING_MIN_EVENTS = 4;
 

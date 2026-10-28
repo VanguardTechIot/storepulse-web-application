@@ -1,8 +1,8 @@
-import { BillingCycle } from './billing-cycle.enum';
-import { Money } from './money.value-object';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { Money } from '../value-objects/money.value-object';
 import { Subscription } from './subscription.entity';
 import { SubscriptionPlan } from './subscription-plan.entity';
-import { SubscriptionStatus } from './subscription-status.enum';
+import { SubscriptionStatus } from '../enums/subscription-status.enum';
 import { SubscriptionsError, SubscriptionsErrorCode } from './subscriptions-error';
 
 describe('Subscription', () => {
@@ -45,7 +45,7 @@ describe('Subscription', () => {
     }
   }
 
-  it('is created pending until the gateway accepts the charge (US-44)', () => {
+  it('is created pending until the gateway accepts the charge', () => {
     const subscription = request();
 
     expect(subscription.status).toBe(SubscriptionStatus.PendingPayment);
@@ -67,7 +67,7 @@ describe('Subscription', () => {
     );
   });
 
-  it('cancels the renewal keeping the validity, and reactivates it (US-46, US-47)', () => {
+  it('cancels the renewal keeping the validity, and reactivates it', () => {
     const active = request().activate(commercial, BillingCycle.Monthly, 'Visa');
     const cancelled = active.cancelRenewal();
 
@@ -79,7 +79,7 @@ describe('Subscription', () => {
     expect(cancelled.reactivateRenewal().autoRenewal).toBe(true);
   });
 
-  it('reports the renewal as near within the last 10 days (US-45, scenario 2)', () => {
+  it('reports the renewal as near within the last 10 days', () => {
     const active = request().activate(
       commercial,
       BillingCycle.Monthly,

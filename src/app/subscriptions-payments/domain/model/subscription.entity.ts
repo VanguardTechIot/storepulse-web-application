@@ -1,8 +1,8 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
-import { BillingCycle } from './billing-cycle.enum';
-import { BillingPeriod, EXPIRING_SOON_DAYS } from './billing-period.value-object';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { BillingPeriod, EXPIRING_SOON_DAYS } from '../value-objects/billing-period.value-object';
 import { SubscriptionPlan } from './subscription-plan.entity';
-import { SubscriptionStatus } from './subscription-status.enum';
+import { SubscriptionStatus } from '../enums/subscription-status.enum';
 import { SubscriptionsError, SubscriptionsErrorCode } from './subscriptions-error';
 
 export interface SubscriptionProps {
@@ -31,7 +31,7 @@ export class Subscription implements BaseEntity {
     return new Subscription({ ...props });
   }
 
-  /** RequestSubscriptionCommand: created as pending until the gateway confirms the charge (US-44). */
+  /** Created as pending payment until the gateway confirms the charge. */
   static request(props: {
     id: string;
     galleryId: string;
@@ -96,7 +96,7 @@ export class Subscription implements BaseEntity {
     return this.props.status === SubscriptionStatus.Expired;
   }
 
-  /** US-45, scenario 2: active and close to its expiration date. */
+  /** Active and close to its expiration date. */
   isExpiringSoon(reference: Date = new Date()): boolean {
     const period = this.props.billingPeriod;
     return this.isActive && !!period && period.daysUntilEnd(reference) <= EXPIRING_SOON_DAYS;
@@ -130,7 +130,7 @@ export class Subscription implements BaseEntity {
     });
   }
 
-  /** US-46: no future charges; the subscription keeps its validity until the expiration date. */
+  /** No future charges; the subscription keeps its validity until the expiration date. */
   cancelRenewal(): Subscription {
     if (!this.isActive) throw new SubscriptionsError(SubscriptionsErrorCode.SubscriptionNotActive);
     if (!this.props.autoRenewal) {
@@ -139,7 +139,7 @@ export class Subscription implements BaseEntity {
     return new Subscription({ ...this.props, autoRenewal: false });
   }
 
-  /** US-47: only while the subscription is still valid; an expired one must be renewed first. */
+  /** Only while the subscription is still valid; an expired one must be renewed first. */
   reactivateRenewal(): Subscription {
     if (this.isExpired) throw new SubscriptionsError(SubscriptionsErrorCode.SubscriptionExpired);
     if (!this.isActive) throw new SubscriptionsError(SubscriptionsErrorCode.SubscriptionNotActive);

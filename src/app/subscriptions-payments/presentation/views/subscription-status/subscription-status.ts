@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterLink } from '@angular/router';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
-import { ConfirmDialog } from '../../../../shared/presentation/components/confirm-dialog/confirm-dialog';
+import { confirmAction } from '../../../../shared/presentation/components/confirmation-dialog/confirmation-dialog';
 import { ToastService } from '../../../../shared/presentation/components/toast-host/toast.service';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
 import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
@@ -16,7 +19,7 @@ import { SubscriptionStatusBadge } from '../../components/subscription-status-ba
 
 /**
  * Current subscription of the gallery: plan, status, expiration date, covered units and automatic
- * renewal (US-45 to US-48, mock-ups 11, 11b and 11c).
+ * renewal.
  */
 @Component({
   selector: 'app-subscription-status',
@@ -26,23 +29,23 @@ import { SubscriptionStatusBadge } from '../../components/subscription-status-ba
     MatProgressBarModule,
     RouterLink,
     Callout,
-    ConfirmDialog,
     SubscriptionState,
     SubscriptionStatusBadge,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedNumberPipe,
+    MatCardModule,
+    PageState,
   ],
   templateUrl: './subscription-status.html',
-  styleUrl: '../../styles/subscriptions.css',
+  styleUrls: ['../../../../shared/presentation/styles/page.css', '../subscriptions.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionStatusView {
   protected readonly store = inject(SubscriptionsStore);
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(TranslationService);
-
-  protected readonly confirmingCancel = signal(false);
+  private readonly dialog = inject(MatDialog);
 
   /** Percentage of the plan limit already used by the gallery (0 for unlimited plans). */
   protected readonly usage = computed(() => {
@@ -50,9 +53,17 @@ export class SubscriptionStatusView {
     return limit ? Math.min(100, (this.store.monitoredUnitCount() / limit) * 100) : 0;
   });
 
-  protected async cancelRenewal(): Promise<void> {
+  protected async cancelRenewal(endDate: string): Promise<void> {
+    const confirmed = await confirmAction(this.dialog, {
+      id: 'cancel-dialog',
+      title: this.i18n.t('subscriptions.cancel_dialog.title'),
+      message: this.i18n.t('subscriptions.cancel_dialog.message', { date: endDate }),
+      confirmLabel: this.i18n.t('subscriptions.status.cancel_renewal'),
+      tone: 'danger',
+      icon: 'event_busy',
+    });
+    if (!confirmed) return;
     const done = await this.store.cancelRenewal();
-    this.confirmingCancel.set(false);
     this.notify(done, 'subscriptions.status.renewal_cancelled');
   }
 

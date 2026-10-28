@@ -1,8 +1,8 @@
-import { BillingCycle } from './billing-cycle.enum';
-import { PaymentMethod } from './payment-method.enum';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { PaymentMethod } from '../enums/payment-method.enum';
 
 /**
- * Contracts (or changes to) a plan and pays it in the same step (US-44, mock-up 11a).
+ * Contracts (or changes to) a plan and pays it in the same step.
  */
 export class RequestSubscriptionCommand {
   readonly planId: string;

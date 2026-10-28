@@ -1,10 +1,10 @@
-import { BillingCycle } from './billing-cycle.enum';
-import { Money } from './money.value-object';
-import { PaymentCard } from './payment-card.value-object';
-import { PaymentMethod } from './payment-method.enum';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { Money } from '../value-objects/money.value-object';
+import { PaymentCard } from '../value-objects/payment-card.value-object';
+import { PaymentMethod } from '../enums/payment-method.enum';
 
 /**
- * Charge sent to the payment gateway for a subscription (TS-27).
+ * Charge sent to the payment gateway for a subscription.
  */
 export class RegisterPaymentCommand {
   readonly subscriptionId: string;

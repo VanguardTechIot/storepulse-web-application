@@ -1,0 +1,168 @@
+/* Layout specific to the Subscriptions and Payments views. */
+
+/* Current subscription */
+.overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.overview .plan-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.overview .price {
+  margin-top: 6px;
+  color: var(--sp-text-muted);
+}
+
+.overview .price b {
+  color: var(--sp-text);
+}
+
+.metric {
+  margin: 0;
+}
+
+.metric dt {
+  font-size: 12px;
+  color: var(--sp-text-muted);
+}
+
+.metric dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+
+.metric mat-progress-bar {
+  margin-top: 8px;
+}
+
+.renewal {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--sp-border);
+}
+
+.renewal .grow {
+  flex: 1;
+}
+
+.renewal mat-icon {
+  color: var(--sp-primary);
+}
+
+.renewal.off mat-icon {
+  color: var(--sp-warning);
+}
+
+/* Plans grid */
+.plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* Payment history */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  --mat-table-background-color: transparent;
+  --mat-table-header-container-height: 44px;
+  --mat-table-header-headline-color: var(--sp-text-muted);
+  --mat-table-header-headline-font: var(--sp-font);
+  --mat-table-header-headline-size: 12px;
+  --mat-table-header-headline-weight: 600;
+  --mat-table-row-item-container-height: 52px;
+  --mat-table-row-item-label-text-color: var(--sp-text);
+  --mat-table-row-item-label-text-font: var(--sp-font-data);
+  --mat-table-row-item-label-text-size: 13px;
+  --mat-table-row-item-outline-color: var(--sp-border);
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0 20px;
+  white-space: nowrap;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+.amount {
+  text-align: right;
+}
+
+/* Checkout */
+.checkout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: start;
+  gap: 24px;
+}
+
+.checkout form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkout .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.summary-line.total {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--sp-border);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.secure {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 16px;
+  font-size: 12px;
+  color: var(--sp-text-muted);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 1023px) {
+  .overview,
+  .plans,
+  .checkout {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,6 @@
+<app-status-chip [tone]="tone()" [dot]="true">
+  {{ 'subscriptions.statuses.' + subscription().status | translate }}
+  @if (subscription().isActive && !subscription().autoRenewal) {
+    · {{ 'subscriptions.status.will_not_renew' | translate }}
+  }
+</app-status-chip>

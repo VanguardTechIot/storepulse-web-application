@@ -1,4 +1,4 @@
-import { UtilityType } from './utility-type.enum';
+import { UtilityType } from '../enums/utility-type.enum';
 
 /**
  * Consumption of a utility in the current period compared with the previous one.
@@ -20,7 +20,7 @@ export class PeriodConsumption {
 }
 
 /**
- * Read model of the Consolidated Dashboard (US-50, TS-31). A field is `null` when there is not
+ * Read model of the Consolidated Dashboard. A field is `null` when there is not
  * enough data for that indicator, instead of failing the whole summary.
  */
 export class DashboardSummary {
@@ -32,7 +32,7 @@ export class DashboardSummary {
     readonly registeredDevices: number | null,
   ) {}
 
-  /** US-50, scenario 2: a new gallery without devices or measurements. */
+  /** False for a new gallery without devices or measurements. */
   get hasActivity(): boolean {
     return (
       (this.registeredDevices ?? 0) > 0 ||

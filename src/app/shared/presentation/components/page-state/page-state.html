@@ -1,0 +1,21 @@
+@if (status() === 'loading') {
+  <mat-spinner diameter="32" aria-hidden="true" />
+  <span>{{ 'common.states.loading' | translate }}</span>
+} @else {
+  <mat-icon aria-hidden="true">{{ isError() && icon() === 'info' ? 'error' : icon() }}</mat-icon>
+  @if (title()) {
+    <b>{{ title() }}</b>
+  } @else if (isError()) {
+    <b>{{ 'common.states.errorTitle' | translate }}</b>
+    <span>{{ 'common.states.errorMessage' | translate }}</span>
+  }
+  @if (message()) {
+    <span>{{ message() }}</span>
+  }
+  <ng-content />
+  @if (isError() && retryable()) {
+    <button matButton="outlined" type="button" (click)="retry.emit()">
+      <mat-icon aria-hidden="true">refresh</mat-icon>{{ 'common.actions.retry' | translate }}
+    </button>
+  }
+}
