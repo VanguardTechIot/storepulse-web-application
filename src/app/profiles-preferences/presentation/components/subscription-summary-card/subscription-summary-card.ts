@@ -25,6 +25,8 @@ const statusTones: Record<SubscriptionStatus, string> = {
   styleUrl: './subscription-summary-card.css',
 })
 export class SubscriptionSummaryCard {
+  /** Profiles state that provides the gallery subscription summary. */
   protected readonly store = inject(ProfilesStore);
+  /** CSS badge class associated with each subscription status. */
   protected readonly statusTones = statusTones;
 }

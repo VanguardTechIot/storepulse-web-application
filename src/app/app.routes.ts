@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import {
   authenticationGuard,
   guestGuard,
-} from './identity-access-management/presentation/iam.guards';
+} from './iam/presentation/iam.guards';
 import { ComingSoon } from './shared/presentation/views/coming-soon/coming-soon';
 
 export const routes: Routes = [
@@ -11,7 +11,7 @@ export const routes: Routes = [
     path: 'iam',
     canActivate: [guestGuard],
     loadChildren: () =>
-      import('./identity-access-management/identity-access-management.routes').then(
+      import('./iam/iam.routes').then(
         (m) => m.IDENTITY_ACCESS_MANAGEMENT_ROUTES,
       ),
   },

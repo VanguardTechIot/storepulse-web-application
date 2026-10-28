@@ -9,7 +9,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { provideRouter, TitleStrategy } from '@angular/router';
 import { routes } from './app.routes';
-import { authenticationInterceptor } from './identity-access-management/infrastructure/iam.interceptor';
+import { authenticationInterceptor } from './iam/infrastructure/iam.interceptor';
 import { TranslationService } from './shared/infrastructure/i18n/translation.service';
 import { TranslatedTitleStrategy } from './shared/routing/translated-title.strategy';
 

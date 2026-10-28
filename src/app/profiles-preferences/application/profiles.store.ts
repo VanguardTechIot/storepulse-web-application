@@ -25,17 +25,28 @@ export class ProfilesStore {
   private readonly profileState = signal<Profile | null>(null);
   private readonly subscriptionState = signal<SubscriptionSummary | null>(null);
 
+  /** Profile of the currently signed-in user, if loaded. */
   readonly profile = this.profileState.asReadonly();
   /** Shown next to the profile (US-45); `null` when there is none or it cannot be read. */
   readonly subscription = this.subscriptionState.asReadonly();
+  /** Current account that owns the profile, or `null` if signed out. */
   readonly owner = this.iamContext.currentOwner;
+  /** Router commands for the sign-in page. */
   readonly signInRoute = this.iamContext.signInRoute;
+  /** Router commands for managing the gallery subscription. */
   readonly manageSubscriptionRoute = this.subscriptionsContext.manageRoute;
+  /** Whether a profile or subscription load is in progress. */
   readonly loading = signal(false);
+  /** Whether a profile update is in progress. */
   readonly saving = signal(false);
+  /** Business error from the latest operation, if any. */
   readonly error = signal<ProfilesErrorCode | null>(null);
 
-  /** Profile of the signed-in user (US-06) and the subscription of the gallery (US-45). */
+  /**
+   * Loads the signed-in user's profile (US-06) and the gallery subscription summary (US-45).
+   *
+   * @returns A promise that resolves to `true` on success or `false` on failure.
+   */
   load(): Promise<boolean> {
     return this.execute(this.loading, async () => {
       const owner = this.requireOwner();
@@ -51,7 +62,12 @@ export class ProfilesStore {
     });
   }
 
-  /** Saves the edited details (US-07). A new email also becomes the sign-in email. */
+  /**
+   * Saves edited profile details and synchronizes a changed email with the IAM session.
+   *
+   * @param command - Updated profile details.
+   * @returns A promise that resolves to `true` on success or `false` on failure.
+   */
   updateProfile(command: UpdateProfileCommand): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const current = this.requireProfile();
@@ -63,7 +79,12 @@ export class ProfilesStore {
     });
   }
 
-  /** Sets or removes the photo link (US-07, scenario 3). */
+  /**
+   * Sets or removes the profile photo.
+   *
+   * @param command - Photo URL to set, or `null` to remove it.
+   * @returns A promise that resolves to `true` on success or `false` on failure.
+   */
   updatePhoto(command: UpdateProfilePhotoCommand): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const profile = this.requireProfile().changePhoto(command);
@@ -71,13 +92,14 @@ export class ProfilesStore {
     });
   }
 
-  /** Log Out from My profile (US-04). */
+  /** Signs out the user and clears the profile and subscription state. */
   signOut(): void {
     this.iamContext.signOut();
     this.profileState.set(null);
     this.subscriptionState.set(null);
   }
 
+  /** Clears the most recent operation error. */
   clearError(): void {
     this.error.set(null);
   }
