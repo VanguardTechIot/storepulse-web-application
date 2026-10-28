@@ -29,11 +29,12 @@ const passwordRecoveriesUrl = `${apiUrl}${environment.platformProviderPasswordRe
 const profilesUrl = `${apiUrl}${environment.platformProviderProfilesEndpointPath}`;
 
 /**
- * Implementación HTTP del repositorio sobre el servidor de datos local (json-server).
+ * HTTP implementation of the IAM repository using the local data server (json-server).
  *
- * json-server solo guarda datos, así que esta clase reproduce las reglas que aplicará el REST API
- * (validar credenciales, unicidad del correo, vigencia del código). Cuando exista el backend,
- * solo cambia esta clase: el resto del contexto no se entera.
+ * Since json-server only stores data, this class reproduces rules that will be enforced by the
+ * REST API, such as credential validation, email uniqueness, and reset-code expiration. When the
+ * backend is available, this implementation can be replaced without affecting the rest of the
+ * context.
  */
 export class HttpIamRepository implements IamRepository {
   private readonly http = inject(HttpClient);
@@ -41,6 +42,13 @@ export class HttpIamRepository implements IamRepository {
   private readonly userAccountAssembler = new UserAccountAssembler();
   private readonly passwordRecoveryAssembler = new PasswordRecoveryAssembler();
 
+  /**
+   * Authenticates a user using the supplied email address and password.
+   *
+   * @param command - Sign-in credentials.
+   * @returns A promise that resolves to the authenticated user session.
+   * @throws {IamError} If the credentials are invalid.
+   */
   async signIn(command: SignInCommand): Promise<UserSession> {
     const user = await this.findUserByEmail(command.email);
     const passwordHash = await this.passwordHasher.hash(command.password);
@@ -50,6 +58,13 @@ export class HttpIamRepository implements IamRepository {
     return this.toSession(user);
   }
 
+  /**
+   * Registers a gallery administrator and creates the associated profile.
+   *
+   * @param command - Registration details.
+   * @returns A promise that resolves to the new user's session.
+   * @throws {IamError} If the password is weak or the email is already registered.
+   */
   async signUp(command: SignUpCommand): Promise<UserSession> {
     if (!PasswordPolicy.isSatisfiedBy(command.password)) {
       throw new IamError(IamErrorCode.WeakPassword);
@@ -71,7 +86,12 @@ export class HttpIamRepository implements IamRepository {
     return this.toSession(user);
   }
 
-  /** Answers the same whether the email exists or not, so the form does not reveal accounts. */
+  /**
+   * Requests a password reset without revealing whether the email is registered.
+   *
+   * @param command - Password reset request details.
+   * @returns A promise that resolves to the reset code's expiration date.
+   */
   async requestPasswordReset(command: RequestPasswordResetCommand): Promise<Date> {
     const user = await this.findUserByEmail(command.email);
     const passwordRecovery = PasswordRecovery.generate(user?.id ?? '');
@@ -90,6 +110,13 @@ export class HttpIamRepository implements IamRepository {
     return passwordRecovery.expiresAt;
   }
 
+  /**
+   * Resets a user's password after validating the recovery code and password policy.
+   *
+   * @param command - Email address, reset code, and new password.
+   * @returns A promise that resolves when the password has been reset.
+   * @throws {IamError} If the password is weak or the reset code is invalid or expired.
+   */
   async resetPassword(command: ResetPasswordCommand): Promise<void> {
     if (!PasswordPolicy.isSatisfiedBy(command.newPassword)) {
       throw new IamError(IamErrorCode.WeakPassword);
@@ -109,12 +136,24 @@ export class HttpIamRepository implements IamRepository {
     );
   }
 
+  /**
+   * Finds a user by normalized email address.
+   *
+   * @param email - Email address to look up.
+   * @returns A promise that resolves to the matching user, or `null` if none exists.
+   */
   private async findUserByEmail(email: string): Promise<UserResource | null> {
     const params = { email: Email.normalize(email) };
     const users = await firstValueFrom(this.http.get<UserResource[]>(usersUrl, { params }));
     return users[0] ?? null;
   }
 
+  /**
+   * Retrieves the most recently requested password recovery for a user.
+   *
+   * @param userId - Identifier of the user whose recovery is requested.
+   * @returns A promise that resolves to the latest recovery, or `null` if none exists.
+   */
   private async findLatestPasswordRecovery(userId: string): Promise<PasswordRecovery | null> {
     const params = { userId, _sort: 'requestedAt', _order: 'desc', _limit: 1 };
     const [latest] = await firstValueFrom(
@@ -124,8 +163,14 @@ export class HttpIamRepository implements IamRepository {
   }
 
   /**
-   * The REST API creates the profile in Profiles and Preferences when a user signs up. The first
-   * word of the registration name becomes the first name; the user can correct it in My profile.
+   * Builds a profile creation request for the local API.
+   *
+   * The REST API creates the profile in Profiles and Preferences during registration. The first
+   * word of the registration name becomes the first name; the user can edit it in My Profile.
+   *
+   * @param user - Newly created user resource.
+   * @param fullName - Full name supplied during registration.
+   * @returns The request body for creating the user's profile.
    */
   private toProfileCreationRequest(user: UserResource, fullName: string): ProfileCreationRequest {
     const [firstName = '', ...lastNames] = fullName.trim().split(/\s+/);
@@ -140,6 +185,12 @@ export class HttpIamRepository implements IamRepository {
     };
   }
 
+  /**
+   * Creates an authenticated session for a user resource.
+   *
+   * @param user - User resource to include in the session.
+   * @returns The user's session with an access token.
+   */
   private toSession(user: UserResource): UserSession {
     return new UserSession({
       user: this.userAccountAssembler.toEntityFromResource(user),
