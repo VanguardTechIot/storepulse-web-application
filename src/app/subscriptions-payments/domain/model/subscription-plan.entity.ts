@@ -1,8 +1,8 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
-import { BillingCycle } from './billing-cycle.enum';
-import { Money } from './money.value-object';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { Money } from '../value-objects/money.value-object';
 
-/** Commercial plans of the catalog (mock-up 11). Doubles as i18n key (`subscriptions.plans.<code>`). */
+/** Commercial plans of the catalog. Doubles as i18n key (`subscriptions.plans.<code>`). */
 export type PlanCode = 'BASIC' | 'COMMERCIAL' | 'CORPORATE';
 
 /**

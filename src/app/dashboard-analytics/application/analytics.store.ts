@@ -4,24 +4,17 @@ import { DashboardSummary, PeriodConsumption } from '../domain/model/dashboard-s
 import { DeviceConnectivitySummary } from '../domain/model/device-connectivity-summary';
 import { groupRepeatedNotifications } from '../domain/model/notification-grouping';
 import { Notification } from '../domain/model/notification.entity';
-import { NotificationType } from '../domain/model/notification-type.enum';
-import { UtilityType } from '../domain/model/utility-type.enum';
+import { NotificationType } from '../domain/enums/notification-type.enum';
+import { UtilityType } from '../domain/enums/utility-type.enum';
+import { YearlyConsumptionSeries } from '../domain/model/yearly-consumption-series';
 import { MonitoringContextFacade } from '../infrastructure/acl/monitoring-context-facade';
 import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
-import { ANALYTICS_REPOSITORY } from '../infrastructure/analytics.token';
-
-/** Monthly totals of one utility for one year; `null` for months without data. */
-export interface YearlyConsumptionSeries {
-  year: number;
-  unit: string;
-  values: (number | null)[];
-}
-
+import { ANALYTICS_REPOSITORY } from '../infrastructure/repositories/analytics.token';
 type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
 /**
  * Application service of Dashboard and Analytics for the Web Application: Consolidated Dashboard
- * (US-50, TS-31) and Notification Center (US-49, TS-30).
+ * and Notification Center.
  */
 @Injectable({ providedIn: 'root' })
 export class AnalyticsStore {
@@ -44,7 +37,7 @@ export class AnalyticsStore {
   readonly devicesRoute = this.resourceAssetContext.devicesRoute;
 
   // ---------- Notification Center ----------
-  /** Repeated events grouped (TS-30), most recent first (US-49). */
+  /** Notifications with repeated events grouped, most recent first. */
   readonly notifications = computed(() => groupRepeatedNotifications(this.notificationsState()));
   readonly unreadCount = computed(() => this.notifications().filter((n) => !n.read).length);
 
@@ -95,7 +88,7 @@ export class AnalyticsStore {
       const [notifications, registrations, openIncidents, devices] = await Promise.all([
         this.repository.listNotifications(),
         this.repository.listConsumptionRegistrations(),
-        // An indicator without data is shown as empty instead of failing the dashboard (TS-31).
+        // An indicator without data is shown as empty instead of failing the whole dashboard.
         this.monitoringContext.countOpenIncidents().catch(() => null),
         this.resourceAssetContext.getDeviceConnectivity().catch(() => null),
       ]);

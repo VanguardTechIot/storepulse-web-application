@@ -3557,5 +3557,609 @@
       "detail": "Incidente en su local",
       "loggedAt": "2026-10-08T13:22:01Z"
     }
+  ],
+  "notifications": [
+    {
+      "id": "ntf-0012",
+      "type": "SAFETY_ALERT",
+      "relatedEntityId": "dev-b12-pir",
+      "location": "Local B-12 · Ópticas Visión",
+      "message": "Intrusión detectada fuera del horario de atención",
+      "generatedAt": "2026-10-09T03:41:00Z",
+      "read": false,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0011",
+      "type": "CONNECTIVITY_ALERT",
+      "relatedEntityId": "SP-ESP32-0417",
+      "location": "Local C-07 · Librería El Saber",
+      "message": "Falla técnica de dispositivo: voltaje 4.31 V",
+      "generatedAt": "2026-10-09T03:05:00Z",
+      "read": false,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0010",
+      "type": "CONNECTIVITY_ALERT",
+      "relatedEntityId": "SP-ESP32-0466",
+      "location": "Local B-07 · Perfumería Aroma",
+      "message": "Pérdida de conectividad durante 16 min",
+      "generatedAt": "2026-10-09T02:58:00Z",
+      "read": false,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0009",
+      "type": "CONSUMPTION_DEVIATION",
+      "relatedEntityId": "mtr-a03-e",
+      "location": "Local A-03 · Calzados Roma",
+      "message": "Consumo +38 % sobre la línea base fuera de horario",
+      "generatedAt": "2026-10-09T02:30:00Z",
+      "read": true,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0008",
+      "type": "SAFETY_ALERT",
+      "relatedEntityId": "dev-a01-reed",
+      "location": "Local A-01 · Inca Gold",
+      "message": "Apertura de puerta detectada",
+      "generatedAt": "2026-10-08T13:04:10Z",
+      "read": true,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0007",
+      "type": "SAFETY_ALERT",
+      "relatedEntityId": "dev-a01-reed",
+      "location": "Local A-01 · Inca Gold",
+      "message": "Apertura de puerta detectada",
+      "generatedAt": "2026-10-08T13:02:40Z",
+      "read": true,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0006",
+      "type": "SAFETY_ALERT",
+      "relatedEntityId": "dev-a01-reed",
+      "location": "Local A-01 · Inca Gold",
+      "message": "Apertura de puerta detectada",
+      "generatedAt": "2026-10-08T13:01:05Z",
+      "read": true,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0005",
+      "type": "SAFETY_ALERT",
+      "relatedEntityId": "dev-a01-reed",
+      "location": "Local A-01 · Inca Gold",
+      "message": "Apertura de puerta detectada",
+      "generatedAt": "2026-10-08T13:00:00Z",
+      "read": true,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0004",
+      "type": "SAFETY_ALERT",
+      "relatedEntityId": "dev-c03-mq2",
+      "location": "Local C-03 · Comida Rápida Max",
+      "message": "Humo detectado",
+      "generatedAt": "2026-10-07T23:05:00Z",
+      "read": true,
+      "occurrences": 1
+    },
+    {
+      "id": "ntf-0003",
+      "type": "CONNECTIVITY_ALERT",
+      "relatedEntityId": "SP-ESP32-0359",
+      "location": "Local A-01 · Inca Gold",
+      "message": "Conectividad restablecida tras 22 min",
+      "generatedAt": "2026-10-07T12:12:00Z",
+      "read": true,
+      "occurrences": 1
+    }
+  ],
+  "consumptionRegistrations": [
+    {
+      "id": "cr-mtr-main-e-202501",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12850,
+      "unit": "kWh",
+      "period": "2025-01",
+      "capturedAt": "2025-01-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202502",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 13120,
+      "unit": "kWh",
+      "period": "2025-02",
+      "capturedAt": "2025-02-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202503",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12940,
+      "unit": "kWh",
+      "period": "2025-03",
+      "capturedAt": "2025-03-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202504",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12010,
+      "unit": "kWh",
+      "period": "2025-04",
+      "capturedAt": "2025-04-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202505",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 11380,
+      "unit": "kWh",
+      "period": "2025-05",
+      "capturedAt": "2025-05-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202506",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 10920,
+      "unit": "kWh",
+      "period": "2025-06",
+      "capturedAt": "2025-06-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202507",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 10750,
+      "unit": "kWh",
+      "period": "2025-07",
+      "capturedAt": "2025-07-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202508",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 10810,
+      "unit": "kWh",
+      "period": "2025-08",
+      "capturedAt": "2025-08-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202509",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 11240,
+      "unit": "kWh",
+      "period": "2025-09",
+      "capturedAt": "2025-09-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202510",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 11690,
+      "unit": "kWh",
+      "period": "2025-10",
+      "capturedAt": "2025-10-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202511",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12110,
+      "unit": "kWh",
+      "period": "2025-11",
+      "capturedAt": "2025-11-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202512",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12580,
+      "unit": "kWh",
+      "period": "2025-12",
+      "capturedAt": "2025-12-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202601",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 13210,
+      "unit": "kWh",
+      "period": "2026-01",
+      "capturedAt": "2026-01-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202602",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 13480,
+      "unit": "kWh",
+      "period": "2026-02",
+      "capturedAt": "2026-02-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202603",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 13350,
+      "unit": "kWh",
+      "period": "2026-03",
+      "capturedAt": "2026-03-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202604",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12420,
+      "unit": "kWh",
+      "period": "2026-04",
+      "capturedAt": "2026-04-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202605",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 11760,
+      "unit": "kWh",
+      "period": "2026-05",
+      "capturedAt": "2026-05-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202606",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 11290,
+      "unit": "kWh",
+      "period": "2026-06",
+      "capturedAt": "2026-06-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202607",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 11080,
+      "unit": "kWh",
+      "period": "2026-07",
+      "capturedAt": "2026-07-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202608",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 11620,
+      "unit": "kWh",
+      "period": "2026-08",
+      "capturedAt": "2026-08-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202609",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12070,
+      "unit": "kWh",
+      "period": "2026-09",
+      "capturedAt": "2026-09-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-e-202610",
+      "meterId": "mtr-main-e",
+      "utilityType": "ELECTRICITY",
+      "amount": 12480,
+      "unit": "kWh",
+      "period": "2026-10",
+      "capturedAt": "2026-10-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202501",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 742,
+      "unit": "m³",
+      "period": "2025-01",
+      "capturedAt": "2025-01-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202502",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 768,
+      "unit": "m³",
+      "period": "2025-02",
+      "capturedAt": "2025-02-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202503",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 751,
+      "unit": "m³",
+      "period": "2025-03",
+      "capturedAt": "2025-03-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202504",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 702,
+      "unit": "m³",
+      "period": "2025-04",
+      "capturedAt": "2025-04-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202505",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 655,
+      "unit": "m³",
+      "period": "2025-05",
+      "capturedAt": "2025-05-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202506",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 621,
+      "unit": "m³",
+      "period": "2025-06",
+      "capturedAt": "2025-06-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202507",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 608,
+      "unit": "m³",
+      "period": "2025-07",
+      "capturedAt": "2025-07-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202508",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 612,
+      "unit": "m³",
+      "period": "2025-08",
+      "capturedAt": "2025-08-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202509",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 640,
+      "unit": "m³",
+      "period": "2025-09",
+      "capturedAt": "2025-09-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202510",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 668,
+      "unit": "m³",
+      "period": "2025-10",
+      "capturedAt": "2025-10-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202511",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 690,
+      "unit": "m³",
+      "period": "2025-11",
+      "capturedAt": "2025-11-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202512",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 721,
+      "unit": "m³",
+      "period": "2025-12",
+      "capturedAt": "2025-12-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202601",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 756,
+      "unit": "m³",
+      "period": "2026-01",
+      "capturedAt": "2026-01-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202602",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 781,
+      "unit": "m³",
+      "period": "2026-02",
+      "capturedAt": "2026-02-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202603",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 770,
+      "unit": "m³",
+      "period": "2026-03",
+      "capturedAt": "2026-03-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202604",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 718,
+      "unit": "m³",
+      "period": "2026-04",
+      "capturedAt": "2026-04-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202605",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 669,
+      "unit": "m³",
+      "period": "2026-05",
+      "capturedAt": "2026-05-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202606",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 634,
+      "unit": "m³",
+      "period": "2026-06",
+      "capturedAt": "2026-06-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202607",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 619,
+      "unit": "m³",
+      "period": "2026-07",
+      "capturedAt": "2026-07-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202608",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 626,
+      "unit": "m³",
+      "period": "2026-08",
+      "capturedAt": "2026-08-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202609",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 692,
+      "unit": "m³",
+      "period": "2026-09",
+      "capturedAt": "2026-09-28T05:00:00Z"
+    },
+    {
+      "id": "cr-mtr-main-w-202610",
+      "meterId": "mtr-main-w",
+      "utilityType": "WATER",
+      "amount": 684,
+      "unit": "m³",
+      "period": "2026-10",
+      "capturedAt": "2026-10-28T05:00:00Z"
+    }
+  ],
+  "subscriptionPlans": [
+    {
+      "id": "pln-basic",
+      "code": "BASIC",
+      "monitoredUnitLimit": 30,
+      "monthlyPrice": 290,
+      "annualPrice": 2900,
+      "currency": "PEN",
+      "features": [
+        "security_incidents",
+        "energy_submetering",
+        "notification_center"
+      ],
+      "published": true
+    },
+    {
+      "id": "pln-commercial",
+      "code": "COMMERCIAL",
+      "monitoredUnitLimit": 100,
+      "monthlyPrice": 690,
+      "annualPrice": 6900,
+      "currency": "PEN",
+      "features": [
+        "everything_basic",
+        "water_telemetry",
+        "billing_per_unit",
+        "tenant_communication"
+      ],
+      "published": true
+    },
+    {
+      "id": "pln-corporate",
+      "code": "CORPORATE",
+      "monitoredUnitLimit": null,
+      "monthlyPrice": 1490,
+      "annualPrice": 14900,
+      "currency": "PEN",
+      "features": [
+        "everything_commercial",
+        "multiple_galleries",
+        "advanced_reports"
+      ],
+      "published": true
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "sub-001",
+      "galleryId": "gal-001",
+      "galleryAdministratorId": "usr-001",
+      "planId": "pln-commercial",
+      "status": "ACTIVE",
+      "billingCycle": "MONTHLY",
+      "startDate": "2026-10-15T05:00:00Z",
+      "endDate": "2026-11-15T05:00:00Z",
+      "monitoredUnitCount": 12,
+      "autoRenewal": true,
+      "paymentMethodLabel": "Visa •••• 4821"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay-003",
+      "subscriptionId": "sub-001",
+      "receiptNumber": "F001-000318",
+      "planId": "pln-commercial",
+      "billingCycle": "MONTHLY",
+      "amount": 690,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Visa •••• 4821",
+      "status": "ACCEPTED",
+      "gatewayReference": "ch_3Q9x1aKZ0318",
+      "registeredAt": "2026-10-15T05:02:11Z"
+    },
+    {
+      "id": "pay-002",
+      "subscriptionId": "sub-001",
+      "receiptNumber": "F001-000291",
+      "planId": "pln-commercial",
+      "billingCycle": "MONTHLY",
+      "amount": 690,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Visa •••• 4821",
+      "status": "ACCEPTED",
+      "gatewayReference": "ch_3Q2m7bKZ0291",
+      "registeredAt": "2026-09-15T05:01:47Z"
+    },
+    {
+      "id": "pay-001",
+      "subscriptionId": "sub-001",
+      "receiptNumber": null,
+      "planId": "pln-commercial",
+      "billingCycle": "MONTHLY",
+      "amount": 690,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Visa •••• 0002",
+      "status": "REJECTED",
+      "gatewayReference": "ch_3Pz4cKZ0277",
+      "registeredAt": "2026-09-15T05:00:58Z"
+    }
   ]
 }

@@ -3,24 +3,15 @@ import { RouterOutlet } from '@angular/router';
 import { SubscriptionsStore } from '../../../application/subscriptions.store';
 import { SubscriptionTabs } from '../../components/subscription-tabs/subscription-tabs';
 
-/**
- * Container of the Subscription sections: loads the data once and shows the module tabs above
- * the active view.
- */
+/** Container of the subscription sections: loads the data once and shows the section tabs. */
 @Component({
   selector: 'app-subscription-shell',
   imports: [RouterOutlet, SubscriptionTabs],
-  template: `
-    <app-subscription-tabs />
-    <router-outlet />
-  `,
-  styles: `
-    :host {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-  `,
+  templateUrl: './subscription-shell.html',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionShell {

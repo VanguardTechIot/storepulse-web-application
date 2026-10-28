@@ -1,4 +1,4 @@
-<header class="page-head">
+<header id="payments-header" class="page-head">
   <div>
     <h1>{{ 'subscriptions.payments.page_title' | translate }}</h1>
     <p>{{ 'subscriptions.payments.subtitle' | translate }}</p>
@@ -8,47 +8,67 @@
 @if (!store.loaded()) {
   <app-subscription-state />
 } @else if (store.payments().length === 0) {
-  <section class="card state">
-    <mat-icon aria-hidden="true">receipt_long</mat-icon>
-    <b>{{ 'subscriptions.payments.empty' | translate }}</b>
-  </section>
+  <mat-card id="empty-card" appearance="outlined">
+    <app-page-state icon="receipt_long" [title]="'subscriptions.payments.empty' | translate" />
+  </mat-card>
 } @else {
-  <section class="card">
+  <mat-card id="payments-card" appearance="outlined">
     <div class="table-wrap">
-      <table>
-        <thead>
-        <tr>
-          <th>{{ 'subscriptions.payments.receipt' | translate }}</th>
-          <th>{{ 'subscriptions.payments.date' | translate }}</th>
-          <th>{{ 'subscriptions.payments.concept' | translate }}</th>
-          <th>{{ 'subscriptions.payments.method' | translate }}</th>
-          <th class="amount">{{ 'subscriptions.payments.amount' | translate }}</th>
-          <th>{{ 'subscriptions.payments.status' | translate }}</th>
-        </tr>
-        </thead>
-        <tbody>
-          @for (payment of store.payments(); track payment.id) {
-            <tr>
-              <td class="mono">{{ payment.receiptNumber ?? '—' }}</td>
-              <td>{{ payment.registeredAt | localizedDate: 'date' }}</td>
-              <td>
-                {{
-                  'subscriptions.plans.' + (store.planById(payment.planId)?.code ?? '') + '.name'
-                    | translate
-                }}
-                · {{ 'subscriptions.cycle_options.' + payment.billingCycle | translate }}
-              </td>
-              <td class="mono">{{ payment.methodLabel }}</td>
-              <td class="amount">S/ {{ payment.amount.amount | localizedNumber: 2 }}</td>
-              <td>
-                <span class="badge" [class]="statusTones[payment.status]">
-                  {{ 'subscriptions.payment_statuses.' + payment.status | translate }}
-                </span>
-              </td>
-            </tr>
-          }
-        </tbody>
+      <table id="payments-table" mat-table [dataSource]="store.payments()">
+        <ng-container matColumnDef="receipt">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'subscriptions.payments.receipt' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let payment" class="mono">
+            {{ payment.receiptNumber ?? '—' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>{{ 'subscriptions.payments.date' | translate }}</th>
+          <td mat-cell *matCellDef="let payment">
+            {{ payment.registeredAt | localizedDate: 'date' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="concept">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'subscriptions.payments.concept' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let payment">
+            {{
+              'subscriptions.plans.' + (store.planById(payment.planId)?.code ?? '') + '.name'
+                | translate
+            }}
+            · {{ 'subscriptions.cycle_options.' + payment.billingCycle | translate }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="method">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'subscriptions.payments.method' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let payment" class="mono">{{ payment.methodLabel }}</td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef class="amount">
+            {{ 'subscriptions.payments.amount' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let payment" class="amount">
+            S/ {{ payment.amount.amount | localizedNumber: 2 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'subscriptions.payments.status' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let payment">
+            <app-status-chip [tone]="statusTone(payment.status)">
+              {{ 'subscriptions.payment_statuses.' + payment.status | translate }}
+            </app-status-chip>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let payment; columns: columns" [id]="payment.id"></tr>
       </table>
     </div>
-  </section>
+  </mat-card>
 }

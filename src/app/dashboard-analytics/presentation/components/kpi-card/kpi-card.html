@@ -1,0 +1,13 @@
+<mat-card appearance="outlined" class="kpi">
+  <div class="top">
+    <app-tone-icon [icon]="icon()" [tone]="tone()" [size]="34" />
+    {{ label() }}
+  </div>
+  <div class="value">
+    {{ value() }}
+    @if (unit()) {
+      <small>{{ unit() }}</small>
+    }
+  </div>
+  <div class="hint"><ng-content /></div>
+</mat-card>

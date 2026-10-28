@@ -29,4 +29,13 @@ export const environment = {
   platformProviderMonitoringRulesEndpointPath: '/monitoring-rules',
   platformProviderAlertsEndpointPath: '/alerts',
   platformProviderConsumptionEndpointPath: '/consumption',
+
+  // Dashboard and Analytics: notifications and consumption registrations.
+  platformProviderNotificationsEndpointPath: '/notifications',
+  platformProviderConsumptionRegistrationsEndpointPath: '/consumption-registrations',
+
+  // Subscriptions and Payments: plan catalog, gallery subscription and its payments.
+  platformProviderSubscriptionPlansEndpointPath: '/subscription-plans',
+  platformProviderSubscriptionsEndpointPath: '/subscriptions',
+  platformProviderPaymentsEndpointPath: '/payments',
 };
