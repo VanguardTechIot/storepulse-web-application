@@ -35,7 +35,7 @@ const profilesUrl = `${apiUrl}${environment.platformProviderProfilesEndpointPath
  * (validar credenciales, unicidad del correo, vigencia del código). Cuando exista el backend,
  * solo cambia esta clase: el resto del contexto no se entera.
  */
-export class HttpIdentityAccessRepository implements IamRepository {
+export class HttpIamRepository implements IamRepository {
   private readonly http = inject(HttpClient);
   private readonly passwordHasher = inject(PasswordHasher);
   private readonly userAccountAssembler = new UserAccountAssembler();
