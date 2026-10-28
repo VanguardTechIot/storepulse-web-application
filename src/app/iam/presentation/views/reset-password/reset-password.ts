@@ -9,6 +9,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { interval, map } from 'rxjs';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
+import { ToneIcon } from '../../../../shared/presentation/components/tone-icon/tone-icon';
 import { IamStore } from '../../../application/iam.store';
 import { PasswordRecovery } from '../../../domain/model/password-recovery.entity';
 import { RequestPasswordResetCommand } from '../../../domain/model/request-password-reset.command';
@@ -34,6 +35,7 @@ import { passwordPolicyValidator, resetCodeValidator } from '../../iam.validator
     PasswordRequirements,
     ReactiveFormsModule,
     RouterLink,
+    ToneIcon,
     TranslatePipe,
   ],
   templateUrl: './reset-password.html',
