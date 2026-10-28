@@ -1,11 +1,11 @@
 <div class="auth">
   <aside class="auth-side">
     <div class="auth-brand">
-      <span class="auth-brand-mark" aria-hidden="true"><mat-icon>monitor_heart</mat-icon></span>
-      <span class="auth-brand-name">Store<span>Pulse</span></span>
+      <app-tone-icon icon="monitor_heart" />
+      <span>Store<em>Pulse</em></span>
     </div>
 
-    <mat-chip-set class="auth-eyebrow">
+    <mat-chip-set>
       <mat-chip>
         <mat-icon matChipAvatar aria-hidden="true">monitor_heart</mat-icon>
         {{ 'iam.showcase.eyebrow' | translate }}
@@ -13,23 +13,21 @@
     </mat-chip-set>
     <h2>
       {{ 'iam.showcase.title' | translate }}
-      <span>{{ 'iam.showcase.title_highlight' | translate }}</span>
+      <em>{{ 'iam.showcase.title_highlight' | translate }}</em>
     </h2>
     <p>{{ 'iam.showcase.description' | translate }}</p>
 
-    <mat-card class="auth-console" aria-hidden="true">
-      <mat-card-header class="auth-console-head">
-        <mat-card-subtitle>{{ 'iam.showcase.floor_plan' | translate }}</mat-card-subtitle>
-        <mat-chip-set class="auth-console-badge">
-          <mat-chip>{{ 'iam.showcase.monitoring' | translate }}</mat-chip>
-        </mat-chip-set>
+    <mat-card appearance="outlined" aria-hidden="true">
+      <mat-card-header>
+        <mat-card-subtitle>
+          {{ 'iam.showcase.floor_plan' | translate }}
+          <app-status-chip [tone]="'success'" [dot]="true">{{ 'iam.showcase.monitoring' | translate }}</app-status-chip>
+        </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <mat-grid-list cols="4" rowHeight="58px" gutterSize="10px">
           @for (unit of units; track unit) {
-            <mat-grid-tile class="auth-unit" [class.alert]="unit === alertUnit">
-              <i></i>{{ unit }}
-            </mat-grid-tile>
+            <mat-grid-tile class="auth-unit" [class.alert]="unit === alertUnit">{{ unit }}</mat-grid-tile>
           }
         </mat-grid-list>
       </mat-card-content>
@@ -57,11 +55,11 @@
       <app-language-switcher />
     </div>
 
-    <div class="auth-form" [class.wide]="width() === 'wide'">
+    <div class="auth-form">
       <ng-content />
     </div>
 
-    <footer class="auth-footer">
+    <footer class="auth-note">
       <span>{{ 'common.footer.copyright' | translate }}</span>
       <span aria-hidden="true">·</span>
       <a [routerLink]="appNav.termsAndConditions">{{ 'common.footer.terms' | translate }}</a>

@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
+import { ToneIcon } from '../../../../shared/presentation/components/tone-icon/tone-icon';
 import { IamStore } from '../../../application/iam.store';
 import { RequestPasswordResetCommand } from '../../../domain/model/request-password-reset.command';
 import { AuthenticationLayout } from '../../components/authentication-layout/authentication-layout';
@@ -27,6 +28,7 @@ import { emailValidator } from '../../iam.validators';
     MatInputModule,
     ReactiveFormsModule,
     RouterLink,
+    ToneIcon,
     TranslatePipe,
   ],
   templateUrl: './forgot-password.html',

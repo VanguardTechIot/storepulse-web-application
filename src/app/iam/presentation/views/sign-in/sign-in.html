@@ -53,10 +53,10 @@
 
     <div class="auth-row">
       <mat-checkbox formControlName="keepSignedIn">{{ 'iam.sign_in.keep_signed_in' | translate }}</mat-checkbox>
-      <a class="auth-link" [routerLink]="iamNav.forgotPassword()">{{ 'iam.sign_in.forgot_password' | translate }}</a>
+      <a matButton [routerLink]="iamNav.forgotPassword()">{{ 'iam.sign_in.forgot_password' | translate }}</a>
     </div>
 
-    <button matButton="filled" class="auth-cta" type="submit" [disabled]="store.loading()">
+    <button matButton="filled" type="submit" [disabled]="store.loading()">
       {{ (store.loading() ? 'iam.sign_in.submitting' : 'iam.sign_in.submit') | translate }}
     </button>
   </form>

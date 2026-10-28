@@ -1,4 +1,4 @@
-import { Component, input, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { LanguageSwitcher } from '../../../../shared/presentation/components/language-switcher/language-switcher';
+import { StatusChip } from '../../../../shared/presentation/components/status-chip/status-chip';
+import { ToneIcon } from '../../../../shared/presentation/components/tone-icon/tone-icon';
 import { appNav } from '../../../../shared/routing/app-nav';
 
 /**
@@ -23,6 +25,8 @@ import { appNav } from '../../../../shared/routing/app-nav';
     MatGridListModule,
     MatIconModule,
     RouterLink,
+    StatusChip,
+    ToneIcon,
     TranslatePipe,
   ],
   templateUrl: './authentication-layout.html',
@@ -30,9 +34,6 @@ import { appNav } from '../../../../shared/routing/app-nav';
   encapsulation: ViewEncapsulation.None,
 })
 export class AuthenticationLayout {
-  /** `wide` fits the registration forms (mock-ups 03 and 03b). */
-  readonly width = input<'default' | 'wide'>('default');
-
   /** Navigation commands for the main application. */
   protected readonly appNav = appNav;
   /** Unit identifiers displayed in the decorative building panel. */
