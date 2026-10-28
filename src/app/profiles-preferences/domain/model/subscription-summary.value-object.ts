@@ -6,11 +6,20 @@ import { SubscriptionStatus } from './subscription-status.enum';
  * It belongs to Subscriptions and Payments; this context only reads it.
  */
 export class SubscriptionSummary {
+  /** Subscription plan. */
   readonly plan: SubscriptionPlan;
+  /** Current subscription status. */
   readonly status: SubscriptionStatus;
+  /** Date on which the subscription expires. */
   readonly expiresAt: Date;
+  /** Whether the subscription renews automatically. */
   readonly autoRenewal: boolean;
 
+  /**
+   * Creates a read-only summary of a gallery subscription.
+   *
+   * @param summary - Subscription plan, status, expiration date, and renewal setting.
+   */
   constructor(summary: {
     plan: SubscriptionPlan;
     status: SubscriptionStatus;
@@ -23,11 +32,20 @@ export class SubscriptionSummary {
     this.autoRenewal = summary.autoRenewal;
   }
 
-  /** US-45, scenario 2: the profile warns that the renewal is near. */
+  /**
+   * Determines whether the subscription is nearing expiration (US-45, scenario 2).
+   *
+   * @returns `true` if the subscription status is expiring soon; otherwise, `false`.
+   */
   isExpiringSoon(): boolean {
     return this.status === SubscriptionStatus.ExpiringSoon;
   }
 
+  /**
+   * Determines whether the subscription has expired.
+   *
+   * @returns `true` if the subscription status is expired; otherwise, `false`.
+   */
   isExpired(): boolean {
     return this.status === SubscriptionStatus.Expired;
   }
