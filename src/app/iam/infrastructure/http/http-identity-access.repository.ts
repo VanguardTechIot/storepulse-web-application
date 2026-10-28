@@ -13,7 +13,7 @@ import { SignInCommand } from '../../domain/model/sign-in.command';
 import { SignUpCommand } from '../../domain/model/sign-up.command';
 import { UserSession } from '../../domain/model/user-session.value-object';
 import { UserStatus } from '../../domain/model/user-status.enum';
-import { IdentityAccessRepository } from '../../domain/repository/identity-access.repository';
+import { IamRepository } from '../../domain/repository/iam.repository';
 import { PasswordRecoveryAssembler, UserAccountAssembler } from '../identity-access-assemblers';
 import {
   PasswordRecoveryResource,
@@ -35,7 +35,7 @@ const profilesUrl = `${apiUrl}${environment.platformProviderProfilesEndpointPath
  * (validar credenciales, unicidad del correo, vigencia del código). Cuando exista el backend,
  * solo cambia esta clase: el resto del contexto no se entera.
  */
-export class HttpIdentityAccessRepository implements IdentityAccessRepository {
+export class HttpIdentityAccessRepository implements IamRepository {
   private readonly http = inject(HttpClient);
   private readonly passwordHasher = inject(PasswordHasher);
   private readonly userAccountAssembler = new UserAccountAssembler();

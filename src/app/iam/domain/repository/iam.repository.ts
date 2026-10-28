@@ -9,7 +9,7 @@ import { UserSession } from '../model/user-session.value-object';
  * Refleja los casos de uso de `AuthenticationController` y `PasswordRecoveryController` del
  * REST API. Los errores de negocio se lanzan como `IamError`.
  */
-export interface IdentityAccessRepository {
+export interface IamRepository {
   signIn(command: SignInCommand): Promise<UserSession>;
   signUp(command: SignUpCommand): Promise<UserSession>;
   /** Genera el código de 6 dígitos y devuelve cuándo vence. */
