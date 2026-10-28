@@ -1,6 +1,7 @@
 import { Component, computed, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { StatusChip } from '../../../../shared/presentation/components/status-chip/status-chip';
+import { Tone } from '../../../../shared/presentation/components/tone-icon/tone-icon';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { PasswordPolicy } from '../../../domain/model/password-policy';
 
@@ -11,9 +12,8 @@ type RequirementState = 'pending' | 'met' | 'unmet';
  */
 @Component({
   selector: 'app-password-requirements',
-  imports: [MatIconModule, MatListModule, TranslatePipe],
+  imports: [MatChipsModule, StatusChip, TranslatePipe],
   templateUrl: './password-requirements.html',
-  styleUrl: './password-requirements.css',
 })
 export class PasswordRequirements {
   /** Password value to evaluate against the policy. */
@@ -21,6 +21,12 @@ export class PasswordRequirements {
 
   /** Minimum number of characters required by the password policy. */
   protected readonly minimumLength = PasswordPolicy.minimumLength;
+  /** Status chip tone of each requirement state. */
+  protected readonly tones: Record<RequirementState, Tone> = {
+    pending: 'neutral',
+    met: 'success',
+    unmet: 'danger',
+  };
   /** Current state of each password policy requirement. */
   protected readonly requirements = computed(() => {
     const password = this.password();
@@ -31,14 +37,4 @@ export class PasswordRequirements {
       { key: 'number', state: state(evaluation.hasNumber) },
     ];
   });
-
-  /**
-   * Gets the Material icon name for a requirement state.
-   *
-   * @param state - Current requirement state.
-   * @returns Icon name representing the state.
-   */
-  protected icon(state: RequirementState): string {
-    return { pending: 'radio_button_unchecked', met: 'check_circle', unmet: 'cancel' }[state];
-  }
 }
