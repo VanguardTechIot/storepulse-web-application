@@ -3,4 +3,3 @@
 .monitoring-tabs a:hover { color: var(--sp-text); }
 .monitoring-tabs a.is-active { color: var(--sp-primary); border-bottom-color: var(--sp-primary); font-weight: 600; }
 .monitoring-tabs a:focus-visible { outline: 2px solid var(--sp-primary); outline-offset: -2px; border-radius: 6px; }
-.monitoring-tabs .count { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--sp-danger); color: #fff; font-size: 11px; font-weight: 600; line-height: 18px; text-align: center; }
