@@ -12,9 +12,6 @@ export const MEASUREMENT_TYPE_ICONS: Record<MeasurementType, { icon: IconName; t
   MOTION: { icon: 'eye', tone: 'ico-violet' },
 };
 
-/**
- * Icon and localized name of a measurement type.
- */
 @Component({
   selector: 'app-measurement-type-label',
   imports: [Icon, TranslatePipe],

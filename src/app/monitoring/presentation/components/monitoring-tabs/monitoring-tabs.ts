@@ -10,9 +10,6 @@ interface MonitoringTab {
   icon: IconName;
 }
 
-/**
- * Navigation between the sections of the Monitoring module.
- */
 @Component({
   selector: 'app-monitoring-tabs',
   imports: [RouterLink, RouterLinkActive, Icon, TranslatePipe],
