@@ -20,9 +20,6 @@ const STATE_TONES: Record<ResourceMonitoringState, string> = {
 
 const MEASUREMENTS_PAGE_SIZE = 10;
 
-/**
- * Monitoring overview: monitoring state of each location and latest telemetry received.
- */
 @Component({
   selector: 'app-telemetry-dashboard',
   imports: [
@@ -84,7 +81,6 @@ export class TelemetryDashboard extends MonitoringView {
 
   constructor() {
     super();
-    // Go back to the first page whenever the filters change.
     effect(() => {
       this.typeFilter();
       this.resourceFilter();

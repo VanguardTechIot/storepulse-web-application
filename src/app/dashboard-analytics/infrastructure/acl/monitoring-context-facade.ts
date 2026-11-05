@@ -5,14 +5,10 @@ import { environment } from '../../../../environments/environment';
 
 const ALERTS_URL = `${environment.platformProviderApiBaseUrl}${environment.platformProviderAlertsEndpointPath}`;
 
-/**
- * Only the number of incidents still open (pending or being attended) enters the dashboard.
- */
 @Injectable({ providedIn: 'root' })
 export class MonitoringContextFacade {
   private readonly http = inject(HttpClient);
 
-  /** Security route where the administrator attends the incidents. */
   readonly incidentsRoute = ['/security'];
 
   async countOpenIncidents(): Promise<number> {

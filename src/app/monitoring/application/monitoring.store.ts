@@ -8,7 +8,6 @@ import { Measurement } from '../domain/model/measurement.entity';
 import { Consumption } from '../domain/model/consumption.entity';
 import { ConsumptionType, MEASUREMENT_TYPES, MeasurementType } from '../domain/model/measurement-type';
 
-/** Security state of a resource (US-19). */
 export type ResourceMonitoringState = 'NORMAL' | 'MOTION_DETECTED' | 'NO_MONITORING';
 
 export interface ResourceMonitoringStatus {
@@ -25,16 +24,12 @@ export interface MeasurementRow {
 
 type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
-/**
- * Application service of Service Execution and Monitoring for the Web Application.
- */
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
   private readonly monitoringApi = inject(MonitoringApi);
   private readonly resourceAssetRepository = inject(RESOURCE_ASSET_REPOSITORY);
 
   private readonly status = signal<LoadStatus>('idle');
-  /** True once the data has been loaded at least once; later refreshes keep showing it. */
   readonly ready = signal(false);
   readonly isLoading = computed(() => this.status() === 'loading' || this.status() === 'idle');
   readonly hasError = computed(() => this.status() === 'error');
@@ -43,13 +38,11 @@ export class MonitoringStore {
   readonly telemetry = signal<Telemetry[]>([]);
   readonly consumption = signal<Consumption[]>([]);
 
-  // ---------- Lookups ----------
   private readonly telemetryById = computed(() => new Map(this.telemetry().map((t) => [t.id, t])));
   private readonly resourceByDeviceId = computed(
     () => new Map(this.resources().filter((r) => r.deviceId).map((r) => [r.deviceId as string, r])),
   );
 
-  // ---------- Telemetry ----------
   readonly measurementRows = computed<MeasurementRow[]>(() =>
     this.telemetry()
       .flatMap((t) => t.measurements)
@@ -75,8 +68,6 @@ export class MonitoringStore {
     }),
   );
 
-  // ---------- Consumption ----------
-  /** Periods (YYYY-MM) with consumption records, most recent first. */
   readonly consumptionPeriods = computed(() =>
     [...new Set(this.consumption().map((c) => c.periodKey))].sort().reverse(),
   );
@@ -87,8 +78,6 @@ export class MonitoringStore {
       .sort((a, b) => a.periodKey.localeCompare(b.periodKey));
   }
 
-  // ---------- Queries ----------
-  /** Loads every monitoring query. Rejects when the data source cannot be reached. */
   async load(force = false): Promise<void> {
     if (!force && (this.status() === 'loaded' || this.status() === 'loading')) return;
     this.status.set('loading');

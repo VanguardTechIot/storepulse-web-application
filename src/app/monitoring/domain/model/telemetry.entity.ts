@@ -1,9 +1,6 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
 import { Measurement } from './measurement.entity';
 
-/**
- * Aggregate root: telemetry received from an IoT device, grouping one or more measurements.
- */
 export class Telemetry implements BaseEntity {
   constructor(
     readonly id: string,

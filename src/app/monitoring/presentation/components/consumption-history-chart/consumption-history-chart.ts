@@ -7,9 +7,6 @@ const WIDTH = 640;
 const HEIGHT = 240;
 const PAD = { left: 52, right: 12, top: 14, bottom: 30 };
 
-/**
- * Bar chart of consumption per period with the historical average as a dashed guide line.
- */
 @Component({
   selector: 'app-consumption-history-chart',
   imports: [LocalizedDatePipe, LocalizedNumberPipe],

@@ -16,7 +16,6 @@ type RowStatus = 'WITH_BASELINE' | 'NO_BASELINE' | 'NO_DATA';
 
 interface ConsumptionRow {
   resource: MonitoredResource;
-  /** Baseline per metered type; types without a meter are absent. */
   byType: Partial<Record<ConsumptionType, ConsumptionBaseline>>;
   status: RowStatus;
 }
@@ -29,9 +28,6 @@ const ROW_STATUS_TONES: Record<RowStatus, string> = {
 
 const HISTORY_PERIODS = 12;
 
-/**
- * Consolidated utility consumption of the gallery and consumption history per location.
- */
 @Component({
   selector: 'app-consumption',
   imports: [
@@ -57,13 +53,11 @@ export class ConsumptionView extends MonitoringView {
   protected readonly selectedResourceId = signal('');
   protected readonly selectedType = signal<ConsumptionType>('ELECTRICITY');
 
-  /** Periods with records plus the current calendar month, most recent first. */
   protected readonly periodOptions = computed(() => {
     const current = Consumption.periodKeyOf(new Date());
     return [...new Set([current, ...this.store.consumptionPeriods()])].sort().reverse();
   });
 
-  /** Locations with utility meters or consumption history. */
   private readonly meteredResources = computed(() =>
     this.store.resources().filter(
       (resource) =>
@@ -114,7 +108,6 @@ export class ConsumptionView extends MonitoringView {
 
   protected readonly rowsWithoutData = computed(() => this.rows().filter((row) => row.status === 'NO_DATA').length);
 
-  /** Latest measured date when the selected period is still open. */
   protected readonly openPeriodUntil = computed(() => {
     const [year, month] = this.period().split('-').map(Number);
     const nextMonthStart = Date.UTC(year, month, 1);
@@ -142,12 +135,10 @@ export class ConsumptionView extends MonitoringView {
 
   constructor() {
     super();
-    // Select the most recent period with records once the data is available.
     effect(() => {
       const latest = this.store.consumptionPeriods()[0];
       if (!this.period() && latest) this.period.set(latest);
     });
-    // Keep a consumption type that exists for the selected location.
     effect(() => {
       const row = this.selectedRow();
       if (row && !row.byType[this.selectedType()]) {
