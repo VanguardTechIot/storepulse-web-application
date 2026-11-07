@@ -4,6 +4,7 @@
  */
 export enum SubscriptionsErrorCode {
   GalleryNotRegistered = 'gallery_not_registered',
+  AdministratorNotActive = 'administrator_not_active',
   PlanNotFound = 'plan_not_found',
   SubscriptionNotFound = 'subscription_not_found',
   UnitLimitExceeded = 'unit_limit_exceeded',
@@ -16,6 +17,8 @@ export enum SubscriptionsErrorCode {
   SubscriptionExpired = 'subscription_expired',
   RenewalAlreadyDisabled = 'renewal_already_disabled',
   RenewalAlreadyEnabled = 'renewal_already_enabled',
+  AccessDenied = 'access_denied',
+  Network = 'network',
   Unexpected = 'unexpected',
 }
 
