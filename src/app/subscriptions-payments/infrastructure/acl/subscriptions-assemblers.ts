@@ -1,20 +1,22 @@
-import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';
 import { BillingPeriod } from '../../domain/value-objects/billing-period.value-object';
+import { GalleryReference } from '../../domain/model/gallery-reference';
 import { Money } from '../../domain/value-objects/money.value-object';
 import { Payment } from '../../domain/model/payment.entity';
+import { RequestSubscriptionCommand } from '../../domain/model/request-subscription.command';
 import { Subscription } from '../../domain/model/subscription.entity';
 import { SubscriptionPlan } from '../../domain/model/subscription-plan.entity';
 import {
   PaymentResource,
+  RequestSubscriptionResource,
   SubscriptionPlanResource,
   SubscriptionResource,
 } from './subscriptions-responses';
 
-// Plans are read-only and payments are built from the gateway answer: both only map inbound.
+// The platform owns the state of the subscription: entities are only built from its answers.
 export class SubscriptionPlanAssembler {
   toEntityFromResource(r: SubscriptionPlanResource): SubscriptionPlan {
     return new SubscriptionPlan(
-      r.id,
+      String(r.id),
       r.code,
       r.monitoredUnitLimit,
       new Money(r.monthlyPrice, r.currency),
@@ -25,13 +27,13 @@ export class SubscriptionPlanAssembler {
   }
 }
 
-export class SubscriptionAssembler implements BaseAssembler<Subscription, SubscriptionResource> {
+export class SubscriptionAssembler {
   toEntityFromResource(r: SubscriptionResource): Subscription {
     return Subscription.restore({
-      id: r.id,
-      galleryId: r.galleryId,
-      galleryAdministratorId: r.galleryAdministratorId,
-      planId: r.planId,
+      id: String(r.id),
+      galleryId: String(r.galleryId),
+      galleryAdministratorId: String(r.galleryAdministratorId),
+      planId: String(r.planId),
       status: r.status,
       billingCycle: r.billingCycle,
       billingPeriod:
@@ -44,19 +46,18 @@ export class SubscriptionAssembler implements BaseAssembler<Subscription, Subscr
     });
   }
 
-  toResourceFromEntity(e: Subscription): SubscriptionResource {
+  toRequestResource(
+    gallery: GalleryReference,
+    command: RequestSubscriptionCommand,
+  ): RequestSubscriptionResource {
     return {
-      id: e.id,
-      galleryId: e.galleryId,
-      galleryAdministratorId: e.galleryAdministratorId,
-      planId: e.planId,
-      status: e.status,
-      billingCycle: e.billingCycle,
-      startDate: e.billingPeriod?.startDate.toISOString() ?? null,
-      endDate: e.billingPeriod?.endDate.toISOString() ?? null,
-      monitoredUnitCount: e.monitoredUnitCount,
-      autoRenewal: e.autoRenewal,
-      paymentMethodLabel: e.paymentMethodLabel,
+      galleryId: gallery.galleryId,
+      monitoredUnitCount: gallery.monitoredUnitCount,
+      planId: command.planId,
+      billingCycle: command.billingCycle,
+      paymentMethod: command.paymentMethod,
+      cardNumber: command.cardNumber.replace(/\s+/g, ''),
+      cardExpiry: command.cardExpiry.trim(),
     };
   }
 }
@@ -64,10 +65,10 @@ export class SubscriptionAssembler implements BaseAssembler<Subscription, Subscr
 export class PaymentAssembler {
   toEntityFromResource(r: PaymentResource): Payment {
     return new Payment(
-      r.id,
-      r.subscriptionId,
+      String(r.id),
+      String(r.subscriptionId),
       r.receiptNumber,
-      r.planId,
+      String(r.planId),
       r.billingCycle,
       new Money(r.amount, r.currency),
       r.method,

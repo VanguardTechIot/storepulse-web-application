@@ -2,7 +2,6 @@ import { computed, inject, Injectable, signal, WritableSignal } from '@angular/c
 import { GalleryReference } from '../domain/model/gallery-reference';
 import { Payment } from '../domain/model/payment.entity';
 import { PaymentCard } from '../domain/value-objects/payment-card.value-object';
-import { RegisterPaymentCommand } from '../domain/model/register-payment.command';
 import { RequestSubscriptionCommand } from '../domain/model/request-subscription.command';
 import { Subscription } from '../domain/model/subscription.entity';
 import { SubscriptionPlan } from '../domain/model/subscription-plan.entity';
@@ -69,19 +68,15 @@ export class SubscriptionsStore {
       this.plansState.set(plans);
       this.galleryState.set(gallery);
       if (!gallery) throw new SubscriptionsError(SubscriptionsErrorCode.GalleryNotRegistered);
-      const subscription = await this.repository.findSubscriptionByGallery(gallery.galleryId);
-      this.subscriptionState.set(subscription);
-      this.paymentsState.set(
-        subscription ? await this.repository.listPayments(subscription.id) : [],
-      );
+      await this.reloadSubscription(gallery.galleryId);
       this.loaded.set(true);
     });
   }
 
   // ---------- Commands ----------
   /**
-   * Contracts the plan (or changes to it) and pays it. The subscription is activated only
-   * when the gateway accepts the charge; a rejected charge leaves the current state untouched.
+   * Contracts the plan (or changes to it) and pays it. The platform activates the subscription
+   * only when the gateway accepts the charge; a rejected charge is still recorded in the history.
    */
   subscribe(command: RequestSubscriptionCommand): Promise<boolean> {
     return this.execute(this.processing, async () => {
@@ -91,59 +86,50 @@ export class SubscriptionsStore {
       if (!plan.allowsUnits(gallery.monitoredUnitCount)) {
         throw new SubscriptionsError(SubscriptionsErrorCode.UnitLimitExceeded);
       }
-      const card = new PaymentCard(command.cardNumber, command.cardExpiry);
-
-      let subscription = this.subscriptionState();
-      if (!subscription) {
-        subscription = await this.repository.saveSubscription(
-          Subscription.request({
-            id: crypto.randomUUID(),
-            galleryId: gallery.galleryId,
-            galleryAdministratorId: this.iamContext.currentAdministratorId() ?? '',
-            plan,
-            billingCycle: command.billingCycle,
-            monitoredUnitCount: gallery.monitoredUnitCount,
-          }),
-        );
+      // Validates the card before it leaves the browser.
+      new PaymentCard(command.cardNumber, command.cardExpiry);
+      try {
+        const subscription = await this.repository.requestSubscription(gallery, command);
         this.subscriptionState.set(subscription);
+        this.paymentsState.set(await this.repository.listPayments(subscription.id));
+      } catch (error) {
+        if (
+          error instanceof SubscriptionsError &&
+          error.code === SubscriptionsErrorCode.PaymentRejected
+        ) {
+          await this.reloadSubscription(gallery.galleryId);
+        }
+        throw error;
       }
-
-      const payment = await this.repository.registerPayment(
-        new RegisterPaymentCommand({
-          subscriptionId: subscription.id,
-          planId: plan.id,
-          billingCycle: command.billingCycle,
-          amount: plan.priceFor(command.billingCycle),
-          method: command.paymentMethod,
-          card,
-        }),
-      );
-      this.paymentsState.update((payments) => [payment, ...payments]);
-      if (!payment.isAccepted) throw new SubscriptionsError(SubscriptionsErrorCode.PaymentRejected);
-
-      const activated = subscription.activate(plan, command.billingCycle, card.label);
-      this.subscriptionState.set(await this.repository.saveSubscription(activated));
     });
   }
 
   /** Turns off the automatic renewal; the subscription stays valid until it expires. */
   cancelRenewal(): Promise<boolean> {
     return this.execute(this.processing, async () => {
-      const updated = this.requireSubscription().cancelRenewal();
-      this.subscriptionState.set(await this.repository.saveSubscription(updated));
+      const subscription = this.requireSubscription();
+      subscription.cancelRenewal();
+      this.subscriptionState.set(await this.repository.cancelRenewal(subscription.id));
     });
   }
 
   /** Turns the automatic renewal back on while the subscription is still valid. */
   reactivateRenewal(): Promise<boolean> {
     return this.execute(this.processing, async () => {
-      const updated = this.requireSubscription().reactivateRenewal();
-      this.subscriptionState.set(await this.repository.saveSubscription(updated));
+      const subscription = this.requireSubscription();
+      subscription.reactivateRenewal();
+      this.subscriptionState.set(await this.repository.reactivateRenewal(subscription.id));
     });
   }
 
   clearError(): void {
     this.error.set(null);
+  }
+
+  private async reloadSubscription(galleryId: string): Promise<void> {
+    const subscription = await this.repository.findSubscriptionByGallery(galleryId);
+    this.subscriptionState.set(subscription);
+    this.paymentsState.set(subscription ? await this.repository.listPayments(subscription.id) : []);
   }
 
   private requireGallery(): GalleryReference {
