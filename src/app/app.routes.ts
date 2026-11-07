@@ -1,8 +1,5 @@
 import { Routes } from '@angular/router';
-import {
-  authenticationGuard,
-  guestGuard,
-} from './iam/presentation/iam.guards';
+import { authenticationGuard, guestGuard } from './iam/presentation/iam.guards';
 import { ComingSoon } from './shared/presentation/views/coming-soon/coming-soon';
 
 export const routes: Routes = [
@@ -10,10 +7,7 @@ export const routes: Routes = [
   {
     path: 'iam',
     canActivate: [guestGuard],
-    loadChildren: () =>
-      import('./iam/iam.routes').then(
-        (m) => m.IDENTITY_ACCESS_MANAGEMENT_ROUTES,
-      ),
+    loadChildren: () => import('./iam/iam.routes').then((m) => m.IDENTITY_ACCESS_MANAGEMENT_ROUTES),
   },
   // Gallery administrator area: requires an active session.
   {
@@ -26,9 +20,7 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () =>
-          import('./dashboard-analytics/dashboard-analytics.routes').then(
-            (m) => m.DASHBOARD_ANALYTICS_ROUTES,
-          ),
+          import('./dashboard-analytics').then((m) => m.DASHBOARD_ANALYTICS_ROUTES),
       },
       {
         path: 'billing',
@@ -74,9 +66,7 @@ export const routes: Routes = [
       {
         path: 'subscription',
         loadChildren: () =>
-          import('./subscriptions-payments/subscriptions-payments.routes').then(
-            (m) => m.SUBSCRIPTIONS_PAYMENTS_ROUTES,
-          ),
+          import('./subscriptions-payments').then((m) => m.SUBSCRIPTIONS_PAYMENTS_ROUTES),
       },
     ],
   },

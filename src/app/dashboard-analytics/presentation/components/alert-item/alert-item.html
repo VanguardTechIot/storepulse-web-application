@@ -1,0 +1,42 @@
+<app-tone-icon [icon]="style().icon" [tone]="style().tone" />
+<div class="body">
+  <b>{{ 'analytics.alerts.messages.' + alert().sensorType | translate: { value: value() } }}</b>
+  <span class="sub">
+    {{ 'analytics.alerts.device' | translate: { id: alert().deviceId } }}
+    <app-status-chip [tone]="statusTone()" [dot]="true">{{
+        'analytics.alert_status.' + alert().status | translate
+      }}</app-status-chip>
+    @if (alert().resolutionNote; as note) {
+      · {{ note }}
+    }
+  </span>
+</div>
+<time [attr.datetime]="alert().detectedAt.toISOString()">{{
+    alert().detectedAt | localizedDate: 'dateTime'
+  }}</time>
+@if (actionable()) {
+  @switch (alert().status) {
+    @case ('ACTIVE') {
+      <button
+        [id]="'ack-' + alert().id"
+        matButton="outlined"
+        type="button"
+        [disabled]="busy()"
+        (click)="acknowledged.emit(alert())"
+      >
+        {{ 'analytics.alerts.acknowledge' | translate }}
+      </button>
+    }
+    @case ('ACKNOWLEDGED') {
+      <button
+        [id]="'resolve-' + alert().id"
+        matButton="filled"
+        type="button"
+        [disabled]="busy()"
+        (click)="resolved.emit(alert())"
+      >
+        {{ 'analytics.alerts.resolve' | translate }}
+      </button>
+    }
+  }
+}

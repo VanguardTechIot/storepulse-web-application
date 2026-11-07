@@ -100,3 +100,27 @@
   background: var(--sp-surface);
   color: var(--sp-text);
 }
+
+.gallery-select__text strong,
+.gallery-select__text small,
+.alert-chip {
+  white-space: nowrap;
+}
+
+/* Narrow screens keep the controls and drop the secondary texts. */
+@media (max-width: 1280px) {
+  .toolbar {
+    padding: 0 16px;
+  }
+
+  .alert-chip,
+  .gallery-select__text small {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .gallery-select__text {
+    display: none;
+  }
+}

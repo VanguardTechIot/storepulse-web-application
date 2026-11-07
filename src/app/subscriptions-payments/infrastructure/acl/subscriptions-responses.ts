@@ -1,11 +1,13 @@
-import { BaseResource } from '../../../shared/infrastructure/base-response';
 import { BillingCycle } from '../../domain/enums/billing-cycle.enum';
 import { PaymentMethod } from '../../domain/enums/payment-method.enum';
 import { PaymentStatus } from '../../domain/enums/payment-status.enum';
 import { PlanCode } from '../../domain/model/subscription-plan.entity';
 import { SubscriptionStatus } from '../../domain/enums/subscription-status.enum';
 
-export interface SubscriptionPlanResource extends BaseResource {
+// The platform identifies every resource with a numeric id; the domain keeps them as text.
+
+export interface SubscriptionPlanResource {
+  id: number;
   code: PlanCode;
   monitoredUnitLimit: number | null;
   monthlyPrice: number;
@@ -15,10 +17,11 @@ export interface SubscriptionPlanResource extends BaseResource {
   published: boolean;
 }
 
-export interface SubscriptionResource extends BaseResource {
-  galleryId: string;
-  galleryAdministratorId: string;
-  planId: string;
+export interface SubscriptionResource {
+  id: number;
+  galleryId: string | number;
+  galleryAdministratorId: string | number;
+  planId: number;
   status: SubscriptionStatus;
   billingCycle: BillingCycle;
   startDate: string | null;
@@ -28,10 +31,22 @@ export interface SubscriptionResource extends BaseResource {
   paymentMethodLabel: string | null;
 }
 
-export interface PaymentResource extends BaseResource {
-  subscriptionId: string;
-  receiptNumber: string | null;
+/** Body of `POST /subscriptions`: the card goes to the gateway and is never stored. */
+export interface RequestSubscriptionResource {
+  galleryId: string;
+  monitoredUnitCount: number;
   planId: string;
+  billingCycle: BillingCycle;
+  paymentMethod: PaymentMethod;
+  cardNumber: string;
+  cardExpiry: string;
+}
+
+export interface PaymentResource {
+  id: number;
+  subscriptionId: number;
+  receiptNumber: string | null;
+  planId: number;
   billingCycle: BillingCycle;
   amount: number;
   currency: string;

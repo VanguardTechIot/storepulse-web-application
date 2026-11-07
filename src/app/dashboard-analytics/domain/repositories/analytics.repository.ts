@@ -1,13 +1,14 @@
-import { ConsumptionRegistration } from '../model/consumption-registration.entity';
-import { Notification } from '../model/notification.entity';
+import { Alert } from '../model/alert.entity';
+import { DashboardSummary } from '../model/dashboard-summary';
 
 /**
- * Access abstraction of Dashboard and Analytics: `/notifications` and the
- * consumption registrations that feed `/dashboard/{galleryId}/summary`.
+ * Access abstraction of Dashboard and Analytics: `/dashboard/summary` and the alerts the
+ * administrator attends (`/alerts`). Business errors are thrown as `AnalyticsError`.
  */
 export interface AnalyticsRepository {
-  /** Notifications of the signed-in user, as generated (not grouped). */
-  listNotifications(): Promise<Notification[]>;
-  saveNotifications(notifications: Notification[]): Promise<void>;
-  listConsumptionRegistrations(): Promise<ConsumptionRegistration[]>;
+  getSummary(): Promise<DashboardSummary>;
+  /** Most recent first. */
+  listAlerts(): Promise<Alert[]>;
+  acknowledgeAlert(alertId: string): Promise<Alert>;
+  resolveAlert(alertId: string, resolutionNote: string): Promise<Alert>;
 }

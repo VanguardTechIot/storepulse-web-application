@@ -1,22 +1,34 @@
-import { BaseResource } from '../../../shared/infrastructure/base-response';
-import { NotificationType } from '../../domain/enums/notification-type.enum';
-import { UtilityType } from '../../domain/enums/utility-type.enum';
+import { AlertStatus } from '../../domain/enums/alert-status.enum';
+import { SensorType } from '../../domain/enums/sensor-type.enum';
 
-export interface NotificationResource extends BaseResource {
-  type: NotificationType;
-  relatedEntityId: string;
-  location: string;
-  message: string;
-  generatedAt: string;
-  read: boolean;
-  occurrences: number;
+export interface DashboardSummaryResource {
+  alerts: {
+    open: number;
+    active: number;
+    acknowledged: number;
+    resolved: number;
+    openBySensorType: Partial<Record<SensorType, number>>;
+  };
+  consumption: {
+    electricityKwh: number;
+    waterCubicMeters: number;
+  };
 }
 
-export interface ConsumptionRegistrationResource extends BaseResource {
-  meterId: string;
-  utilityType: UtilityType;
-  amount: number;
-  unit: string;
-  period: string;
-  capturedAt: string;
+export interface AlertResource {
+  id: number;
+  safetyRuleId: number;
+  deviceId: number;
+  measurementId: number;
+  sensorType: SensorType;
+  measuredValue: number;
+  status: AlertStatus;
+  detectedAt: string;
+  acknowledgedAt: string | null;
+  resolvedAt: string | null;
+  resolutionNote: string | null;
+}
+
+export interface ResolveAlertResource {
+  resolutionNote: string;
 }

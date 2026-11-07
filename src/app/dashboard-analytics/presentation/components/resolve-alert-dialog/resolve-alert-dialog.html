@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>{{ 'analytics.alerts.resolve_dialog.title' | translate }}</h2>
+<mat-dialog-content>
+  <p class="message">{{ 'analytics.alerts.resolve_dialog.message' | translate }}</p>
+  <mat-form-field>
+    <mat-label>{{ 'analytics.alerts.resolve_dialog.note' | translate }}</mat-label>
+    <textarea
+      matInput
+      id="resolution-note"
+      rows="3"
+      [formControl]="note"
+      [maxlength]="maxLength"
+    ></textarea>
+    <mat-hint align="end">{{ note.value.length }} / {{ maxLength }}</mat-hint>
+    @if (note.hasError('required')) {
+      <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+    }
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button id="cancel-button" matButton type="button" mat-dialog-close>
+    {{ 'common.actions.cancel' | translate }}
+  </button>
+  <button id="confirm-button" matButton="filled" type="button" (click)="confirm()">
+    {{ 'analytics.alerts.resolve' | translate }}
+  </button>
+</mat-dialog-actions>
