@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authenticationGuard, guestGuard } from './iam/presentation/iam.guards';
-import { ComingSoon } from './shared/presentation/views/coming-soon/coming-soon';
 
 export const routes: Routes = [
   // Public area: welcome, Log In, registration and password recovery.
@@ -54,8 +53,6 @@ export const routes: Routes = [
           ),
         data: { titleKey: 'nav.devices' },
       },
-      { path: 'utility-meters', component: ComingSoon, data: { titleKey: 'nav.utility_meters' } },
-      { path: 'security', component: ComingSoon, data: { titleKey: 'nav.security' } },
       {
         path: 'communication',
         loadChildren: () =>
