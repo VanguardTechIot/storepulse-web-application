@@ -1,34 +1,31 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
+import { appNav } from '../../../../shared/routing/app-nav';
 import { AnalyticsStore } from '../../../application/analytics.store';
-import { PeriodConsumption } from '../../../domain/model/dashboard-summary';
-import { UtilityType } from '../../../domain/enums/utility-type.enum';
-import { ConsumptionChart } from '../../components/consumption-chart/consumption-chart';
+import { AlertItem } from '../../components/alert-item/alert-item';
 import { KpiCard } from '../../components/kpi-card/kpi-card';
-import { NotificationItem } from '../../components/notification-item/notification-item';
+import { SensorAlertsChart } from '../../components/sensor-alerts-chart/sensor-alerts-chart';
 
-const RECENT_NOTIFICATIONS = 5;
+const RECENT_ALERTS = 5;
 
-/** Consolidated dashboard: key indicators, consumption trend and latest notifications. */
+/** Consolidated dashboard: key indicators of the month, open alerts by sensor and latest ones. */
 @Component({
   selector: 'app-consolidated-dashboard',
   imports: [
     MatButtonModule,
-    MatButtonToggleModule,
     MatCardModule,
     MatIconModule,
     RouterLink,
-    ConsumptionChart,
+    AlertItem,
     KpiCard,
-    NotificationItem,
     PageState,
+    SensorAlertsChart,
     TranslatePipe,
   ],
   templateUrl: './consolidated-dashboard.html',
@@ -43,14 +40,9 @@ export class ConsolidatedDashboard {
   protected readonly store = inject(AnalyticsStore);
   private readonly i18n = inject(TranslationService);
 
-  protected readonly utilities = [UtilityType.Electricity, UtilityType.Water];
-  protected readonly utility = signal<UtilityType>(UtilityType.Electricity);
-
+  protected readonly alertsRoute = appNav.alerts;
   protected readonly summary = this.store.summary;
-  protected readonly series = computed(() => this.store.yearlySeries(this.utility()));
-  protected readonly recent = computed(() =>
-    this.store.notifications().slice(0, RECENT_NOTIFICATIONS),
-  );
+  protected readonly recent = computed(() => this.store.openAlerts().slice(0, RECENT_ALERTS));
 
   constructor() {
     this.store.load().catch(() => undefined);
@@ -63,26 +55,6 @@ export class ConsolidatedDashboard {
   protected formatValue(value: number | null | undefined): string {
     return value === null || value === undefined
       ? '—'
-      : value.toLocaleString(this.i18n.lang(), { maximumFractionDigits: 0 });
-  }
-
-  /** Higher consumption is a deviation (amber); lower consumption is good news (green). */
-  protected variationTone(consumption: PeriodConsumption | null): string {
-    const variation = consumption?.variationPercent ?? 0;
-    return variation > 0 ? 'delta warn' : variation < 0 ? 'delta up' : 'delta';
-  }
-
-  /** Builds `+3.4 % vs. September`, or a hint when there is nothing to compare. */
-  protected variationText(consumption: PeriodConsumption | null): string {
-    if (!consumption) return this.i18n.t('analytics.dashboard.kpis.no_measurements');
-    const variation = consumption.variationPercent;
-    if (variation === null) return this.i18n.t('analytics.dashboard.kpis.no_previous');
-    const sign = variation > 0 ? '+' : variation < 0 ? '−' : '';
-    // period is `YYYY-MM`: month index 0 to 11 of the month before it.
-    const previousMonth = (Number(consumption.period.slice(5, 7)) + 10) % 12;
-    return this.i18n.t('analytics.dashboard.kpis.vs_previous', {
-      variation: `${sign}${Math.abs(variation).toLocaleString(this.i18n.lang(), { maximumFractionDigits: 1 })} %`,
-      month: new Date(2000, previousMonth, 1).toLocaleString(this.i18n.lang(), { month: 'long' }),
-    });
+      : value.toLocaleString(this.i18n.lang(), { maximumFractionDigits: 1 });
   }
 }

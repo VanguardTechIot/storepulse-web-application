@@ -29,12 +29,10 @@ export const environment = {
   platformProviderAlertsEndpointPath: '/alerts',
   platformProviderConsumptionEndpointPath: '/consumption',
 
-  // Dashboard and Analytics: notifications and consumption registrations.
-  platformProviderNotificationsEndpointPath: '/notifications',
-  platformProviderConsumptionRegistrationsEndpointPath: '/consumption-registrations',
+  // Dashboard and Analytics: consolidated summary; the alerts it attends come from Safety.
+  platformProviderDashboardSummaryEndpointPath: '/dashboard/summary',
 
-  // Subscriptions and Payments: plan catalog, gallery subscription and its payments.
+  // Subscriptions and Payments: plan catalog and gallery subscription, with its payments nested.
   platformProviderSubscriptionPlansEndpointPath: '/subscription-plans',
   platformProviderSubscriptionsEndpointPath: '/subscriptions',
-  platformProviderPaymentsEndpointPath: '/payments',
 };

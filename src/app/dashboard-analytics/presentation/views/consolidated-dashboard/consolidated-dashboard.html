@@ -21,50 +21,47 @@
   <mat-card id="state-card" appearance="outlined">
     <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
   </mat-card>
-} @else {
+} @else if (summary(); as summary) {
   <div id="kpis" class="kpis">
     <app-kpi-card
-      id="incidents-card"
+      id="alerts-card"
       icon="gpp_maybe"
-      [tone]="(summary().activeIncidents ?? 0) > 0 ? 'danger' : 'success'"
-      [label]="'analytics.dashboard.kpis.active_incidents' | translate"
-      [value]="formatValue(summary().activeIncidents)"
+      [tone]="summary.alerts.open > 0 ? 'danger' : 'success'"
+      [label]="'analytics.dashboard.kpis.open_alerts' | translate"
+      [value]="formatValue(summary.alerts.open)"
     >
-      <a id="incidents-link" class="link" [routerLink]="store.incidentsRoute">
-        {{ 'analytics.dashboard.kpis.view_incidents' | translate }}
-      </a>
+      <span class="delta">{{
+          'analytics.dashboard.kpis.alerts_breakdown'
+            | translate: { active: summary.alerts.active, acknowledged: summary.alerts.acknowledged }
+        }}</span>
     </app-kpi-card>
     <app-kpi-card
       id="energy-card"
       icon="bolt"
       [tone]="'warning'"
       [label]="'analytics.dashboard.kpis.energy' | translate"
-      [value]="formatValue(summary().electricity?.current)"
-      [unit]="summary().electricity?.unit ?? ''"
+      [value]="formatValue(summary.electricity.amount)"
+      [unit]="summary.electricity.unit"
     >
-      <span [class]="variationTone(summary().electricity)">
-        {{ variationText(summary().electricity) }}
-      </span>
+      {{ 'analytics.dashboard.kpis.current_month' | translate }}
     </app-kpi-card>
     <app-kpi-card
       id="water-card"
       icon="water_drop"
       [tone]="'info'"
       [label]="'analytics.dashboard.kpis.water' | translate"
-      [value]="formatValue(summary().water?.current)"
-      [unit]="summary().water?.unit ?? ''"
+      [value]="formatValue(summary.water.amount)"
+      [unit]="summary.water.unit"
     >
-      <span [class]="variationTone(summary().water)">
-        {{ variationText(summary().water) }}
-      </span>
+      {{ 'analytics.dashboard.kpis.current_month' | translate }}
     </app-kpi-card>
     <app-kpi-card
       id="devices-card"
       icon="wifi_off"
       [tone]="'violet'"
       [label]="'analytics.dashboard.kpis.disconnected' | translate"
-      [value]="formatValue(summary().disconnectedDevices)"
-      [unit]="summary().registeredDevices !== null ? '/ ' + summary().registeredDevices : ''"
+      [value]="formatValue(store.devices()?.disconnected)"
+      [unit]="store.devices() ? '/ ' + store.devices()!.total : ''"
     >
       <a id="devices-link" class="link" [routerLink]="store.devicesRoute">
         {{ 'analytics.dashboard.kpis.view_devices' | translate }}
@@ -72,7 +69,7 @@
     </app-kpi-card>
   </div>
 
-  @if (!summary().hasActivity) {
+  @if (!summary.hasActivity) {
     <mat-card id="empty-card" appearance="outlined">
       <app-page-state
         icon="insights"
@@ -87,33 +84,17 @@
     </mat-card>
   } @else {
     <div class="main-grid">
-      <mat-card id="consumption-card" appearance="outlined" aria-labelledby="consumption-title">
+      <mat-card id="sensors-card" appearance="outlined" aria-labelledby="sensors-title">
         <div class="card-head">
           <div>
-            <h2 id="consumption-title">{{ 'analytics.dashboard.chart.title' | translate }}</h2>
+            <h2 id="sensors-title">{{ 'analytics.dashboard.chart.title' | translate }}</h2>
             <p>{{ 'analytics.dashboard.chart.subtitle' | translate }}</p>
-          </div>
-          <div class="right">
-            <mat-button-toggle-group
-              id="utility-toggle"
-              class="tabs"
-              [hideSingleSelectionIndicator]="true"
-              [value]="utility()"
-              (change)="utility.set($event.value)"
-              [attr.aria-label]="'analytics.dashboard.chart.utility' | translate"
-            >
-              @for (option of utilities; track option) {
-                <mat-button-toggle [value]="option">
-                  {{ 'analytics.utilities.' + option | translate }}
-                </mat-button-toggle>
-              }
-            </mat-button-toggle-group>
           </div>
         </div>
         <div class="card-pad">
-          <app-consumption-chart
-            id="consumption-chart"
-            [series]="series()"
+          <app-sensor-alerts-chart
+            id="sensors-chart"
+            [counts]="summary.alerts.openBySensorType"
             [ariaLabel]="'analytics.dashboard.chart.title' | translate"
           />
         </div>
@@ -126,18 +107,15 @@
             <p>{{ 'analytics.dashboard.recent.subtitle' | translate }}</p>
           </div>
           <div class="right">
-            <a id="notifications-link" class="link" routerLink="/dashboard/notifications">
+            <a id="alerts-link" class="link" [routerLink]="alertsRoute">
               {{ 'analytics.dashboard.recent.view_all' | translate }}
             </a>
           </div>
         </div>
-        @for (notification of recent(); track notification.id) {
-          <app-notification-item [id]="notification.id" [notification]="notification" />
+        @for (alert of recent(); track alert.id) {
+          <app-alert-item [id]="'alert-' + alert.id" [alert]="alert" />
         } @empty {
-          <app-page-state
-            icon="notifications_off"
-            [title]="'analytics.notifications.empty' | translate"
-          />
+          <app-page-state icon="verified_user" [title]="'analytics.alerts.empty' | translate" />
         }
       </mat-card>
     </div>

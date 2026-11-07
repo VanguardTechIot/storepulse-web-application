@@ -1,44 +1,29 @@
-import { UtilityType } from '../enums/utility-type.enum';
+import { SensorType } from '../enums/sensor-type.enum';
+import { ConsumptionValue } from '../value-objects/consumption-value.value-object';
 
-/**
- * Consumption of a utility in the current period compared with the previous one.
- */
-export class PeriodConsumption {
-  constructor(
-    readonly utilityType: UtilityType,
-    readonly period: string,
-    readonly current: number,
-    readonly previous: number | null,
-    readonly unit: string,
-  ) {}
-
-  /** Percentage change against the previous period; `null` without a previous period. */
-  get variationPercent(): number | null {
-    if (this.previous === null || this.previous === 0) return null;
-    return ((this.current - this.previous) / this.previous) * 100;
-  }
+/** Alerts of the gallery by state; `open` counts the active and the acknowledged ones. */
+export interface AlertCounts {
+  open: number;
+  active: number;
+  acknowledged: number;
+  resolved: number;
+  /** Only the sensor types that have open alerts. */
+  openBySensorType: Partial<Record<SensorType, number>>;
 }
 
-/**
- * Read model of the Consolidated Dashboard. A field is `null` when there is not
- * enough data for that indicator, instead of failing the whole summary.
- */
+/** Key indicators of the consolidated dashboard: alerts and consumption of the current month. */
 export class DashboardSummary {
   constructor(
-    readonly activeIncidents: number | null,
-    readonly electricity: PeriodConsumption | null,
-    readonly water: PeriodConsumption | null,
-    readonly disconnectedDevices: number | null,
-    readonly registeredDevices: number | null,
+    readonly alerts: AlertCounts,
+    readonly electricity: ConsumptionValue,
+    readonly water: ConsumptionValue,
   ) {}
 
-  /** False for a new gallery without devices or measurements. */
   get hasActivity(): boolean {
     return (
-      (this.registeredDevices ?? 0) > 0 ||
-      this.electricity !== null ||
-      this.water !== null ||
-      (this.activeIncidents ?? 0) > 0
+      this.alerts.open + this.alerts.resolved > 0 ||
+      this.electricity.amount > 0 ||
+      this.water.amount > 0
     );
   }
 }
