@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
@@ -52,22 +52,23 @@ import { cardExpiryValidator, cardNumberValidator } from './subscriptions.valida
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubscriptionCheckout {
+export class SubscriptionCheckout implements OnInit {
   protected readonly store = inject(SubscriptionsStore);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(TranslationService);
   private readonly fb = inject(FormBuilder);
-  private readonly route = inject(ActivatedRoute);
 
   /** Plan chosen in the catalog (`/subscription/checkout/:planId?cycle=MONTHLY|ANNUAL`). */
-  protected readonly planId = this.route.snapshot.paramMap.get('planId') ?? '';
+  readonly planId = input.required<string>();
+  /** Billing cycle chosen in the catalog. */
+  readonly cycle = input<string>();
 
   protected readonly cycles = [BillingCycle.Monthly, BillingCycle.Annual];
   protected readonly methods = [PaymentMethod.CreditCard, PaymentMethod.DebitCard];
 
   protected readonly form = this.fb.nonNullable.group({
-    billingCycle: [this.initialCycle(), Validators.required],
+    billingCycle: [BillingCycle.Monthly, Validators.required],
     paymentMethod: [PaymentMethod.CreditCard, Validators.required],
     cardHolder: ['', [Validators.required, Validators.maxLength(80)]],
     cardNumber: ['', [Validators.required, cardNumberValidator]],
@@ -75,16 +76,22 @@ export class SubscriptionCheckout {
     cardCvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
   });
 
-  private readonly cycle = toSignal(this.form.controls.billingCycle.valueChanges, {
+  private readonly selectedCycle = toSignal(this.form.controls.billingCycle.valueChanges, {
     initialValue: this.form.controls.billingCycle.value,
   });
 
-  protected readonly plan = computed(() => this.store.planById(this.planId) ?? null);
-  protected readonly total = computed(() => this.plan()?.priceFor(this.cycle()) ?? null);
+  protected readonly plan = computed(() => this.store.planById(this.planId()) ?? null);
+  protected readonly total = computed(() => this.plan()?.priceFor(this.selectedCycle()) ?? null);
 
   constructor() {
     this.store.clearError();
     if (!this.store.loaded()) this.store.load();
+  }
+
+  ngOnInit(): void {
+    if (this.cycle() === BillingCycle.Annual) {
+      this.form.controls.billingCycle.setValue(BillingCycle.Annual);
+    }
   }
 
   protected async pay(): Promise<void> {
@@ -95,7 +102,7 @@ export class SubscriptionCheckout {
     const value = this.form.getRawValue();
     const done = await this.store.subscribe(
       new RequestSubscriptionCommand({
-        planId: this.planId,
+        planId: this.planId(),
         billingCycle: value.billingCycle,
         paymentMethod: value.paymentMethod,
         cardNumber: value.cardNumber,
@@ -106,10 +113,5 @@ export class SubscriptionCheckout {
       this.toast.show('success', this.i18n.t('subscriptions.checkout.activated'));
       await this.router.navigate(['/subscription/status']);
     }
-  }
-
-  private initialCycle(): BillingCycle {
-    const cycle = this.route.snapshot.queryParamMap.get('cycle');
-    return cycle === BillingCycle.Annual ? BillingCycle.Annual : BillingCycle.Monthly;
   }
 }
