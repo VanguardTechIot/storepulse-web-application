@@ -1,168 +1,5 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  container-type: inline-size;
-}
-
-.page-head {
-  display: flex;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.page-head h1 {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.page-head p {
-  margin: 4px 0 0;
-  color: var(--sp-text-muted);
-}
-
-.page-head .actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-left: auto;
-}
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--sp-text-muted);
-  font-size: 13px;
-  text-decoration: none;
-}
-
-.back:hover {
-  color: var(--sp-primary);
-}
-
-.back .mat-icon {
-  width: 18px;
-  height: 18px;
-  font-size: 18px;
-}
-
-.kpis {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.kpi {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 16px 18px;
-}
-
-.kpi .label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--sp-text-muted);
-  font-size: 13px;
-}
-
-.kpi .label .mat-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-}
-
-.kpi .value {
-  font-size: 26px;
-  font-weight: 700;
-}
-
-.tone-primary {
-  color: var(--sp-primary);
-}
-.tone-success {
-  color: var(--sp-success);
-}
-.tone-warning {
-  color: var(--sp-warning);
-}
-.tone-violet {
-  color: var(--sp-violet);
-}
-.tone-danger {
-  color: var(--sp-danger);
-}
-
-.danger-button {
-  --mat-button-outlined-label-text-color: var(--sp-danger);
-  --mat-button-outlined-outline-color: var(--sp-danger);
-  --mat-button-text-label-text-color: var(--sp-danger);
-}
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-}
-
-.filters .search {
-  flex: 1 1 260px;
-  max-width: 420px;
-}
-
-.filters mat-form-field {
-  --mat-form-field-container-height: 44px;
-  --mat-form-field-container-vertical-padding: 10px;
-}
-
-.table-card {
-  overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.table th {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--sp-border);
-  color: var(--sp-text-muted);
-  font-weight: 500;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--sp-border);
-  vertical-align: middle;
-}
-
-.table tr:last-child td {
-  border-bottom: none;
-}
-
-.table .end {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.table small {
-  display: block;
-  color: var(--sp-text-muted);
-}
+/* Property Communication views. The page layout comes from the shared data-page stylesheet. */
+@import '../../../shared/presentation/styles/data-page.css';
 
 .clamp {
   display: -webkit-box;
@@ -170,36 +7,6 @@
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-}
-
-.muted {
-  color: var(--sp-text-muted);
-}
-
-.state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 48px 24px;
-  color: var(--sp-text-muted);
-  text-align: center;
-}
-
-.state b {
-  color: var(--sp-text);
-  font-size: 15px;
-}
-
-.state .state-icon {
-  width: 40px;
-  height: 40px;
-  font-size: 40px;
-  color: var(--sp-primary);
-}
-
-.state .state-icon.error {
-  color: var(--sp-danger);
 }
 
 /* Conversation list */
@@ -223,7 +30,7 @@
 }
 
 .conversation:hover {
-  background: #f9fafb;
+  background: var(--sp-hover);
 }
 
 .avatar {
@@ -305,7 +112,7 @@
   max-height: 56vh;
   padding: 20px;
   overflow-y: auto;
-  background: #fafbfc;
+  background: var(--sp-bg);
 }
 
 .bubble {
@@ -315,15 +122,15 @@
   max-width: min(560px, 85%);
   padding: 12px 14px;
   border: 1px solid var(--sp-border);
-  border-radius: 12px 12px 12px 4px;
+  border-radius: var(--sp-radius) var(--sp-radius) var(--sp-radius) 4px;
   background: var(--sp-surface);
 }
 
 .bubble.mine {
   align-self: flex-end;
   border-color: transparent;
-  border-radius: 12px 12px 4px 12px;
-  color: #fff;
+  border-radius: var(--sp-radius) var(--sp-radius) 4px var(--sp-radius);
+  color: var(--sp-surface);
   background: var(--sp-primary);
 }
 
@@ -401,10 +208,4 @@
 
 .composer .row .grow {
   flex: 1;
-}
-
-@container (max-width: 759.98px) {
-  .kpis {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
