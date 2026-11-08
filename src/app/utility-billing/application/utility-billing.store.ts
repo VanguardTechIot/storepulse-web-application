@@ -1,210 +1,173 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { BillingDispute } from '../domain/model/billing-dispute.model';
-import {
-  BillingPeriod,
-  ConsumptionSummary,
-  UnitOption,
-  UtilityBill,
-  UtilityBillStatus,
-} from '../domain/model/utility-bill.model';
-import {
-  canIssue,
-  canVerifyData,
-  createDraftBill,
-  dueDateFrom,
-  FULL_DATA_COMPLETENESS,
-  openDisputesFor,
-  round2,
-} from '../domain/model/billing-rules';
-import { UTILITY_BILLING_REPOSITORY } from '../infrastructure/utility-billing.token';
+import { UtilityBillStatus } from '../domain/enums/utility-bill-status.enum';
+import { BillingDispute } from '../domain/model/billing-dispute.entity';
+import { BillingError, BillingErrorCode } from '../domain/model/billing-error';
+import { UnitReference } from '../domain/model/unit-reference';
+import { UtilityBill } from '../domain/model/utility-bill.entity';
+import { BillingMonth } from '../domain/value-objects/billing-month.value-object';
+import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
+import { UTILITY_BILLING_REPOSITORY } from '../infrastructure/repositories/utility-billing.token';
 
-export interface BillingCounters {
-  readonly draft: number;
-  readonly verified: number;
-  readonly issued: number;
-  readonly inDispute: number;
-  readonly resolved: number;
-  readonly issuedAmount: number;
-  readonly openDisputes: number;
-}
+type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
 /**
- * Estado y casos de uso de Utility Billing para el Gallery Administrator.
- * Los errores se lanzan con claves de traducción ('billing.errors.*').
+ * Application service of Utility Billing for the gallery administrator: bills, their breakdown
+ * and the disputes the tenants raise over them.
+ *
+ * Commands resolve to the updated entity when they succeed; on failure they resolve to `null` and
+ * expose the reason in `error` (a `BillingErrorCode`, translated as `billing.errors.<code>`).
  */
 @Injectable({ providedIn: 'root' })
 export class UtilityBillingStore {
   private readonly repository = inject(UTILITY_BILLING_REPOSITORY);
+  private readonly resourceAssetContext = inject(ResourceAssetContextFacade);
+
+  private readonly status = signal<LoadStatus>('idle');
+  /** True once the data has been loaded at least once; later refreshes keep showing it. */
+  readonly ready = signal(false);
+  readonly isLoading = computed(() => this.status() === 'loading' || this.status() === 'idle');
+  readonly hasError = computed(() => this.status() === 'error');
+  readonly processing = signal(false);
+  readonly error = signal<BillingErrorCode | null>(null);
 
   private readonly billsState = signal<UtilityBill[]>([]);
   private readonly disputesState = signal<BillingDispute[]>([]);
-  private readonly unitsState = signal<UnitOption[]>([]);
-  private loaded = false;
+  private readonly unitsState = signal<UnitReference[]>([]);
 
-  readonly bills = this.billsState.asReadonly();
-  readonly disputes = this.disputesState.asReadonly();
+  /** Most recent period first. */
+  readonly bills = computed(() =>
+    [...this.billsState()].sort(
+      (a, b) =>
+        b.period.value.localeCompare(a.period.value) || a.unitCode.localeCompare(b.unitCode),
+    ),
+  );
+  /** Most recent first. */
+  readonly disputes = computed(() =>
+    [...this.disputesState()].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
+  );
   readonly units = this.unitsState.asReadonly();
-  readonly loading = signal(false);
-  readonly loadError = signal<string | null>(null);
 
-  readonly counters = computed<BillingCounters>(() => {
-    const bills = this.billsState();
-    const count = (status: UtilityBillStatus): number => bills.filter((b) => b.status === status).length;
-    return {
-      draft: count('DRAFT'),
-      verified: count('DATA_VERIFIED'),
-      issued: count('ISSUED'),
-      inDispute: count('IN_DISPUTE'),
-      resolved: count('RESOLVED'),
-      issuedAmount: round2(
-        bills
-          .filter((b) => b.status !== 'DRAFT' && b.status !== 'DATA_VERIFIED')
-          .reduce((sum, b) => sum + b.totalAmount, 0),
-      ),
-      openDisputes: this.disputesState().filter((d) => d.status !== 'RESOLVED').length,
-    };
-  });
+  readonly openDisputes = computed(() => this.disputesState().filter((d) => d.isOpen));
+  /** Amount already billed to the tenants. */
+  readonly issuedAmount = computed(
+    () =>
+      Math.round(
+        this.billsState()
+          .filter((bill) => bill.isIssued)
+          .reduce((sum, bill) => sum + bill.totalAmount, 0) * 100,
+      ) / 100,
+  );
 
-  async load(): Promise<void> {
-    if (this.loaded) {
-      return;
-    }
-    this.loading.set(true);
-    this.loadError.set(null);
+  countByStatus(status: UtilityBillStatus | null): number {
+    return this.billsState().filter((bill) => status === null || bill.status === status).length;
+  }
+
+  findBill(billId: string): UtilityBill | undefined {
+    return this.billsState().find((bill) => bill.id === billId);
+  }
+
+  findDispute(disputeId: string): BillingDispute | undefined {
+    return this.disputesState().find((dispute) => dispute.id === disputeId);
+  }
+
+  disputesOf(billId: string): BillingDispute[] {
+    return this.disputes().filter((dispute) => dispute.utilityBillId === billId);
+  }
+
+  // ---------- Queries ----------
+  /** Loads the bills, the disputes and the units. Rejects when the platform cannot be reached. */
+  async load(force = false): Promise<void> {
+    if (!force && (this.status() === 'loaded' || this.status() === 'loading')) return;
+    this.status.set('loading');
     try {
       const [bills, disputes, units] = await Promise.all([
         this.repository.listBills(),
         this.repository.listDisputes(),
-        this.repository.listUnits(),
+        this.resourceAssetContext.listUnits(),
       ]);
       this.billsState.set(bills);
       this.disputesState.set(disputes);
       this.unitsState.set(units);
-      this.loaded = true;
-    } catch {
-      this.loadError.set('billing.errors.load');
+      this.status.set('loaded');
+      this.ready.set(true);
+    } catch (error) {
+      this.status.set('error');
+      throw error;
+    }
+  }
+
+  // ---------- Commands ----------
+  generate(unit: UnitReference, period: BillingMonth): Promise<UtilityBill | null> {
+    return this.execute(async () => {
+      const duplicated = this.billsState().some(
+        (bill) => bill.unitId === unit.id && bill.period.equals(period),
+      );
+      if (duplicated) throw new BillingError(BillingErrorCode.Duplicate);
+      const generated = await this.repository.generateBill({ unit, period });
+      this.billsState.update((all) => [generated, ...all]);
+      return generated;
+    });
+  }
+
+  verifyData(bill: UtilityBill, acceptIncompleteData: boolean): Promise<UtilityBill | null> {
+    return this.execute(async () => {
+      bill.verifyData(acceptIncompleteData);
+      return this.replaceBill(await this.repository.verifyBillData(bill.id, acceptIncompleteData));
+    });
+  }
+
+  issue(bill: UtilityBill): Promise<UtilityBill | null> {
+    return this.execute(async () => {
+      bill.issue();
+      return this.replaceBill(await this.repository.issueBill(bill.id));
+    });
+  }
+
+  review(dispute: BillingDispute, reviewNotes: string): Promise<BillingDispute | null> {
+    return this.execute(async () => {
+      const reviewed = dispute.review(reviewNotes);
+      return this.replaceDispute(
+        await this.repository.reviewDispute(dispute.id, reviewed.reviewNotes ?? ''),
+      );
+    });
+  }
+
+  /** Closing the last open dispute resolves the bill, so the bill is read again. */
+  resolve(dispute: BillingDispute, resolution: string): Promise<BillingDispute | null> {
+    return this.execute(async () => {
+      const resolved = dispute.resolve(resolution);
+      const updated = this.replaceDispute(
+        await this.repository.resolveDispute(dispute.id, resolved.resolution ?? ''),
+      );
+      this.replaceBill(await this.repository.getBill(dispute.utilityBillId));
+      return updated;
+    });
+  }
+
+  clearError(): void {
+    this.error.set(null);
+  }
+
+  private replaceBill(updated: UtilityBill): UtilityBill {
+    this.billsState.update((all) => all.map((b) => (b.id === updated.id ? updated : b)));
+    return updated;
+  }
+
+  private replaceDispute(updated: BillingDispute): BillingDispute {
+    this.disputesState.update((all) => all.map((d) => (d.id === updated.id ? updated : d)));
+    return updated;
+  }
+
+  private async execute<T>(operation: () => Promise<T>): Promise<T | null> {
+    this.processing.set(true);
+    this.error.set(null);
+    try {
+      return await operation();
+    } catch (error) {
+      this.error.set(error instanceof BillingError ? error.code : BillingErrorCode.Unexpected);
+      return null;
     } finally {
-      this.loading.set(false);
+      this.processing.set(false);
     }
-  }
-
-  findBill(id: string): UtilityBill | undefined {
-    return this.billsState().find((b) => b.id === id);
-  }
-
-  findDispute(id: string): BillingDispute | undefined {
-    return this.disputesState().find((d) => d.id === id);
-  }
-
-  disputesForBill(billId: string): BillingDispute[] {
-    return this.disputesState().filter((d) => d.billId === billId);
-  }
-
-  loadConsumption(unitId: string, period: BillingPeriod): Promise<ConsumptionSummary> {
-    return this.repository.getConsumptionSummary(unitId, period);
-  }
-
-  async generateBill(unitId: string, period: BillingPeriod): Promise<UtilityBill> {
-    const unit = this.unitsState().find((u) => u.id === unitId);
-    if (!unit) {
-      throw new Error('billing.errors.unit_not_found');
-    }
-    const duplicated = this.billsState().some(
-      (b) => b.unitId === unitId && b.period.start === period.start,
-    );
-    if (duplicated) {
-      throw new Error('billing.errors.duplicate');
-    }
-    const summary = await this.repository.getConsumptionSummary(unitId, period);
-    const bill = createDraftBill({ id: crypto.randomUUID(), unit, period, summary });
-    await this.persistBill(bill);
-    return bill;
-  }
-
-  async verifyData(billId: string, acceptIncompleteData: boolean): Promise<void> {
-    const bill = this.requireBill(billId);
-    if (!canVerifyData(bill.status)) {
-      throw new Error('billing.errors.invalid_transition');
-    }
-    const incomplete = bill.dataCompleteness < FULL_DATA_COMPLETENESS;
-    if (incomplete && !acceptIncompleteData) {
-      throw new Error('billing.errors.incomplete_data_not_accepted');
-    }
-    await this.persistBill({ ...bill, status: 'DATA_VERIFIED', dataWarningAccepted: incomplete });
-  }
-
-  async issueBill(billId: string): Promise<void> {
-    const bill = this.requireBill(billId);
-    if (!canIssue(bill.status)) {
-      throw new Error('billing.errors.invalid_transition');
-    }
-    const issuedAt = new Date();
-    await this.persistBill({
-      ...bill,
-      status: 'ISSUED',
-      issuedAt: issuedAt.toISOString(),
-      dueDate: dueDateFrom(issuedAt),
-    });
-  }
-
-  async startDisputeReview(disputeId: string, reviewNotes: string): Promise<void> {
-    const dispute = this.requireDispute(disputeId);
-    if (dispute.status !== 'OPEN') {
-      throw new Error('billing.errors.invalid_transition');
-    }
-    await this.persistDispute({ ...dispute, status: 'UNDER_REVIEW', reviewNotes: reviewNotes.trim() || null });
-  }
-
-  async resolveDispute(disputeId: string, resolution: string): Promise<void> {
-    const dispute = this.requireDispute(disputeId);
-    if (dispute.status === 'RESOLVED') {
-      throw new Error('billing.errors.dispute_closed');
-    }
-    if (!resolution.trim()) {
-      throw new Error('billing.errors.resolution_required');
-    }
-    await this.persistDispute({
-      ...dispute,
-      status: 'RESOLVED',
-      resolution: resolution.trim(),
-      resolvedAt: new Date().toISOString(),
-    });
-
-    // La factura vuelve a RESOLVED solo cuando no quedan reclamos abiertos sobre ella.
-    const bill = this.findBill(dispute.billId);
-    const stillOpen = openDisputesFor(dispute.billId, this.disputesState()).length > 0;
-    if (bill && bill.status === 'IN_DISPUTE' && !stillOpen) {
-      await this.persistBill({ ...bill, status: 'RESOLVED' });
-    }
-  }
-
-  private requireBill(billId: string): UtilityBill {
-    const bill = this.findBill(billId);
-    if (!bill) {
-      throw new Error('billing.errors.not_found');
-    }
-    return bill;
-  }
-
-  private requireDispute(disputeId: string): BillingDispute {
-    const dispute = this.findDispute(disputeId);
-    if (!dispute) {
-      throw new Error('billing.errors.not_found');
-    }
-    return dispute;
-  }
-
-  private async persistBill(bill: UtilityBill): Promise<void> {
-    await this.repository.saveBill(bill);
-    this.billsState.update((list) =>
-      list.some((b) => b.id === bill.id)
-        ? list.map((b) => (b.id === bill.id ? bill : b))
-        : [bill, ...list],
-    );
-  }
-
-  private async persistDispute(dispute: BillingDispute): Promise<void> {
-    await this.repository.saveDispute(dispute);
-    this.disputesState.update((list) => list.map((d) => (d.id === dispute.id ? dispute : d)));
   }
 }

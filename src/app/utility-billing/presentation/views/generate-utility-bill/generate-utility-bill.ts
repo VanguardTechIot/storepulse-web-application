@@ -1,93 +1,71 @@
-import { CurrencyPipe, DecimalPipe, PercentPipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
-import { UtilityBillingStore } from '../../../application/utility-billing.store';
-import { ConsumptionSummary } from '../../../domain/model/utility-bill.model';
-import {
-  BASELINE_ALERT_THRESHOLD,
-  calculateCompleteness,
-  FULL_DATA_COMPLETENESS,
-  periodFromMonth,
-  varianceRatio,
-} from '../../../domain/model/billing-rules';
+import { Callout } from '../../../../shared/presentation/components/callout/callout';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
+import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
-import { errorKeyOf } from '../../utils/error-key';
+import { UtilityBillingStore } from '../../../application/utility-billing.store';
+import { BillingMonth } from '../../../domain/value-objects/billing-month.value-object';
 
-const MONTH_OPTIONS = [
-  { key: '2026-09', labelKey: 'billing.period.2026-09' },
-  { key: '2026-10', labelKey: 'billing.period.2026-10' },
-] as const;
+/** Closed months the administrator can bill. */
+const BILLABLE_MONTHS = 6;
 
+/** Asks the platform for the draft bill of a unit and month; it computes the breakdown. */
 @Component({
   selector: 'app-generate-utility-bill',
-  imports: [FormsModule, RouterLink, CurrencyPipe, DecimalPipe, PercentPipe, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatSelectModule,
+    RouterLink,
+    Callout,
+    LocalizedDatePipe,
+    PageState,
+    TranslatePipe,
+  ],
   templateUrl: './generate-utility-bill.html',
-  styleUrl: '../../styles/billing.css',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+    '../billing.css',
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GenerateUtilityBill implements OnInit {
-  private readonly router = inject(Router);
+export class GenerateUtilityBill {
   protected readonly store = inject(UtilityBillingStore);
+  private readonly router = inject(Router);
 
-  protected readonly monthOptions = MONTH_OPTIONS;
-  protected readonly threshold = BASELINE_ALERT_THRESHOLD;
-  protected readonly fullCompleteness = FULL_DATA_COMPLETENESS;
-  protected readonly ratioOf = varianceRatio;
-
-  protected unitId = '';
-  protected month: string = MONTH_OPTIONS[1].key;
-
-  protected readonly summary = signal<ConsumptionSummary | null>(null);
-  protected readonly submitting = signal(false);
-  protected readonly errorKey = signal<string | null>(null);
-
-  protected readonly completeness = computed(() => {
-    const current = this.summary();
-    return current ? calculateCompleteness(current.utilities) : 0;
+  protected readonly months = BillingMonth.recent(BILLABLE_MONTHS);
+  protected readonly form = inject(NonNullableFormBuilder).group({
+    unitId: ['', Validators.required],
+    period: [this.months[0].value, Validators.required],
   });
 
-  ngOnInit(): void {
-    void this.store.load();
+  constructor() {
+    this.store.clearError();
+    this.store.load().catch(() => undefined);
   }
 
-  protected onUnitChange(unitId: string): void {
-    this.unitId = unitId;
-    void this.refreshSummary();
-  }
-
-  protected onMonthChange(month: string): void {
-    this.month = month;
-    void this.refreshSummary();
+  protected refresh(): void {
+    this.store.load(true).catch(() => undefined);
   }
 
   protected async generate(): Promise<void> {
-    if (!this.unitId) {
+    const { unitId, period } = this.form.getRawValue();
+    const unit = this.store.units().find((u) => u.id === unitId);
+    const month = this.months.find((m) => m.value === period);
+    if (this.form.invalid || !unit || !month) {
+      this.form.markAllAsTouched();
       return;
     }
-    this.submitting.set(true);
-    this.errorKey.set(null);
-    try {
-      const bill = await this.store.generateBill(this.unitId, periodFromMonth(this.month));
-      await this.router.navigate(['/billing/bills', bill.id]);
-    } catch (error) {
-      this.errorKey.set(errorKeyOf(error));
-    } finally {
-      this.submitting.set(false);
-    }
-  }
-
-  private async refreshSummary(): Promise<void> {
-    this.errorKey.set(null);
-    if (!this.unitId) {
-      this.summary.set(null);
-      return;
-    }
-    try {
-      const result = await this.store.loadConsumption(this.unitId, periodFromMonth(this.month));
-      this.summary.set(result);
-    } catch (error) {
-      this.summary.set(null);
-      this.errorKey.set(errorKeyOf(error));
-    }
+    const bill = await this.store.generate(unit, month);
+    if (bill) await this.router.navigate(['/billing/bills', bill.id]);
   }
 }

@@ -1,59 +1,103 @@
-<header class="page-header">
+<header id="disputes-header" class="page-head">
   <div>
-    <h1 class="page-title">{{ 'billing.disputes.title' | translate }}</h1>
-    <p class="page-subtitle">{{ 'billing.disputes.subtitle' | translate }}</p>
+    <div class="crumbs">
+      <a routerLink="/billing">{{ 'billing.list.crumb' | translate }}</a> /
+      {{ 'billing.disputes.crumb' | translate }}
+    </div>
+    <h1>{{ 'billing.disputes.page_title' | translate }}</h1>
+    <p>{{ 'billing.disputes.subtitle' | translate: { count: store.openDisputes().length } }}</p>
   </div>
-  <a class="btn btn--ghost" routerLink="/billing">{{ 'billing.actions.back' | translate }}</a>
 </header>
 
-<nav class="tabs" aria-label="{{ 'billing.filter.label' | translate }}">
-  @for (filter of filters; track filter) {
-    <button
-      type="button"
-      class="tab"
-      [class.is-active]="activeFilter() === filter"
-      (click)="setFilter(filter)"
-    >
-      {{ (filter === 'ALL' ? 'billing.filter.all' : 'billing.dispute_status.' + filter) | translate }}
-    </button>
-  }
-</nav>
-
-<section class="card table-wrap">
-  @if (store.loading()) {
-    <p class="empty">{{ 'billing.common.loading' | translate }}</p>
-  } @else if (visibleDisputes().length === 0) {
-    <p class="empty">{{ 'billing.disputes.empty' | translate }}</p>
-  } @else {
-    <table class="table">
-      <thead>
-        <tr>
-          <th>{{ 'billing.table.code' | translate }}</th>
-          <th>{{ 'billing.table.bill' | translate }}</th>
-          <th>{{ 'billing.table.unit' | translate }}</th>
-          <th>{{ 'billing.table.tenant' | translate }}</th>
-          <th>{{ 'billing.table.reason' | translate }}</th>
-          <th>{{ 'billing.table.created' | translate }}</th>
-          <th>{{ 'billing.table.status' | translate }}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (dispute of visibleDisputes(); track dispute.id) {
-          <tr>
-            <td><strong>{{ dispute.code }}</strong></td>
-            <td>{{ billCodeOf(dispute.billId) }}</td>
-            <td>{{ unitOf(dispute.billId) }}</td>
-            <td>{{ dispute.tenantName }}</td>
-            <td>{{ ('billing.reason.' + dispute.reason) | translate }}</td>
-            <td>{{ dispute.createdAt | date: 'dd/MM/yyyy' }}</td>
-            <td><app-billing-status-badge [status]="dispute.status" kind="dispute" /></td>
-            <td class="num">
-              <a class="link" [routerLink]="['/billing/disputes', dispute.id]">{{ 'billing.actions.view' | translate }}</a>
-            </td>
-          </tr>
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </mat-card>
+} @else {
+  <mat-card id="disputes-card" appearance="outlined">
+    <div class="card-head">
+      <mat-button-toggle-group
+        id="status-toggle"
+        class="tabs"
+        [hideSingleSelectionIndicator]="true"
+        [value]="filter()"
+        (change)="filter.set($event.value)"
+        [attr.aria-label]="'billing.list.filter' | translate"
+      >
+        @for (option of filters; track option) {
+          <mat-button-toggle [value]="option">
+            {{
+              (option === 'ALL' ? 'billing.list.all' : 'billing.dispute_statuses.' + option)
+                | translate
+            }}
+            ({{ count(option) }})
+          </mat-button-toggle>
         }
-      </tbody>
-    </table>
-  }
-</section>
+      </mat-button-toggle-group>
+    </div>
+
+    @if (visibleDisputes().length === 0) {
+      <app-page-state icon="forum" [title]="'billing.disputes.empty' | translate" />
+    } @else {
+      <div class="table-wrap">
+        <table id="disputes-table" mat-table [dataSource]="visibleDisputes()">
+          <ng-container matColumnDef="dispute">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.dispute' | translate }}</th>
+            <td mat-cell *matCellDef="let dispute">
+              <b>{{ 'billing.dispute.number' | translate: { id: dispute.id } }}</b>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="bill">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.bill' | translate }}</th>
+            <td mat-cell *matCellDef="let dispute" class="mono">
+              {{ store.findBill(dispute.utilityBillId)?.code ?? '—' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="unit">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.unit' | translate }}</th>
+            <td mat-cell *matCellDef="let dispute">
+              @if (store.findBill(dispute.utilityBillId); as bill) {
+                <b>{{ bill.unitCode }}</b> · {{ bill.tenantName }}
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="reason">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.reason' | translate }}</th>
+            <td mat-cell *matCellDef="let dispute">
+              {{ 'billing.reasons.' + dispute.reason | translate }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="created">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.created' | translate }}</th>
+            <td mat-cell *matCellDef="let dispute">
+              {{ dispute.createdAt | localizedDate: 'date' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.status' | translate }}</th>
+            <td mat-cell *matCellDef="let dispute">
+              <app-billing-status-badge [dispute]="dispute.status" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let dispute" class="amount">
+              <a class="link" [routerLink]="['/billing/disputes', dispute.id]">
+                {{ 'common.actions.viewDetail' | translate }}
+              </a>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let dispute; columns: columns"
+            [id]="'dispute-' + dispute.id"
+          ></tr>
+        </table>
+      </div>
+    }
+  </mat-card>
+}
