@@ -4059,11 +4059,7 @@
       "monthlyPrice": 290,
       "annualPrice": 2900,
       "currency": "PEN",
-      "features": [
-        "security_incidents",
-        "energy_submetering",
-        "notification_center"
-      ],
+      "features": ["security_incidents", "energy_submetering", "notification_center"],
       "published": true
     },
     {
@@ -4088,11 +4084,7 @@
       "monthlyPrice": 1490,
       "annualPrice": 14900,
       "currency": "PEN",
-      "features": [
-        "everything_commercial",
-        "multiple_galleries",
-        "advanced_reports"
-      ],
+      "features": ["everything_commercial", "multiple_galleries", "advanced_reports"],
       "published": true
     }
   ],
@@ -4181,6 +4173,202 @@
       "status": "ACCEPTED",
       "gatewayReference": "ch_sim_bfd19345-44c2-4340-b0a1-9db9d982afa3",
       "registeredAt": "2026-11-07T02:19:09.615Z"
+    }
+  ],
+  "utilityTariffs": [
+    {
+      "id": 1,
+      "utilityType": "WATER",
+      "rate": 4.2,
+      "effectiveFrom": "1970-01-01"
+    },
+    {
+      "id": 2,
+      "utilityType": "ELECTRICITY",
+      "rate": 0.78,
+      "effectiveFrom": "1970-01-01"
+    }
+  ],
+  "utilityBills": [
+    {
+      "id": 1,
+      "code": "FAC-202609-B12",
+      "unitId": "res-b12",
+      "unitCode": "B-12",
+      "unitName": "Local B-12",
+      "tenantName": "Ópticas Visión",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "IN_DISPUTE",
+      "items": [
+        {
+          "utilityType": "WATER",
+          "consumption": 3.3,
+          "baseline": 3.233,
+          "unitOfMeasure": "m³",
+          "rate": 4.2,
+          "amount": 13.86
+        },
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 279.4,
+          "baseline": 279.6,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 217.93
+        }
+      ],
+      "totalAmount": 231.79,
+      "dataCompleteness": 100,
+      "dataWarningAccepted": false,
+      "issuedAt": "2026-10-01T13:00:00.000Z",
+      "dueDate": "2026-10-16"
+    },
+    {
+      "id": 2,
+      "code": "FAC-202609-C03",
+      "unitId": "res-c03",
+      "unitCode": "C-03",
+      "unitName": "Local C-03",
+      "tenantName": "Comida Rápida Max",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "DATA_VERIFIED",
+      "items": [
+        {
+          "utilityType": "WATER",
+          "consumption": 21.9,
+          "baseline": 22,
+          "unitOfMeasure": "m³",
+          "rate": 4.2,
+          "amount": 91.98
+        },
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 659.5,
+          "baseline": 655.033,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 514.41
+        }
+      ],
+      "totalAmount": 606.39,
+      "dataCompleteness": 100,
+      "dataWarningAccepted": false,
+      "issuedAt": null,
+      "dueDate": null
+    },
+    {
+      "id": 3,
+      "code": "FAC-202609-B09",
+      "unitId": "res-b09",
+      "unitCode": "B-09",
+      "unitName": "Local B-09",
+      "tenantName": "Joyería Inca Gold",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "RESOLVED",
+      "items": [
+        {
+          "utilityType": "WATER",
+          "consumption": 7.2,
+          "baseline": 7.067,
+          "unitOfMeasure": "m³",
+          "rate": 4.2,
+          "amount": 30.24
+        },
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 148.9,
+          "baseline": 151.267,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 116.14
+        }
+      ],
+      "totalAmount": 146.38,
+      "dataCompleteness": 100,
+      "dataWarningAccepted": false,
+      "issuedAt": "2026-10-01T13:00:00.000Z",
+      "dueDate": "2026-10-16"
+    },
+    {
+      "id": 4,
+      "code": "FAC-202609-A03",
+      "unitId": "res-a03",
+      "unitCode": "A-03",
+      "unitName": "Local A-03",
+      "tenantName": "Calzados Roma",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "ISSUED",
+      "items": [
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 302.2,
+          "baseline": 290.8,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 235.72
+        }
+      ],
+      "totalAmount": 235.72,
+      "dataCompleteness": 50,
+      "dataWarningAccepted": true,
+      "issuedAt": "2026-10-01T13:00:00.000Z",
+      "dueDate": "2026-10-16"
+    },
+    {
+      "id": 5,
+      "code": "FAC-202610-A03",
+      "unitId": "res-a03",
+      "unitCode": "A-03",
+      "unitName": "Local A-03",
+      "tenantName": "Calzados Roma",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-31",
+      "status": "DRAFT",
+      "items": [
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 82.6,
+          "baseline": 299.5,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 64.43
+        }
+      ],
+      "totalAmount": 64.43,
+      "dataCompleteness": 50,
+      "dataWarningAccepted": false,
+      "issuedAt": null,
+      "dueDate": null
+    }
+  ],
+  "billingDisputes": [
+    {
+      "id": 1,
+      "utilityBillId": 3,
+      "tenantId": "usr-002",
+      "reason": "METER_READING",
+      "description": "La lectura de agua reportada no coincide con la lectura física del medidor.",
+      "status": "RESOLVED",
+      "reviewNotes": "Lectura verificada con el técnico de mantenimiento.",
+      "resolution": "Se confirmó la lectura del medidor; el monto facturado se mantiene.",
+      "createdAt": "2026-10-03T15:10:00.000Z",
+      "resolvedAt": "2026-10-05T14:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "utilityBillId": 1,
+      "tenantId": "usr-002",
+      "reason": "CONSUMPTION_ABOVE_BASELINE",
+      "description": "El consumo de electricidad del periodo es mayor al habitual del local. Solicitamos revisar la lectura del medidor.",
+      "status": "OPEN",
+      "reviewNotes": null,
+      "resolution": null,
+      "createdAt": "2026-10-07T15:24:00.000Z",
+      "resolvedAt": null
     }
   ]
 }
