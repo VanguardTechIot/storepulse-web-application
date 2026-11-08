@@ -9,7 +9,7 @@ import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.p
 import { appNav } from '../../../../shared/routing/app-nav';
 import { AnalyticsStore } from '../../../application/analytics.store';
 import { AlertItem } from '../../components/alert-item/alert-item';
-import { KpiCard } from '../../components/kpi-card/kpi-card';
+import { KpiCard } from '../../../../shared/presentation/components/kpi-card/kpi-card';
 import { SensorAlertsChart } from '../../components/sensor-alerts-chart/sensor-alerts-chart';
 
 const RECENT_ALERTS = 5;
