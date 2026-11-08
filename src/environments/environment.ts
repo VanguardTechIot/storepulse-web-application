@@ -35,4 +35,8 @@ export const environment = {
   // Subscriptions and Payments: plan catalog and gallery subscription, with its payments nested.
   platformProviderSubscriptionPlansEndpointPath: '/subscription-plans',
   platformProviderSubscriptionsEndpointPath: '/subscriptions',
+
+  // Utility Billing: bills of the units, with their breakdown, and the disputes over them.
+  platformProviderUtilityBillsEndpointPath: '/utility-bills',
+  platformProviderBillingDisputesEndpointPath: '/billing-disputes',
 };
