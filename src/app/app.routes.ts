@@ -23,8 +23,7 @@ export const routes: Routes = [
       },
       {
         path: 'billing',
-        loadChildren: () =>
-          import('./utility-billing/utility-billing.routes').then((m) => m.UTILITY_BILLING_ROUTES),
+        loadChildren: () => import('./utility-billing').then((m) => m.UTILITY_BILLING_ROUTES),
       },
       {
         path: 'profile',

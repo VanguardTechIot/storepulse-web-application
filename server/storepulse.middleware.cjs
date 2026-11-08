@@ -219,6 +219,212 @@ function dashboardSummary(db) {
   };
 }
 
+// ---------- Utility Billing ----------
+const UTILITIES = [
+  ['WATER', 'm³'],
+  ['ELECTRICITY', 'kWh'],
+];
+const BASELINE_MONTHS = 3;
+const PAYMENT_TERM_DAYS = 15;
+const TEXT_MAX_LENGTH = 1000;
+const DISPUTE_REASONS = ['CONSUMPTION_ABOVE_BASELINE', 'RATE', 'METER_READING', 'OTHER'];
+
+const sameId = (a, b) => String(a) === String(b);
+const scaled = (value) => Math.round(value * 1000) / 1000;
+const isLongText = (value) => String(value ?? '').trim().length > TEXT_MAX_LENGTH;
+
+/** `yyyy-MM` of the month `offset` months away from the given one. */
+function shiftMonth(month, offset) {
+  const [year, number] = month.split('-').map(Number);
+  const date = new Date(Date.UTC(year, number - 1 + offset, 1));
+  return date.toISOString().slice(0, 7);
+}
+
+/** Consumption Monitoring recorded for the unit and utility in the month, or `null`. */
+function monthlyConsumption(db, unitId, utilityType, month) {
+  const record = db
+    .get('consumption')
+    .find(
+      (c) =>
+        sameId(c.resourceId, unitId) &&
+        c.measurementType === utilityType &&
+        c.periodStart.startsWith(month),
+    )
+    .value();
+  return record ? record.totalValue : null;
+}
+
+/** Same rules as the REST API: consumption of the month, baseline of the previous ones, tariff. */
+function generateBill(db, req, res) {
+  const body = req.body ?? {};
+  if (!body.unitId || !String(body.unitCode ?? '').trim()) return fail(res, 400, 'invalid_request');
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(String(body.period ?? ''))) {
+    return fail(res, 400, 'invalid_request');
+  }
+  const period = body.period;
+  const bills = db.get('utilityBills');
+  const periodStart = `${period}-01`;
+  if (bills.value().some((b) => sameId(b.unitId, body.unitId) && b.periodStart === periodStart)) {
+    return fail(res, 409, 'duplicate');
+  }
+
+  const items = [];
+  for (const [utilityType, unitOfMeasure] of UTILITIES) {
+    const consumption = monthlyConsumption(db, body.unitId, utilityType, period);
+    if (consumption === null) continue;
+    const history = Array.from({ length: BASELINE_MONTHS }, (_, index) =>
+      monthlyConsumption(db, body.unitId, utilityType, shiftMonth(period, -(index + 1))),
+    ).filter((value) => value !== null);
+    const baseline = history.length
+      ? history.reduce((sum, value) => sum + value, 0) / history.length
+      : consumption;
+    const tariff = db
+      .get('utilityTariffs')
+      .filter((t) => t.utilityType === utilityType && t.effectiveFrom <= periodStart)
+      .sortBy('effectiveFrom')
+      .last()
+      .value();
+    if (!tariff) return fail(res, 409, 'tariff_not_found');
+    items.push({
+      utilityType,
+      consumption: scaled(consumption),
+      baseline: scaled(baseline),
+      unitOfMeasure,
+      rate: tariff.rate,
+      amount: round(scaled(consumption) * tariff.rate),
+    });
+  }
+  if (!items.length) return fail(res, 409, 'no_consumption_data');
+
+  const lastDay = new Date(Date.UTC(...period.split('-').map(Number), 0)).getUTCDate();
+  const bill = {
+    id: nextId(bills.value()),
+    code: `FAC-${period.replace('-', '')}-${String(body.unitCode).replaceAll('-', '')}`,
+    unitId: body.unitId,
+    unitCode: body.unitCode,
+    unitName: body.unitName ?? null,
+    tenantName: body.tenantName ?? null,
+    periodStart,
+    periodEnd: `${period}-${String(lastDay).padStart(2, '0')}`,
+    status: 'DRAFT',
+    items,
+    totalAmount: round(items.reduce((sum, item) => sum + item.amount, 0)),
+    dataCompleteness: Math.floor((items.length * 100) / UTILITIES.length),
+    dataWarningAccepted: false,
+    issuedAt: null,
+    dueDate: null,
+  };
+  bills.push(bill).value();
+  res.app.db.write();
+  return res.status(201).json(bill);
+}
+
+function changeBill(db, res, billId, change) {
+  const found = db.get('utilityBills').find((b) => sameId(b.id, billId));
+  const bill = found.value();
+  if (!bill) return fail(res, 404, 'not_found');
+  const result = change(bill);
+  if (typeof result === 'string') return fail(res, 409, result);
+  return update(res, found, result);
+}
+
+const verifyData = (accept) => (bill) => {
+  if (bill.status !== 'DRAFT') return 'invalid_transition';
+  const incomplete = bill.dataCompleteness < 100;
+  if (incomplete && accept !== true) return 'incomplete_data_not_accepted';
+  return { status: 'DATA_VERIFIED', dataWarningAccepted: incomplete };
+};
+
+const issue = (bill) => {
+  if (bill.status !== 'DATA_VERIFIED') return 'invalid_transition';
+  const now = new Date();
+  const due = new Date(now);
+  due.setUTCDate(due.getUTCDate() + PAYMENT_TERM_DAYS);
+  return { status: 'ISSUED', issuedAt: now.toISOString(), dueDate: due.toISOString().slice(0, 10) };
+};
+
+/**
+ * The REST API takes the tenant from the token. The local server cannot read it, so the tenant
+ * travels as `tenantId` in the body.
+ */
+function raiseDispute(db, req, res) {
+  const body = req.body ?? {};
+  if (
+    !body.utilityBillId ||
+    !DISPUTE_REASONS.includes(body.reason) ||
+    isLongText(body.description)
+  ) {
+    return fail(res, 400, 'invalid_request');
+  }
+  if (!body.tenantId) return fail(res, 409, 'tenant_required');
+  const foundBill = db.get('utilityBills').find((b) => sameId(b.id, body.utilityBillId));
+  const bill = foundBill.value();
+  if (!bill) return fail(res, 404, 'not_found');
+  if (bill.status !== 'ISSUED' && bill.status !== 'IN_DISPUTE') {
+    return fail(res, 409, 'invalid_transition');
+  }
+  foundBill.assign({ status: 'IN_DISPUTE' }).value();
+  const disputes = db.get('billingDisputes');
+  const dispute = {
+    id: nextId(disputes.value()),
+    utilityBillId: bill.id,
+    tenantId: body.tenantId,
+    reason: body.reason,
+    description: body.description ?? null,
+    status: 'OPEN',
+    reviewNotes: null,
+    resolution: null,
+    createdAt: new Date().toISOString(),
+    resolvedAt: null,
+  };
+  disputes.push(dispute).value();
+  res.app.db.write();
+  return res.status(201).json(dispute);
+}
+
+function reviewDispute(db, req, res, disputeId) {
+  const notes = req.body?.reviewNotes;
+  if (isLongText(notes)) return fail(res, 400, 'invalid_request');
+  const found = db.get('billingDisputes').find((d) => sameId(d.id, disputeId));
+  const dispute = found.value();
+  if (!dispute) return fail(res, 404, 'not_found');
+  if (dispute.status !== 'OPEN') return fail(res, 409, 'invalid_transition');
+  const reviewNotes = String(notes ?? '').trim() || null;
+  return update(res, found, { status: 'UNDER_REVIEW', reviewNotes });
+}
+
+/** Closes the dispute; its bill is resolved once none of its disputes remains open. */
+function resolveDispute(db, req, res, disputeId) {
+  const resolution = String(req.body?.resolution ?? '').trim();
+  if (isLongText(resolution)) return fail(res, 400, 'invalid_request');
+  const found = db.get('billingDisputes').find((d) => sameId(d.id, disputeId));
+  const dispute = found.value();
+  if (!dispute) return fail(res, 404, 'not_found');
+  if (dispute.status === 'RESOLVED') return fail(res, 409, 'dispute_closed');
+  if (!resolution) return fail(res, 409, 'resolution_required');
+
+  const stillOpen = db
+    .get('billingDisputes')
+    .some(
+      (d) =>
+        sameId(d.utilityBillId, dispute.utilityBillId) &&
+        !sameId(d.id, dispute.id) &&
+        d.status !== 'RESOLVED',
+    )
+    .value();
+  if (!stillOpen) {
+    const foundBill = db.get('utilityBills').find((b) => sameId(b.id, dispute.utilityBillId));
+    if (!foundBill.value()) return fail(res, 404, 'not_found');
+    if (foundBill.value().status !== 'IN_DISPUTE') return fail(res, 409, 'invalid_transition');
+    foundBill.assign({ status: 'RESOLVED' }).value();
+  }
+  return update(res, found, {
+    status: 'RESOLVED',
+    resolution,
+    resolvedAt: new Date().toISOString(),
+  });
+}
+
 module.exports = (req, res, next) => {
   const db = req.app.db;
   const path = req.path.replace(/\/+$/, '');
@@ -265,6 +471,35 @@ module.exports = (req, res, next) => {
   }
 
   if (req.method === 'GET' && path === '/dashboard/summary') return res.json(dashboardSummary(db));
+
+  if (req.method === 'POST' && path === '/utilityBills') return generateBill(db, req, res);
+  if (req.method === 'PATCH' && (match = /^\/utilityBills\/([^/]+)\/verify-data$/.exec(path))) {
+    return changeBill(db, res, match[1], verifyData(req.body?.acceptIncompleteData));
+  }
+  if (req.method === 'PATCH' && (match = /^\/utilityBills\/([^/]+)\/issue$/.exec(path))) {
+    return changeBill(db, res, match[1], issue);
+  }
+  if (req.method === 'GET' && (match = /^\/utilityBills\/([^/]+)$/.exec(path))) {
+    const bill = db
+      .get('utilityBills')
+      .find((b) => sameId(b.id, match[1]))
+      .value();
+    return bill ? res.json(bill) : fail(res, 404, 'not_found');
+  }
+  if (req.method === 'POST' && path === '/billingDisputes') return raiseDispute(db, req, res);
+  if (req.method === 'PATCH' && (match = /^\/billingDisputes\/([^/]+)\/review$/.exec(path))) {
+    return reviewDispute(db, req, res, match[1]);
+  }
+  if (req.method === 'PATCH' && (match = /^\/billingDisputes\/([^/]+)\/resolve$/.exec(path))) {
+    return resolveDispute(db, req, res, match[1]);
+  }
+  if (req.method === 'GET' && (match = /^\/billingDisputes\/([^/]+)$/.exec(path))) {
+    const dispute = db
+      .get('billingDisputes')
+      .find((d) => sameId(d.id, match[1]))
+      .value();
+    return dispute ? res.json(dispute) : fail(res, 404, 'not_found');
+  }
 
   return next();
 };

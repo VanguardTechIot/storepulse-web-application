@@ -1,59 +1,106 @@
-@if (bill(); as current) {
-  <header class="page-header">
-    <div>
-      <a class="link" [routerLink]="['/billing/bills', current.id]">← {{ 'billing.actions.back' | translate }}</a>
-      <h1 class="page-title">{{ 'billing.breakdown.title' | translate }} · {{ current.code }}</h1>
-      <p class="page-subtitle">{{ 'billing.breakdown.subtitle' | translate }}</p>
+<header id="breakdown-header" class="page-head">
+  <div>
+    <div class="crumbs">
+      <a routerLink="/billing">{{ 'billing.list.crumb' | translate }}</a> /
+      <a [routerLink]="['/billing/bills', billId()]">{{ bill()?.code ?? billId() }}</a> /
+      {{ 'billing.breakdown.crumb' | translate }}
     </div>
-  </header>
+    <h1>{{ 'billing.breakdown.page_title' | translate }}</h1>
+    <p>{{ 'billing.breakdown.subtitle' | translate: { value: threshold } }}</p>
+  </div>
+</header>
 
-  @if (exceededCount() > 0) {
-    <div class="alert alert--warning">{{ 'billing.breakdown.alert' | translate }}</div>
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </mat-card>
+} @else if (bill(); as bill) {
+  @if (bill.exceededItems.length > 0) {
+    <app-callout id="baseline-warning" type="warn" icon="trending_up">
+      {{ 'billing.breakdown.warning' | translate: { count: bill.exceededItems.length } }}
+    </app-callout>
   }
 
-  <section class="card table-wrap">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>{{ 'billing.table.service' | translate }}</th>
-          <th class="num">{{ 'billing.table.consumption' | translate }}</th>
-          <th class="num">{{ 'billing.table.baseline' | translate }}</th>
-          <th class="num">{{ 'billing.table.variance' | translate }}</th>
-          <th class="num">{{ 'billing.table.rate' | translate }}</th>
-          <th class="num">{{ 'billing.table.amount' | translate }}</th>
-          <th>{{ 'billing.table.status' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of current.items; track item.id) {
-          <tr>
-            <td>{{ ('billing.utility.' + item.utilityType) | translate }}</td>
-            <td class="num">{{ item.consumption | number: '1.0-1' }} {{ item.unitOfMeasure }}</td>
-            <td class="num">{{ item.baseline | number: '1.0-1' }} {{ item.unitOfMeasure }}</td>
-            <td class="num" [class.variance--up]="isAbove(item)" [class.variance--ok]="!isAbove(item)">
-              {{ ratioOf(item) | percent: '1.0-1' }}
-            </td>
-            <td class="num">{{ item.rate | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
-            <td class="num">{{ item.amount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
-            <td>
-              @if (isAbove(item)) {
-                <span class="badge badge--danger">{{ 'billing.breakdown.exceeded' | translate }}</span>
-              } @else {
-                <span class="badge badge--success">{{ 'billing.breakdown.within' | translate }}</span>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="5">{{ 'billing.breakdown.total' | translate }}</td>
-          <td class="num">{{ current.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
-  </section>
+  <mat-card id="breakdown-card" appearance="outlined">
+    <div class="table-wrap">
+      <table id="breakdown-table" mat-table [dataSource]="bill.items">
+        <ng-container matColumnDef="utility">
+          <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.utility' | translate }}</th>
+          <td mat-cell *matCellDef="let item">
+            {{ 'billing.utilities.' + item.utilityType | translate }}
+          </td>
+          <td mat-footer-cell *matFooterCellDef>{{ 'billing.breakdown.total' | translate }}</td>
+        </ng-container>
+        <ng-container matColumnDef="consumption">
+          <th mat-header-cell *matHeaderCellDef class="amount">
+            {{ 'billing.columns.consumption' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let item" class="amount">
+            {{ item.consumption | localizedNumber: 3 }} {{ item.unitOfMeasure }}
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <ng-container matColumnDef="baseline">
+          <th mat-header-cell *matHeaderCellDef class="amount">
+            {{ 'billing.columns.baseline' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let item" class="amount">
+            {{ item.baseline | localizedNumber: 3 }} {{ item.unitOfMeasure }}
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <ng-container matColumnDef="variance">
+          <th mat-header-cell *matHeaderCellDef class="amount">
+            {{ 'billing.columns.variance' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let item" class="amount" [class.over]="item.exceedsBaseline">
+            {{ item.varianceRatio * 100 | localizedNumber: 1 : true }} %
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <ng-container matColumnDef="rate">
+          <th mat-header-cell *matHeaderCellDef class="amount">
+            {{ 'billing.columns.rate' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let item" class="amount">
+            S/ {{ item.rate | localizedNumber: 4 : false : 2 }}
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef class="amount">
+            {{ 'billing.columns.amount' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let item" class="amount">
+            S/ {{ item.amount | localizedNumber: 2 : false : 2 }}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="amount">
+            S/ {{ bill.totalAmount | localizedNumber: 2 : false : 2 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="state">
+          <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.status' | translate }}</th>
+          <td mat-cell *matCellDef="let item">
+            <app-status-chip [tone]="item.exceedsBaseline ? 'danger' : 'success'" [dot]="true">
+              {{
+                (item.exceedsBaseline ? 'billing.breakdown.exceeded' : 'billing.breakdown.within')
+                  | translate
+              }}
+            </app-status-chip>
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let item; columns: columns" [id]="'item-' + item.utilityType"></tr>
+        <tr mat-footer-row *matFooterRowDef="columns"></tr>
+      </table>
+    </div>
+  </mat-card>
 } @else {
-  <p class="empty">{{ 'billing.detail.not_found' | translate }}</p>
+  <mat-card id="not-found-card" appearance="outlined">
+    <app-page-state icon="search_off" [title]="'billing.detail.not_found' | translate">
+      <a matButton="outlined" routerLink="/billing">{{ 'billing.actions.back' | translate }}</a>
+    </app-page-state>
+  </mat-card>
 }

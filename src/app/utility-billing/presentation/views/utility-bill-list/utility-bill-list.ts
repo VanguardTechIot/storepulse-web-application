@@ -1,44 +1,68 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { UtilityBillingStore } from '../../../application/utility-billing.store';
-import { UtilityBillStatus } from '../../../domain/model/utility-bill.model';
-import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
+import { KpiCard } from '../../../../shared/presentation/components/kpi-card/kpi-card';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
+import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
+import { UtilityBillingStore } from '../../../application/utility-billing.store';
+import { UtilityBillStatus } from '../../../domain/enums/utility-bill-status.enum';
+import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
 
 type StatusFilter = UtilityBillStatus | 'ALL';
 
-const STATUS_FILTERS: readonly StatusFilter[] = [
-  'ALL',
-  'DRAFT',
-  'DATA_VERIFIED',
-  'ISSUED',
-  'IN_DISPUTE',
-  'RESOLVED',
-];
-
+/** Bills of the units with their indicators, filtered by status. */
 @Component({
   selector: 'app-utility-bill-list',
-  imports: [RouterLink, CurrencyPipe, DatePipe, TranslatePipe, BillingStatusBadge],
+  imports: [
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatIconModule,
+    MatTableModule,
+    RouterLink,
+    BillingStatusBadge,
+    KpiCard,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
+    PageState,
+    TranslatePipe,
+  ],
   templateUrl: './utility-bill-list.html',
-  styleUrl: '../../styles/billing.css',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+    '../billing.css',
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UtilityBillList implements OnInit {
+export class UtilityBillList {
   protected readonly store = inject(UtilityBillingStore);
-  protected readonly filters = STATUS_FILTERS;
-  protected readonly activeFilter = signal<StatusFilter>('ALL');
+  protected readonly status = UtilityBillStatus;
+
+  protected readonly filters: StatusFilter[] = ['ALL', ...Object.values(UtilityBillStatus)];
+  protected readonly filter = signal<StatusFilter>('ALL');
+  protected readonly columns = ['code', 'unit', 'period', 'total', 'status', 'actions'];
 
   protected readonly visibleBills = computed(() => {
-    const filter = this.activeFilter();
-    const bills = this.store.bills();
-    return filter === 'ALL' ? bills : bills.filter((b) => b.status === filter);
+    const filter = this.filter();
+    return this.store.bills().filter((bill) => filter === 'ALL' || bill.status === filter);
   });
 
-  ngOnInit(): void {
-    void this.store.load();
+  constructor() {
+    this.store.load().catch(() => undefined);
   }
 
-  protected setFilter(filter: StatusFilter): void {
-    this.activeFilter.set(filter);
+  protected count(filter: StatusFilter): number {
+    return this.store.countByStatus(filter === 'ALL' ? null : filter);
+  }
+
+  protected refresh(): void {
+    this.store.load(true).catch(() => undefined);
   }
 }

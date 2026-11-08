@@ -14,5 +14,7 @@
   "/api/v1/tenant-assignments/:assignmentId/terminate": "/tenantAssignments/:assignmentId",
   "/api/v1/tenant-assignments*": "/tenantAssignments$1",
   "/api/v1/subscription-plans*": "/subscriptionPlans$1",
+  "/api/v1/utility-bills*": "/utilityBills$1",
+  "/api/v1/billing-disputes*": "/billingDisputes$1",
   "/api/v1/*": "/$1"
 }

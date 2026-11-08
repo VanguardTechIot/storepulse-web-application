@@ -1,83 +1,92 @@
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { UtilityBillingStore } from '../../../application/utility-billing.store';
-import { UtilityBillStatus } from '../../../domain/model/utility-bill.model';
-import { FULL_DATA_COMPLETENESS, varianceRatio } from '../../../domain/model/billing-rules';
-import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
+import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
+import { Callout } from '../../../../shared/presentation/components/callout/callout';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
+import { ToastService } from '../../../../shared/presentation/components/toast-host/toast.service';
+import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
-import { errorKeyOf } from '../../utils/error-key';
+import { UtilityBillingStore } from '../../../application/utility-billing.store';
+import { UtilityBillStatus } from '../../../domain/enums/utility-bill-status.enum';
+import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
 
-const LIFECYCLE: readonly UtilityBillStatus[] = [
-  'DRAFT',
-  'DATA_VERIFIED',
-  'ISSUED',
-  'IN_DISPUTE',
-  'RESOLVED',
-];
+/** Life cycle shown as a timeline; a bill only reaches the last two steps after a dispute. */
+const LIFECYCLE = Object.values(UtilityBillStatus);
 
+/** Bill of a unit: its data, breakdown and disputes, plus the next step of its life cycle. */
 @Component({
   selector: 'app-utility-bill-detail',
   imports: [
-    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTableModule,
     RouterLink,
-    CurrencyPipe,
-    DatePipe,
-    DecimalPipe,
-    TranslatePipe,
     BillingStatusBadge,
+    Callout,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
+    PageState,
+    TranslatePipe,
   ],
   templateUrl: './utility-bill-detail.html',
-  styleUrl: '../../styles/billing.css',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+    '../billing.css',
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UtilityBillDetail implements OnInit {
+export class UtilityBillDetail {
   protected readonly store = inject(UtilityBillingStore);
-  private readonly route = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
+  private readonly i18n = inject(TranslationService);
 
-  private readonly billId = toSignal(
-    this.route.paramMap.pipe(map((params) => params.get('billId') ?? '')),
-    { initialValue: '' },
-  );
+  /** Route parameter. */
+  readonly billId = input.required<string>();
 
+  protected readonly status = UtilityBillStatus;
   protected readonly steps = LIFECYCLE;
-  protected readonly fullCompleteness = FULL_DATA_COMPLETENESS;
-  protected readonly ratioOf = varianceRatio;
+  protected readonly columns = ['utility', 'consumption', 'rate', 'amount'];
+  protected readonly acceptIncompleteData = signal(false);
 
   protected readonly bill = computed(() => this.store.findBill(this.billId()));
-  protected readonly disputes = computed(() => this.store.disputesForBill(this.billId()));
-  protected readonly currentIndex = computed(() => {
-    const current = this.bill();
-    return current ? LIFECYCLE.indexOf(current.status) : -1;
+  protected readonly disputes = computed(() => this.store.disputesOf(this.billId()));
+  protected readonly currentStep = computed(() => {
+    const bill = this.bill();
+    return bill ? LIFECYCLE.indexOf(bill.status) : -1;
   });
 
-  protected acceptIncompleteData = false;
-  protected readonly busy = signal(false);
-  protected readonly actionError = signal<string | null>(null);
+  constructor() {
+    this.store.clearError();
+    this.store.load().catch(() => undefined);
+  }
 
-  ngOnInit(): void {
-    void this.store.load();
+  protected refresh(): void {
+    this.store.load(true).catch(() => undefined);
   }
 
   protected async verify(): Promise<void> {
-    await this.run(() => this.store.verifyData(this.billId(), this.acceptIncompleteData));
+    const bill = this.bill();
+    if (!bill) return;
+    if (await this.store.verifyData(bill, this.acceptIncompleteData())) {
+      this.toast.show('success', this.i18n.t('billing.detail.verified'));
+    }
   }
 
   protected async issue(): Promise<void> {
-    await this.run(() => this.store.issueBill(this.billId()));
-  }
-
-  private async run(action: () => Promise<void>): Promise<void> {
-    this.busy.set(true);
-    this.actionError.set(null);
-    try {
-      await action();
-    } catch (error) {
-      this.actionError.set(errorKeyOf(error));
-    } finally {
-      this.busy.set(false);
-    }
+    const bill = this.bill();
+    if (!bill) return;
+    if (await this.store.issue(bill))
+      this.toast.show('success', this.i18n.t('billing.detail.issued'));
   }
 }

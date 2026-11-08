@@ -1,85 +1,141 @@
-<header class="page-header">
+<header id="bills-header" class="page-head">
   <div>
-    <h1 class="page-title">{{ 'billing.list.title' | translate }}</h1>
-    <p class="page-subtitle">{{ 'billing.list.subtitle' | translate }}</p>
+    <div class="crumbs">{{ 'billing.list.crumb' | translate }}</div>
+    <h1>{{ 'billing.list.page_title' | translate }}</h1>
+    <p>{{ 'billing.list.subtitle' | translate }}</p>
   </div>
   <div class="actions">
-    <a class="btn btn--ghost" routerLink="/billing/disputes">{{ 'billing.actions.disputes' | translate }}</a>
-    <a class="btn btn--primary" routerLink="/billing/generate">{{ 'billing.actions.generate' | translate }}</a>
+    <button
+      id="refresh-button"
+      matButton="outlined"
+      type="button"
+      [disabled]="store.isLoading()"
+      (click)="refresh()"
+    >
+      <mat-icon aria-hidden="true">refresh</mat-icon>{{ 'common.actions.refresh' | translate }}
+    </button>
+    <a id="disputes-button" matButton="outlined" routerLink="/billing/disputes">
+      <mat-icon aria-hidden="true">forum</mat-icon>{{ 'billing.actions.disputes' | translate }} ({{
+        store.openDisputes().length
+      }})
+    </a>
+    <a id="generate-button" matButton="filled" routerLink="/billing/generate">
+      <mat-icon aria-hidden="true">add</mat-icon>{{ 'billing.actions.generate' | translate }}
+    </a>
   </div>
 </header>
 
-@if (store.loadError(); as errorKey) {
-  <div class="alert alert--danger">{{ errorKey | translate }}</div>
-}
-
-<section class="kpi-grid">
-  <article class="kpi">
-    <span class="kpi__label">{{ 'billing.kpi.draft' | translate }}</span>
-    <strong class="kpi__value">{{ store.counters().draft }}</strong>
-  </article>
-  <article class="kpi">
-    <span class="kpi__label">{{ 'billing.kpi.verified' | translate }}</span>
-    <strong class="kpi__value">{{ store.counters().verified }}</strong>
-  </article>
-  <article class="kpi">
-    <span class="kpi__label">{{ 'billing.kpi.issued' | translate }}</span>
-    <strong class="kpi__value">{{ store.counters().issued }}</strong>
-  </article>
-  <article class="kpi">
-    <span class="kpi__label">{{ 'billing.kpi.in_dispute' | translate }}</span>
-    <strong class="kpi__value">{{ store.counters().inDispute }}</strong>
-  </article>
-  <article class="kpi">
-    <span class="kpi__label">{{ 'billing.kpi.issued_amount' | translate }}</span>
-    <strong class="kpi__value">{{ store.counters().issuedAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</strong>
-  </article>
-</section>
-
-<nav class="tabs" aria-label="{{ 'billing.filter.label' | translate }}">
-  @for (filter of filters; track filter) {
-    <button
-      type="button"
-      class="tab"
-      [class.is-active]="activeFilter() === filter"
-      (click)="setFilter(filter)"
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+  </mat-card>
+} @else {
+  <div id="kpis" class="kpis">
+    <app-kpi-card
+      id="draft-card"
+      icon="edit_note"
+      tone="neutral"
+      [label]="'billing.kpis.draft' | translate"
+      [value]="'' + count(status.Draft)"
     >
-      {{ (filter === 'ALL' ? 'billing.filter.all' : 'billing.bill_status.' + filter) | translate }}
-    </button>
-  }
-</nav>
+      {{ 'billing.kpis.draft_hint' | translate }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="verified-card"
+      icon="fact_check"
+      tone="violet"
+      [label]="'billing.kpis.verified' | translate"
+      [value]="'' + count(status.DataVerified)"
+    >
+      {{ 'billing.kpis.verified_hint' | translate }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="dispute-card"
+      icon="report"
+      [tone]="count(status.InDispute) > 0 ? 'danger' : 'success'"
+      [label]="'billing.kpis.in_dispute' | translate"
+      [value]="'' + count(status.InDispute)"
+    >
+      {{ 'billing.kpis.open_disputes' | translate: { count: store.openDisputes().length } }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="amount-card"
+      icon="payments"
+      tone="success"
+      [label]="'billing.kpis.issued_amount' | translate"
+      [value]="'S/ ' + (store.issuedAmount() | localizedNumber: 2 : false : 2)"
+    >
+      {{ 'billing.kpis.issued_hint' | translate }}
+    </app-kpi-card>
+  </div>
 
-<section class="card table-wrap">
-  @if (store.loading()) {
-    <p class="empty">{{ 'billing.common.loading' | translate }}</p>
-  } @else if (visibleBills().length === 0) {
-    <p class="empty">{{ 'billing.list.empty' | translate }}</p>
-  } @else {
-    <table class="table">
-      <thead>
-        <tr>
-          <th>{{ 'billing.table.code' | translate }}</th>
-          <th>{{ 'billing.table.unit' | translate }}</th>
-          <th>{{ 'billing.table.period' | translate }}</th>
-          <th class="num">{{ 'billing.table.total' | translate }}</th>
-          <th>{{ 'billing.table.status' | translate }}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (bill of visibleBills(); track bill.id) {
-          <tr>
-            <td><strong>{{ bill.code }}</strong></td>
-            <td><span class="unit-code">{{ bill.unitCode }}</span> {{ bill.unitName }}</td>
-            <td>{{ bill.period.start | date: 'dd/MM/yyyy' }} – {{ bill.period.end | date: 'dd/MM/yyyy' }}</td>
-            <td class="num">{{ bill.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
-            <td><app-billing-status-badge [status]="bill.status" /></td>
-            <td class="num">
-              <a class="link" [routerLink]="['/billing/bills', bill.id]">{{ 'billing.actions.view' | translate }}</a>
-            </td>
-          </tr>
+  <mat-card id="bills-card" appearance="outlined">
+    <div class="card-head">
+      <mat-button-toggle-group
+        id="status-toggle"
+        class="tabs"
+        [hideSingleSelectionIndicator]="true"
+        [value]="filter()"
+        (change)="filter.set($event.value)"
+        [attr.aria-label]="'billing.list.filter' | translate"
+      >
+        @for (option of filters; track option) {
+          <mat-button-toggle [value]="option">
+            {{ (option === 'ALL' ? 'billing.list.all' : 'billing.statuses.' + option) | translate }}
+            ({{ count(option) }})
+          </mat-button-toggle>
         }
-      </tbody>
-    </table>
-  }
-</section>
+      </mat-button-toggle-group>
+    </div>
+
+    @if (visibleBills().length === 0) {
+      <app-page-state icon="receipt_long" [title]="'billing.list.empty' | translate" />
+    } @else {
+      <div class="table-wrap">
+        <table id="bills-table" mat-table [dataSource]="visibleBills()">
+          <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.code' | translate }}</th>
+            <td mat-cell *matCellDef="let bill" class="mono">{{ bill.code }}</td>
+          </ng-container>
+          <ng-container matColumnDef="unit">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.unit' | translate }}</th>
+            <td mat-cell *matCellDef="let bill">
+              <b>{{ bill.unitCode }}</b> · {{ bill.tenantName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="period">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.period' | translate }}</th>
+            <td mat-cell *matCellDef="let bill" class="capitalize">
+              {{ bill.period.start | localizedDate: 'monthYear' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef class="amount">
+              {{ 'billing.columns.total' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let bill" class="amount">
+              S/ {{ bill.totalAmount | localizedNumber: 2 : false : 2 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'billing.columns.status' | translate }}</th>
+            <td mat-cell *matCellDef="let bill">
+              <app-billing-status-badge [bill]="bill.status" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let bill" class="amount">
+              <a class="link" [routerLink]="['/billing/bills', bill.id]">
+                {{ 'common.actions.viewDetail' | translate }}
+              </a>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let bill; columns: columns" [id]="'bill-' + bill.id"></tr>
+        </table>
+      </div>
+    }
+  </mat-card>
+}

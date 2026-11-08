@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { Tone, ToneIcon } from '../../../../shared/presentation/components/tone-icon/tone-icon';
+import { Tone, ToneIcon } from '../tone-icon/tone-icon';
 
 /** Key indicator card: label, value with unit and a projected hint. */
 @Component({
