@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
@@ -17,7 +17,7 @@ const statusTones: Record<SubscriptionStatus, Tone> = {
 };
 
 /**
- * Subscription of the gallery as seen from My profile (US-45): plan, status, expiration date and
+ * Subscription of the gallery as seen from My profile: plan, status, expiration date and
  * a notice when the renewal is near. It is managed in Subscriptions and Payments.
  */
 @Component({
@@ -33,6 +33,7 @@ const statusTones: Record<SubscriptionStatus, Tone> = {
   ],
   templateUrl: './subscription-summary-card.html',
   styleUrl: './subscription-summary-card.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionSummaryCard {
   /** Profiles state that provides the gallery subscription summary. */
