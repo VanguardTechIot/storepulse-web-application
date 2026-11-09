@@ -27,7 +27,7 @@ export enum PropertyErrorCode {
 export class PropertyError extends Error {
   constructor(
     readonly code: PropertyErrorCode,
-    /** Extra values for the message, such as the devices that block a removal (TS-09). */
+    /** Extra values for the message, such as the devices that block a removal. */
     readonly details: Record<string, string | number> = {},
   ) {
     super(code);

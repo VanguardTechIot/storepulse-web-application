@@ -15,7 +15,7 @@ interface CommercialGalleryProps {
 
 /**
  * Commercial gallery managed in StorePulse (Aggregate Root): its name, address and the number of
- * units it has (US-08, TS-05). Each administrator manages one gallery.
+ * units it has. Each administrator manages one gallery.
  *
  * Changes return a new gallery, so invalid data never alters the current one.
  */

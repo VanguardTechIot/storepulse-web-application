@@ -40,9 +40,7 @@ export const routes: Routes = [
       {
         path: 'commercial-units',
         loadChildren: () =>
-          import('./property-management/property-management.routes').then(
-            (m) => m.PROPERTY_MANAGEMENT_ROUTES,
-          ),
+          import('./property-management').then((m) => m.PROPERTY_MANAGEMENT_ROUTES),
       },
       {
         path: 'devices',

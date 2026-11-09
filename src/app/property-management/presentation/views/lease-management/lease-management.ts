@@ -1,10 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
@@ -12,18 +12,20 @@ import { Callout } from '../../../../shared/presentation/components/callout/call
 import { confirmAction } from '../../../../shared/presentation/components/confirmation-dialog/confirmation-dialog';
 import { ToastService } from '../../../../shared/presentation/components/toast-host/toast.service';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { PropertyManagementStore } from '../../../application/property-management.store';
 import { InvitationStatus } from '../../../domain/model/invitation-status.enum';
 import { TenantInvitation } from '../../../domain/model/tenant-invitation.entity';
 import { InvitationStatusBadge } from '../../components/invitation-status-badge/invitation-status-badge';
-import { PropertyTabs } from '../../components/property-tabs/property-tabs';
+import { SectionTabs } from '../../../../shared/presentation/components/section-tabs/section-tabs';
+import { propertyTabs } from '../../property.tabs';
 
 type InvitationFilter = 'ALL' | InvitationStatus;
 
 /**
- * Tenant invitations of the gallery (US-12, TS-10): who was invited to which store, until when
- * the link is valid, and sending it again when it expired (scenario 3).
+ * Tenant invitations of the gallery: who was invited to which store, until when
+ * the link is valid, and sending it again when it expired.
  */
 @Component({
   selector: 'app-lease-management',
@@ -35,16 +37,19 @@ type InvitationFilter = 'ALL' | InvitationStatus;
     MatButtonToggleModule,
     MatCardModule,
     MatIconModule,
-    MatProgressSpinnerModule,
+    MatTableModule,
     MatTooltipModule,
-    PropertyTabs,
+    PageState,
     RouterLink,
+    SectionTabs,
     TranslatePipe,
   ],
   templateUrl: './lease-management.html',
   styleUrl: '../../styles/property.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeaseManagement {
+  protected readonly tabs = propertyTabs;
   protected readonly store = inject(PropertyManagementStore);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
@@ -57,6 +62,7 @@ export class LeaseManagement {
     InvitationStatus.Revoked,
   ];
   protected readonly filter = signal<InvitationFilter>('ALL');
+  protected readonly columns = ['unit', 'email', 'sentAt', 'expiresAt', 'status', 'actions'];
   protected readonly visible = computed(() => {
     const filter = this.filter();
     const now = new Date();

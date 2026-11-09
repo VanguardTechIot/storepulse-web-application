@@ -1,7 +1,6 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { CommercialGallery } from '../domain/model/commercial-gallery.entity';
 import { CommercialUnit } from '../domain/model/commercial-unit.entity';
-import { InvitationStatus } from '../domain/model/invitation-status.enum';
 import { InviteTenantCommand } from '../domain/model/invite-tenant.command';
 import { PropertyError, PropertyErrorCode } from '../domain/model/property-error';
 import { RegisterCommercialGalleryCommand } from '../domain/model/register-commercial-gallery.command';
@@ -16,7 +15,7 @@ import { IamContextFacade } from '../infrastructure/acl/iam-context-facade';
 import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
 import { PROPERTY_MANAGEMENT_REPOSITORY } from '../infrastructure/property-management.token';
 
-/** Counters of the gallery summary (US-13). */
+/** Counters of the gallery summary. */
 export interface GallerySummary {
   stores: number;
   commonAreas: number;
@@ -112,7 +111,7 @@ export class PropertyManagementStore {
     return this.sortedInvitations().filter((invitation) => invitation.unitId === unitId);
   }
 
-  /** Gallery, units, invitations and tenants of the signed-in administrator (US-13). */
+  /** Gallery, units, invitations and tenants of the signed-in administrator. */
   load(): Promise<boolean> {
     return this.execute(this.loading, async () => {
       const administratorId = this.requireAdministrator();
@@ -145,7 +144,7 @@ export class PropertyManagementStore {
     });
   }
 
-  /** Registers a store (US-09) or a common area (US-57). */
+  /** Registers a store or a common area. */
   registerUnit(command: RegisterCommercialUnitCommand): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const gallery = this.requireGallery();
@@ -176,7 +175,7 @@ export class PropertyManagementStore {
     });
   }
 
-  /** Logical removal, refused while devices are linked or a tenant occupies it (US-11). */
+  /** Logical removal, refused while devices are linked or a tenant occupies it. */
   removeUnit(unitId: string): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const current = this.requireUnit(unitId);
@@ -194,8 +193,8 @@ export class PropertyManagementStore {
   }
 
   /**
-   * Sends a sign-up link valid for 7 days to the tenant of a store without tenant (US-12). Any
-   * link still pending for the store is invalidated first (scenario 3).
+   * Sends a sign-up link valid for 7 days to the tenant of a store without tenant. Any
+   * link still pending for the store is invalidated first.
    */
   inviteTenant(command: InviteTenantCommand): Promise<boolean> {
     return this.execute(this.saving, async () => {
@@ -208,7 +207,7 @@ export class PropertyManagementStore {
     });
   }
 
-  /** Sends a new link to the same email and invalidates the previous one (US-12, scenario 3). */
+  /** Sends a new link to the same email and invalidates the previous one. */
   resendInvitation(invitationId: string): Promise<boolean> {
     const invitation = this.invitationsState().find((item) => item.id === invitationId);
     if (!invitation || !invitation.canBeResent()) {

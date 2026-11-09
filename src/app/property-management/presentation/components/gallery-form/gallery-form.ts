@@ -1,4 +1,12 @@
-import { Component, effect, inject, input, output, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  input,
+  output,
+  untracked,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -14,8 +22,8 @@ import { UpdateCommercialGalleryInfoCommand } from '../../../domain/model/update
 import { notBlankValidator } from '../../property.validators';
 
 /**
- * Registers the gallery (US-08) or edits its general data. Missing fields are marked and nothing
- * is saved (US-08, scenario 2).
+ * Registers the gallery or edits its general data. Missing fields are marked and nothing
+ * is saved.
  */
 @Component({
   selector: 'app-gallery-form',
@@ -31,6 +39,7 @@ import { notBlankValidator } from '../../property.validators';
   ],
   templateUrl: './gallery-form.html',
   styleUrl: './gallery-form.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GalleryForm {
   protected readonly store = inject(PropertyManagementStore);

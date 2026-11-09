@@ -32,7 +32,7 @@ describe('TenantInvitation', () => {
     }
   }
 
-  it('sends a link to a store without tenant, valid for 7 days (US-12, scenario 1)', () => {
+  it('sends a link to a store without tenant, valid for 7 days', () => {
     const invitation = TenantInvitation.issue(unit(), ' Carlos.Rojas@Gmail.com ', now);
 
     expect(invitation.email).toBe('carlos.rojas@gmail.com');
@@ -41,7 +41,7 @@ describe('TenantInvitation', () => {
     expect(invitation.statusAt(now)).toBe(InvitationStatus.Pending);
   });
 
-  it('expires when 7 days pass and can be sent again (US-12, scenario 3)', () => {
+  it('expires when 7 days pass and can be sent again', () => {
     const invitation = TenantInvitation.issue(unit(), 'carlos.rojas@gmail.com', now);
 
     expect(invitation.statusAt(new Date('2026-10-15T15:00:00Z'))).toBe(InvitationStatus.Expired);

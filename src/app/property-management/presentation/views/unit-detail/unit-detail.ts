@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +15,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
 import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { PropertyManagementStore } from '../../../application/property-management.store';
 import { InvitationStatusBadge } from '../../components/invitation-status-badge/invitation-status-badge';
@@ -28,12 +36,15 @@ import { UnitActions } from '../../unit-actions';
     MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    PageState,
     RouterLink,
     TranslatePipe,
     UnitStatusBadge,
   ],
   templateUrl: './unit-detail.html',
   styleUrl: '../../styles/property.css',
+  providers: [UnitActions],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitDetail {
   protected readonly store = inject(PropertyManagementStore);

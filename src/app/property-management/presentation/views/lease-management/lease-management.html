@@ -5,7 +5,7 @@
   </div>
 </header>
 
-<app-property-tabs />
+<app-section-tabs [tabs]="tabs" label="property.tabs.label" />
 
 <app-callout type="info" icon="info">
   {{ 'property.invitations.assign_hint' | translate }}
@@ -28,72 +28,91 @@
 </mat-button-toggle-group>
 
 @if (store.loading() && !store.loaded()) {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state id="page-state" status="loading" />
 } @else {
-  <mat-card appearance="outlined" class="table-card">
+  <mat-card id="invitations-card" appearance="outlined">
     @if (visible().length === 0) {
-      <div class="state">
-        <mat-icon class="state-icon" aria-hidden="true">forward_to_inbox</mat-icon>
-        <b>{{ 'property.invitations.empty' | translate }}</b>
-        <span>{{ 'property.invitations.empty_hint' | translate }}</span>
-      </div>
+      <app-page-state
+        id="invitations-empty"
+        icon="forward_to_inbox"
+        [title]="'property.invitations.empty' | translate"
+        [message]="'property.invitations.empty_hint' | translate"
+      />
     } @else {
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">{{ 'property.fields.unit' | translate }}</th>
-            <th scope="col">{{ 'property.fields.tenant_email' | translate }}</th>
-            <th scope="col">{{ 'property.fields.sent_at' | translate }}</th>
-            <th scope="col">{{ 'property.fields.expires_at' | translate }}</th>
-            <th scope="col">{{ 'property.fields.status' | translate }}</th>
-            <th scope="col">
+      <div class="table-wrap">
+        <table id="invitations-table" mat-table [dataSource]="visible()">
+          <ng-container matColumnDef="unit">
+            <th mat-header-cell *matHeaderCellDef>{{ 'property.fields.unit' | translate }}</th>
+            <td mat-cell *matCellDef="let invitation">
+              <a [routerLink]="['/commercial-units', invitation.unitId]"
+              ><strong>{{ unitCode(invitation) }}</strong></a
+              >
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'property.fields.tenant_email' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let invitation">{{ invitation.email }}</td>
+          </ng-container>
+          <ng-container matColumnDef="sentAt">
+            <th mat-header-cell *matHeaderCellDef>{{ 'property.fields.sent_at' | translate }}</th>
+            <td mat-cell *matCellDef="let invitation">
+              {{ invitation.sentAt | localizedDate: 'dateTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="expiresAt">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'property.fields.expires_at' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let invitation">
+              {{ invitation.expiresAt | localizedDate: 'dateTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'property.fields.status' | translate }}</th>
+            <td mat-cell *matCellDef="let invitation">
+              <app-invitation-status-badge [invitation]="invitation" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>
               <span class="sr-only">{{ 'property.fields.actions' | translate }}</span>
             </th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (invitation of visible(); track invitation.id) {
-            <tr>
-              <td>
-                <a [routerLink]="['/commercial-units', invitation.unitId]"
-                  ><strong>{{ unitCode(invitation) }}</strong></a
+            <td mat-cell *matCellDef="let invitation" class="end">
+              @if (invitation.canBeResent()) {
+                <button
+                  matIconButton
+                  type="button"
+                  [matTooltip]="'property.invitations.resend' | translate"
+                  [attr.aria-label]="'property.invitations.resend' | translate"
+                  [disabled]="store.saving()"
+                  (click)="resend(invitation)"
                 >
-              </td>
-              <td>{{ invitation.email }}</td>
-              <td>{{ invitation.sentAt | localizedDate: 'dateTime' }}</td>
-              <td>{{ invitation.expiresAt | localizedDate: 'dateTime' }}</td>
-              <td><app-invitation-status-badge [invitation]="invitation" /></td>
-              <td class="end">
-                @if (invitation.canBeResent()) {
-                  <button
-                    matIconButton
-                    type="button"
-                    [matTooltip]="'property.invitations.resend' | translate"
-                    [attr.aria-label]="'property.invitations.resend' | translate"
-                    [disabled]="store.saving()"
-                    (click)="resend(invitation)"
-                  >
-                    <mat-icon>forward_to_inbox</mat-icon>
-                  </button>
-                  <button
-                    matIconButton
-                    type="button"
-                    [matTooltip]="'property.invitations.revoke' | translate"
-                    [attr.aria-label]="'property.invitations.revoke' | translate"
-                    [disabled]="store.saving()"
-                    (click)="revoke(invitation)"
-                  >
-                    <mat-icon>link_off</mat-icon>
-                  </button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+                  <mat-icon>forward_to_inbox</mat-icon>
+                </button>
+                <button
+                  matIconButton
+                  type="button"
+                  [matTooltip]="'property.invitations.revoke' | translate"
+                  [attr.aria-label]="'property.invitations.revoke' | translate"
+                  [disabled]="store.saving()"
+                  (click)="revoke(invitation)"
+                >
+                  <mat-icon>link_off</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let invitation; columns: columns"
+            [id]="'inv-' + invitation.id"
+          ></tr>
+        </table>
+      </div>
     }
   </mat-card>
 }

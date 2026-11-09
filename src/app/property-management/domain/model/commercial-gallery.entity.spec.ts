@@ -25,7 +25,7 @@ describe('CommercialGallery', () => {
     }
   }
 
-  it('registers the gallery of the administrator with trimmed data (US-08, scenario 1)', () => {
+  it('registers the gallery of the administrator with trimmed data', () => {
     const gallery = register();
 
     expect(gallery.name).toBe('Galería Central');
@@ -33,7 +33,7 @@ describe('CommercialGallery', () => {
     expect(gallery.totalUnits).toBe(40);
   });
 
-  it('rejects empty mandatory fields (US-08, scenario 2; TS-05, scenario 2)', () => {
+  it('rejects empty mandatory fields', () => {
     expect(errorOf(() => register({ name: '  ' }))).toBe(PropertyErrorCode.InvalidGalleryName);
     expect(errorOf(() => register({ address: '' }))).toBe(PropertyErrorCode.InvalidAddress);
     expect(errorOf(() => register({ totalUnits: 0 }))).toBe(PropertyErrorCode.InvalidTotalUnits);

@@ -1,6 +1,6 @@
 import { BaseResource } from '../../shared/infrastructure/base-response';
 
-/** Commercial gallery, as `GET /galleries/{id}` returns it (TS-06). Dates are ISO-8601. */
+/** Commercial gallery, as `GET /galleries/{id}` returns it. Dates are ISO-8601. */
 export interface CommercialGalleryResource extends BaseResource {
   administratorId: string;
   name: string;
@@ -9,7 +9,7 @@ export interface CommercialGalleryResource extends BaseResource {
   registeredAt: string;
 }
 
-/** Unit of a gallery, as `GET /galleries/{id}/units` returns it (TS-07). */
+/** Unit of a gallery, as `GET /galleries/{id}/units` returns it. */
 export interface CommercialUnitResource extends BaseResource {
   galleryId: string;
   type: 'STORE' | 'COMMON_AREA';
@@ -22,7 +22,7 @@ export interface CommercialUnitResource extends BaseResource {
   createdAt: string;
 }
 
-/** Invitation created by `POST /units/{id}/invite` (TS-10). */
+/** Invitation created by `POST /units/{id}/invite`. */
 export interface TenantInvitationResource extends BaseResource {
   unitId: string;
   galleryId: string;

@@ -25,8 +25,8 @@
             <mat-icon aria-hidden="true">construction</mat-icon>
             {{
               (unit.isUnderMaintenance
-                ? 'property.actions.end_maintenance'
-                : 'property.actions.start_maintenance'
+                  ? 'property.actions.end_maintenance'
+                  : 'property.actions.start_maintenance'
               ) | translate
             }}
           </button>
@@ -100,8 +100,8 @@
             <p class="muted">{{ 'property.unit_detail.devices_block_removal' | translate }}</p>
           }
           <a matButton routerLink="/devices">{{
-            'property.unit_detail.manage_devices' | translate
-          }}</a>
+              'property.unit_detail.manage_devices' | translate
+            }}</a>
         } @else {
           <mat-spinner diameter="24" aria-hidden="true" />
         }
@@ -140,8 +140,8 @@
               </button>
             }
             <a matButton [routerLink]="store.assignmentsRoute">{{
-              'property.unit_detail.manage_assignments' | translate
-            }}</a>
+                'property.unit_detail.manage_assignments' | translate
+              }}</a>
           </div>
         </mat-card-content>
       </mat-card>
@@ -161,9 +161,9 @@
                   <span class="grow">
                     {{ invitation.email }}
                     <small>{{
-                      'property.invitations.valid_until'
-                        | translate: { date: (invitation.expiresAt | localizedDate: 'dateTime') }
-                    }}</small>
+                        'property.invitations.valid_until'
+                          | translate: { date: (invitation.expiresAt | localizedDate: 'dateTime') }
+                      }}</small>
                   </span>
                   <app-invitation-status-badge [invitation]="invitation" />
                 </li>
@@ -175,16 +175,16 @@
     }
   </div>
 } @else if (store.loading()) {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state id="page-state" status="loading" />
 } @else {
-  <div class="state" role="alert">
-    <mat-icon class="state-icon error" aria-hidden="true">error</mat-icon>
-    <b>{{ 'property.errors.unit_not_found' | translate }}</b>
+  <app-page-state
+    id="unit-not-found"
+    status="error"
+    [title]="'property.errors.unit_not_found' | translate"
+    [retryable]="false"
+  >
     <a matButton="outlined" routerLink="/commercial-units">{{
-      'property.unit_detail.back' | translate
-    }}</a>
-  </div>
+        'property.unit_detail.back' | translate
+      }}</a>
+  </app-page-state>
 }

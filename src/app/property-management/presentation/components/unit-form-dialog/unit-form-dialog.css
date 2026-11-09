@@ -1,0 +1,22 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+}
+.type {
+  margin-bottom: 16px;
+}
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+}
+app-callout {
+  margin-bottom: 12px;
+}
+@media (max-width: 559.98px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
