@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -16,7 +16,7 @@ import { iamNav } from '../../iam.nav';
 import { emailValidator } from '../../iam.validators';
 
 /**
- * Log In of the gallery administrator (mock-up 02, US-02 and US-05).
+ * Log In of the gallery administrator.
  */
 @Component({
   selector: 'app-sign-in',
@@ -33,6 +33,7 @@ import { emailValidator } from '../../iam.validators';
     TranslatePipe,
   ],
   templateUrl: './sign-in.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignIn {
   /** IAM application state used to authenticate the user. */
@@ -48,7 +49,10 @@ export class SignIn {
   protected readonly passwordChanged = this.route.snapshot.queryParamMap.has('passwordChanged');
   /** Form containing the user's credentials and session persistence preference. */
   protected readonly form = new FormGroup({
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, emailValidator] }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, emailValidator],
+    }),
     password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     keepSignedIn: new FormControl(true, { nonNullable: true }),
   });

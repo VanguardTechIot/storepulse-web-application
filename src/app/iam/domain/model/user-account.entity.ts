@@ -64,7 +64,7 @@ export class UserAccount implements BaseEntity {
 
   /**
    * Determines whether the account can access the web application, the consolidated view
-   * of the gallery administrator (US-05).
+   * of the gallery administrator.
    *
    * @returns `true` if the account is active and belongs to a gallery administrator;
    * otherwise, `false`.

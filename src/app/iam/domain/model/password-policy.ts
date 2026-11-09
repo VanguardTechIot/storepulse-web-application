@@ -10,7 +10,7 @@ export interface PasswordPolicyEvaluation {
 }
 
 /**
- * Minimum password complexity required to register or change a password (US-01, US-03):
+ * Minimum password complexity required to register or change a password:
  * at least 8 characters and at least one number.
  */
 export class PasswordPolicy {
