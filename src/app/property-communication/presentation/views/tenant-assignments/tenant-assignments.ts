@@ -1,23 +1,25 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { firstValueFrom } from 'rxjs';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
 import { confirmAction } from '../../../../shared/presentation/components/confirmation-dialog/confirmation-dialog';
 import { ToastService } from '../../../../shared/presentation/components/toast-host/toast.service';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { TenantAssignmentsStore } from '../../../application/tenant-assignments.store';
 import { AssignmentStatus } from '../../../domain/model/assignment-status.enum';
 import { TenantAssignment } from '../../../domain/model/tenant-assignment.entity';
 import { AssignTenantDialog } from '../../components/assign-tenant-dialog/assign-tenant-dialog';
-import { CommunicationTabs } from '../../components/communication-tabs/communication-tabs';
 import { CommunicationStatusBadge } from '../../components/status-badge/status-badge';
+import { SectionTabs } from '../../../../shared/presentation/components/section-tabs/section-tabs';
+import { communicationTabs } from '../../communication.tabs';
 
 type AssignmentFilter = 'ALL' | AssignmentStatus;
 
@@ -26,20 +28,31 @@ type AssignmentFilter = 'ALL' | AssignmentStatus;
   selector: 'app-tenant-assignments',
   imports: [
     CommunicationStatusBadge,
-    CommunicationTabs,
     LocalizedDatePipe,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
     MatIconModule,
-    MatProgressSpinnerModule,
+    MatTableModule,
     MatTooltipModule,
+    PageState,
+    SectionTabs,
     TranslatePipe,
   ],
   templateUrl: './tenant-assignments.html',
   styleUrl: '../../styles/communication.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TenantAssignments {
+  protected readonly tabs = communicationTabs;
+  protected readonly columns = [
+    'tenant',
+    'unit',
+    'assignedAt',
+    'terminatedAt',
+    'status',
+    'actions',
+  ];
   protected readonly store = inject(TenantAssignmentsStore);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);

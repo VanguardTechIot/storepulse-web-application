@@ -1,18 +1,19 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { CommunicationLogsStore } from '../../../application/communication-logs.store';
 import { ReferenceType } from '../../../domain/model/reference-type.enum';
-import { CommunicationTabs } from '../../components/communication-tabs/communication-tabs';
+import { SectionTabs } from '../../../../shared/presentation/components/section-tabs/section-tabs';
+import { communicationTabs } from '../../communication.tabs';
 
 /**
  * Communication logs (GetLogsByTenantQuery): every conversation and notification with a tenant,
@@ -21,23 +22,26 @@ import { CommunicationTabs } from '../../components/communication-tabs/communica
 @Component({
   selector: 'app-communication-logs',
   imports: [
-    CommunicationTabs,
     FormsModule,
     LocalizedDatePipe,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
-    MatIconModule,
     MatInputModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
     MatSelectModule,
+    MatTableModule,
+    PageState,
+    SectionTabs,
     TranslatePipe,
   ],
   templateUrl: './communication-logs.html',
   styleUrl: '../../styles/communication.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommunicationLogs {
+  protected readonly tabs = communicationTabs;
+  protected readonly columns = ['date', 'tenant', 'event', 'detail', 'channel', 'reference'];
   protected readonly store = inject(CommunicationLogsStore);
 
   protected readonly referenceTypes = Object.values(ReferenceType);
