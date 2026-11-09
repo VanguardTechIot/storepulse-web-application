@@ -1,0 +1,19 @@
+@if (count() > 0) {
+  <a id="open-alerts-chip" class="chip" [routerLink]="alertsRoute">
+    <span class="chip__dot" aria-hidden="true"></span>
+    {{ 'toolbar.active_incident' | translate: { count: count() } }}
+  </a>
+}
+<a
+  id="alerts-bell"
+  matIconButton
+  [routerLink]="alertsRoute"
+  [attr.aria-label]="'toolbar.notifications' | translate"
+>
+  <mat-icon
+    aria-hidden="true"
+    [matBadge]="count()"
+    [matBadgeHidden]="count() === 0"
+  >notifications</mat-icon
+  >
+</a>
