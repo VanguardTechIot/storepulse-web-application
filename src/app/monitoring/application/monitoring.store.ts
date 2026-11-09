@@ -2,11 +2,17 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { MonitoringApi } from '../infrastructure/monitoring-api';
 import { RESOURCE_ASSET_REPOSITORY } from '../../resource-asset-management/infrastructure/resource-asset.token';
+import { IoTDevice } from '../../resource-asset-management/domain/model/iot-device.entity';
+import { Resource } from '../../resource-asset-management/domain/model/resource.entity';
 import { MonitoredResource } from '../domain/model/monitored-resource';
 import { Telemetry } from '../domain/model/telemetry.entity';
 import { Measurement } from '../domain/model/measurement.entity';
 import { Consumption } from '../domain/model/consumption.entity';
-import { ConsumptionType, MEASUREMENT_TYPES, MeasurementType } from '../domain/model/measurement-type';
+import {
+  ConsumptionType,
+  MEASUREMENT_TYPES,
+  MeasurementType,
+} from '../domain/model/measurement-type';
 
 export type ResourceMonitoringState = 'NORMAL' | 'MOTION_DETECTED' | 'NO_MONITORING';
 
@@ -40,7 +46,12 @@ export class MonitoringStore {
 
   private readonly telemetryById = computed(() => new Map(this.telemetry().map((t) => [t.id, t])));
   private readonly resourceByDeviceId = computed(
-    () => new Map(this.resources().filter((r) => r.deviceId).map((r) => [r.deviceId as string, r])),
+    () =>
+      new Map(
+        this.resources()
+          .filter((r) => r.deviceId)
+          .map((r) => [r.deviceId as string, r]),
+      ),
   );
 
   readonly measurementRows = computed<MeasurementRow[]>(() =>
@@ -82,12 +93,13 @@ export class MonitoringStore {
     if (!force && (this.status() === 'loaded' || this.status() === 'loading')) return;
     this.status.set('loading');
     try {
-      const [resources, telemetry, consumption] = await Promise.all([
-        this.loadMonitoredResources(),
+      const [resources, devices, telemetry, consumption] = await Promise.all([
+        this.resourceAssetRepository.listResources(),
+        this.resourceAssetRepository.listIoTDevices(),
         firstValueFrom(this.monitoringApi.getTelemetry()),
         firstValueFrom(this.monitoringApi.getConsumption()),
       ]);
-      this.resources.set(resources);
+      this.resources.set(this.toMonitoredResources(resources, devices, telemetry));
       this.telemetry.set(telemetry);
       this.consumption.set(consumption);
       this.status.set('loaded');
@@ -98,26 +110,18 @@ export class MonitoringStore {
     }
   }
 
-  private async loadMonitoredResources(): Promise<MonitoredResource[]> {
-    const [resources, assets, devices, sensors, meters] = await Promise.all([
-      this.resourceAssetRepository.listResources(),
-      this.resourceAssetRepository.listAssets(),
-      this.resourceAssetRepository.listIoTDevices(),
-      this.resourceAssetRepository.listSensors(),
-      this.resourceAssetRepository.listMeters(),
-    ]);
+  /** Each resource with its device; the monitored types are the ones its device reported. */
+  private toMonitoredResources(
+    resources: Resource[],
+    devices: IoTDevice[],
+    telemetry: Telemetry[],
+  ): MonitoredResource[] {
     return resources.map((resource) => {
-      const asset = assets.find((a) => a.resourceId === resource.id && a.type === 'IOT_DEVICE');
-      const device = asset ? devices.find((d) => d.assetId === asset.id) : undefined;
-      const activeTypes = new Set<MeasurementType>(
-        [...sensors, ...meters]
-          .filter(
-            (component) => component.iotDeviceId === device?.id && component.status === 'ACTIVE',
-          )
-          .map((component) => component.type)
-          .filter((type): type is MeasurementType =>
-            MEASUREMENT_TYPES.includes(type as MeasurementType),
-          ),
+      const device = devices.find((d) => d.resourceId === resource.id);
+      const reportedTypes = new Set(
+        telemetry
+          .filter((t) => t.deviceId === device?.id)
+          .flatMap((t) => t.measurements.map((m) => m.type)),
       );
       return {
         resourceId: resource.id,
@@ -128,7 +132,7 @@ export class MonitoringStore {
         deviceId: device?.id ?? null,
         deviceSerialNumber: device?.serialNumber ?? null,
         monitoringAvailable: resource.isActive && !!device?.isActive,
-        monitoredTypes: MEASUREMENT_TYPES.filter((type) => activeTypes.has(type)),
+        monitoredTypes: MEASUREMENT_TYPES.filter((type) => reportedTypes.has(type)),
       };
     });
   }

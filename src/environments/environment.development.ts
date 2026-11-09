@@ -25,6 +25,10 @@ export const environment = {
   platformProviderCommunicationLogsEndpointPath: '/communication-logs',
   platformProviderTenantAssignmentsEndpointPath: '/tenant-assignments',
 
+  // Resource and Asset Management: stands and common areas, and the IoT devices installed in them.
+  platformProviderResourcesEndpointPath: '/resources',
+  platformProviderIoTDevicesEndpointPath: '/iot-devices',
+
   platformProviderTelemetryEndpointPath: '/telemetry',
   platformProviderAlertsEndpointPath: '/alerts',
   platformProviderConsumptionEndpointPath: '/consumption',
