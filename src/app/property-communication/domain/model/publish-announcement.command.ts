@@ -2,7 +2,7 @@ import { NotificationChannel } from './notification-channel.enum';
 import { NotificationType } from './notification-type.enum';
 
 /**
- * Publishes a communication of the administrator to the affected tenants (US-34, US-35): a
+ * Publishes a communication of the administrator to the affected tenants: a
  * general announcement or the notice of an incident.
  */
 export class PublishAnnouncementCommand {
