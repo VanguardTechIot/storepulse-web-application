@@ -3,6 +3,7 @@ import { Conversation } from '../model/conversation.entity';
 import { Message } from '../model/message.entity';
 import { NotifyTenantCommand } from '../model/notify-tenant.command';
 import { PublishAnnouncementCommand } from '../model/publish-announcement.command';
+import { Tenant } from '../model/tenant';
 import { TenantAssignment } from '../model/tenant-assignment.entity';
 import { TenantNotification } from '../model/tenant-notification.entity';
 
@@ -34,6 +35,8 @@ export interface PropertyCommunicationRepository {
   listLogs(): Promise<CommunicationLog[]>;
 
   listAssignments(): Promise<TenantAssignment[]>;
+  /** Tenants that have been assigned to a store of the gallery, with the name of their profile. */
+  listTenants(): Promise<Tenant[]>;
   /** The platform occupies the store and notifies the tenant. */
   assignTenant(assignment: TenantAssignment): Promise<TenantAssignment>;
   /** The platform frees the store. */

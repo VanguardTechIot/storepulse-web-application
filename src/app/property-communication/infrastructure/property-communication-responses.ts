@@ -92,6 +92,9 @@ export interface CommunicationLogResource {
 export interface TenantAssignmentResource {
   id: number;
   tenantId: number;
+  /** Name and email of the tenant's profile; null when the tenant has no profile yet. */
+  tenantFullName: string | null;
+  tenantEmail: string | null;
   commercialUnitId: number;
   galleryAdministratorId: number;
   status: 'ACTIVE' | 'TERMINATED';

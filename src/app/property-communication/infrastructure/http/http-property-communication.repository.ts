@@ -9,6 +9,7 @@ import { Conversation } from '../../domain/model/conversation.entity';
 import { Message } from '../../domain/model/message.entity';
 import { NotifyTenantCommand } from '../../domain/model/notify-tenant.command';
 import { PublishAnnouncementCommand } from '../../domain/model/publish-announcement.command';
+import { Tenant } from '../../domain/model/tenant';
 import { TenantAssignment } from '../../domain/model/tenant-assignment.entity';
 import { TenantNotification } from '../../domain/model/tenant-notification.entity';
 import { PropertyCommunicationRepository } from '../../domain/repository/property-communication.repository';
@@ -16,6 +17,7 @@ import {
   CommunicationLogAssembler,
   ConversationAssembler,
   MessageAssembler,
+  TenantAssembler,
   TenantAssignmentAssembler,
   TenantNotificationAssembler,
 } from '../property-communication-assemblers';
@@ -58,6 +60,7 @@ export class HttpPropertyCommunicationRepository implements PropertyCommunicatio
   private readonly notificationAssembler = new TenantNotificationAssembler();
   private readonly logAssembler = new CommunicationLogAssembler();
   private readonly assignmentAssembler = new TenantAssignmentAssembler();
+  private readonly tenantAssembler = new TenantAssembler();
 
   // ---------- Conversations ----------
   async listConversations(): Promise<Conversation[]> {
@@ -170,6 +173,14 @@ export class HttpPropertyCommunicationRepository implements PropertyCommunicatio
       failed,
     );
     return items.map((item) => this.assignmentAssembler.toEntityFromResource(item));
+  }
+
+  async listTenants(): Promise<Tenant[]> {
+    const items = await sendRequest(
+      this.http.get<TenantAssignmentResource[]>(assignmentsUrl),
+      failed,
+    );
+    return this.tenantAssembler.toEntitiesFromResources(items);
   }
 
   async assignTenant(assignment: TenantAssignment): Promise<TenantAssignment> {

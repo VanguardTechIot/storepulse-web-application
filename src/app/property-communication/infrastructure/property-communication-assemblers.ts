@@ -12,6 +12,7 @@ import { NotifyTenantCommand } from '../domain/model/notify-tenant.command';
 import { PublishAnnouncementCommand } from '../domain/model/publish-announcement.command';
 import { ReferenceType } from '../domain/model/reference-type.enum';
 import { SenderRole } from '../domain/model/sender-role.enum';
+import { Tenant } from '../domain/model/tenant';
 import { TenantAssignment } from '../domain/model/tenant-assignment.entity';
 import { TenantNotification } from '../domain/model/tenant-notification.entity';
 import {
@@ -158,5 +159,19 @@ export class TenantAssignmentAssembler {
 
   toRequestFromEntity(e: TenantAssignment): AssignTenantResource {
     return { tenantId: Number(e.tenantId), commercialUnitId: Number(e.commercialUnitId) };
+  }
+}
+
+/** Tenants of the gallery, one per tenant of the assignments. */
+export class TenantAssembler {
+  toEntitiesFromResources(resources: readonly TenantAssignmentResource[]): Tenant[] {
+    const tenants = new Map<string, Tenant>();
+    for (const r of resources) {
+      const id = String(r.tenantId);
+      if (tenants.has(id)) continue;
+      const email = r.tenantEmail ?? '';
+      tenants.set(id, { id, fullName: r.tenantFullName || email || id, email });
+    }
+    return [...tenants.values()].sort((a, b) => a.fullName.localeCompare(b.fullName));
   }
 }
