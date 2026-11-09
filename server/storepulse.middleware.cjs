@@ -425,6 +425,74 @@ function resolveDispute(db, req, res, disputeId) {
   });
 }
 
+// ---------- Resource and Asset Management ----------
+const DEVICE_TYPES = [
+  'INTRUSION_NODE',
+  'CAMERA_NODE',
+  'SMOKE_NODE',
+  'CONSUMPTION_NODE',
+  'COMMON_AREA_NODE',
+];
+
+/** Installs a device on a resource; it stays disconnected until its first report. */
+function registerDevice(db, req, res) {
+  const body = req.body;
+  const serialNumber = String(body?.serialNumber ?? '')
+    .trim()
+    .toUpperCase();
+  if (!serialNumber || !DEVICE_TYPES.includes(body?.type) || !body?.resourceId) {
+    return fail(res, 400, 'invalid_request');
+  }
+  const devices = db.get('iotDevices');
+  if (devices.some((d) => d.serialNumber === serialNumber).value()) {
+    return fail(res, 409, 'serial_number_already_registered');
+  }
+  const resource = db
+    .get('resources')
+    .find((r) => sameId(r.id, body.resourceId))
+    .value();
+  if (!resource) return fail(res, 404, 'resource_not_found');
+
+  const number = String(devices.size().value() + 1).padStart(3, '0');
+  const device = {
+    id: `dev-${number}`,
+    assetId: `ast-${number}`,
+    resourceId: resource.id,
+    serialNumber,
+    manufacturer: null,
+    firmwareVersion: null,
+    type: body.type,
+    status: 'ACTIVE',
+    connectivity: 'DISCONNECTED',
+    lastReportAt: null,
+    supplyVoltage: null,
+    bufferedEvents: 0,
+    deactivationReason: null,
+    actuators: [],
+  };
+  devices.push(device).value();
+  res.app.db.write();
+  return res.status(201).json(device);
+}
+
+function changeDevice(db, req, res, deviceId, activate) {
+  const found = db.get('iotDevices').find((d) => sameId(d.id, deviceId));
+  const device = found.value();
+  if (!device) return fail(res, 404, 'iot_device_not_found');
+  if (activate && device.status === 'ACTIVE') return fail(res, 409, 'iot_device_already_active');
+  if (!activate && device.status !== 'ACTIVE') {
+    return fail(res, 409, 'iot_device_already_inactive');
+  }
+  const reason = String(req.body?.reason ?? '').trim() || null;
+  return update(
+    res,
+    found,
+    activate
+      ? { status: 'ACTIVE', deactivationReason: null }
+      : { status: 'INACTIVE', deactivationReason: reason },
+  );
+}
+
 module.exports = (req, res, next) => {
   const db = req.app.db;
   const path = req.path.replace(/\/+$/, '');
@@ -499,6 +567,14 @@ module.exports = (req, res, next) => {
       .find((d) => sameId(d.id, match[1]))
       .value();
     return dispute ? res.json(dispute) : fail(res, 404, 'not_found');
+  }
+
+  if (req.method === 'POST' && path === '/iotDevices') return registerDevice(db, req, res);
+  if (
+    req.method === 'PATCH' &&
+    (match = /^\/iotDevices\/([^/]+)\/(deactivation|reactivation)$/.exec(path))
+  ) {
+    return changeDevice(db, req, res, match[1], match[2] === 'reactivation');
   }
 
   return next();

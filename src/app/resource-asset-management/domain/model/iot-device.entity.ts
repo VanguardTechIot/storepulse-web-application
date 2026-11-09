@@ -1,13 +1,10 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
-import { AssetStatus } from './asset.entity';
 
 /** Node kinds defined in the IoT Device Design: one controller per node. */
 export type IoTDeviceType =
-  | 'INTRUSION_NODE'
-  | 'CAMERA_NODE'
-  | 'SMOKE_NODE'
-  | 'CONSUMPTION_NODE'
-  | 'COMMON_AREA_NODE';
+  'INTRUSION_NODE' | 'CAMERA_NODE' | 'SMOKE_NODE' | 'CONSUMPTION_NODE' | 'COMMON_AREA_NODE';
+
+export type AssetStatus = 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE';
 
 export type ConnectivityStatus = 'CONNECTED' | 'DISCONNECTED';
 
@@ -16,22 +13,22 @@ export const MIN_SUPPLY_VOLTAGE = 4.5;
 export const MAX_SUPPLY_VOLTAGE = 5.5;
 
 /**
- * IoT device represented by an asset.
+ * IoT device installed in a resource (stand or common area).
  */
 export class IoTDevice implements BaseEntity {
   constructor(
     readonly id: string,
-    readonly assetId: string,
+    readonly resourceId: string,
     readonly serialNumber: string,
-    readonly manufacturer: string,
-    readonly firmwareVersion: string,
+    readonly manufacturer: string | null,
+    readonly firmwareVersion: string | null,
     readonly status: AssetStatus,
-    readonly type: IoTDeviceType = 'INTRUSION_NODE',
-    readonly connectivity: ConnectivityStatus = 'CONNECTED',
-    readonly lastReportAt: Date | null = null,
-    readonly supplyVoltage: number | null = null,
-    readonly bufferedEvents: number = 0,
-    readonly deactivationReason: string | null = null,
+    readonly type: IoTDeviceType,
+    readonly connectivity: ConnectivityStatus,
+    readonly lastReportAt: Date | null,
+    readonly supplyVoltage: number | null,
+    readonly bufferedEvents: number,
+    readonly deactivationReason: string | null,
   ) {}
 
   get isActive(): boolean {
@@ -47,32 +44,6 @@ export class IoTDevice implements BaseEntity {
     return (
       this.supplyVoltage !== null &&
       (this.supplyVoltage < MIN_SUPPLY_VOLTAGE || this.supplyVoltage > MAX_SUPPLY_VOLTAGE)
-    );
-  }
-
-  /** Stops data reception; the location is left without monitoring until reactivated. */
-  deactivate(reason: string): IoTDevice {
-    return this.withStatus('INACTIVE', reason);
-  }
-
-  reactivate(): IoTDevice {
-    return this.withStatus('ACTIVE', null);
-  }
-
-  private withStatus(status: AssetStatus, deactivationReason: string | null): IoTDevice {
-    return new IoTDevice(
-      this.id,
-      this.assetId,
-      this.serialNumber,
-      this.manufacturer,
-      this.firmwareVersion,
-      status,
-      this.type,
-      this.connectivity,
-      this.lastReportAt,
-      this.supplyVoltage,
-      this.bufferedEvents,
-      deactivationReason,
     );
   }
 }

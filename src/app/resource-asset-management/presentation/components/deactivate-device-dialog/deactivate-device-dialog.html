@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>
+  {{ 'devices.deactivate.title' | translate: { id: row.device.serialNumber } }}
+</h2>
+<mat-dialog-content>
+  <div class="body">
+    <app-callout type="warn" icon="warning">
+      {{ 'devices.deactivate.warning' | translate: { stand: row.resource?.name ?? '' } }}
+    </app-callout>
+    <mat-form-field>
+      <mat-label>{{ 'devices.deactivate.reason' | translate }}</mat-label>
+      <input id="reason-input" matInput [formControl]="reason" cdkFocusInitial />
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton type="button" mat-dialog-close [disabled]="busy()">
+    {{ 'common.actions.cancel' | translate }}
+  </button>
+  <button
+    id="deactivate-button"
+    matButton="filled"
+    type="button"
+    class="danger-button"
+    [disabled]="busy()"
+    (click)="deactivate()"
+  >
+    {{ 'devices.deactivate.confirm' | translate }}
+  </button>
+</mat-dialog-actions>

@@ -15,9 +15,8 @@ export class ResourceAssetContextFacade {
 
   /** Serial numbers of the devices linked to the unit. */
   async linkedDeviceSerials(unit: CommercialUnit): Promise<string[]> {
-    const [resources, assets, devices] = await Promise.all([
+    const [resources, devices] = await Promise.all([
       this.repository.listResources(),
-      this.repository.listAssets(),
       this.repository.listIoTDevices(),
     ]);
     const names = unit.isStore ? [unit.code, `Local ${unit.code}`] : [unit.code];
@@ -26,11 +25,8 @@ export class ResourceAssetContextFacade {
         .filter((resource) => names.some((name) => CommercialUnit.sameCode(resource.name, name)))
         .map((resource) => resource.id),
     );
-    const assetIds = new Set(
-      assets.filter((asset) => resourceIds.has(asset.resourceId)).map((asset) => asset.id),
-    );
     return devices
-      .filter((device) => assetIds.has(device.assetId))
+      .filter((device) => resourceIds.has(device.resourceId))
       .map((device) => device.serialNumber);
   }
 }
