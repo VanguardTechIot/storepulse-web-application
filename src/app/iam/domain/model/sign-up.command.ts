@@ -1,5 +1,5 @@
 /**
- * Registers a gallery administrator (US-01). The full name travels with the registration so the
+ * Registers a gallery administrator. The full name travels with the registration so the
  * profile can be created in Profiles and Preferences; this context does not keep it.
  */
 export class SignUpCommand {

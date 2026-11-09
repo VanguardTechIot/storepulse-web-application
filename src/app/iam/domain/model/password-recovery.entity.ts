@@ -3,7 +3,7 @@ import { PasswordResetCode } from './password-reset-code.value-object';
 
 /**
  * Password recovery process of a user (Aggregate Root): a 6-digit code that is valid for
- * 15 minutes and can be used only once (US-03).
+ * 15 minutes and can be used only once.
  */
 export class PasswordRecovery implements BaseEntity {
   /** Number of minutes for which a recovery code remains valid. */
