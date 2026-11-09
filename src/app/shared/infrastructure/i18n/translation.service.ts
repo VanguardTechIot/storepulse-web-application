@@ -48,7 +48,7 @@ export class TranslationService {
     this.lang.set(lang);
   }
 
-  /** Lee la clave en el idioma activo. Si falta, devuelve la clave para detectarla rápido. */
+  /** Reads the key in the active language. A missing key comes back as is, so it is easy to spot. */
   t(key: string, params?: TranslationParams): string {
     const text = this.dictionaries()[this.lang()]?.[key] ?? key;
     if (!params) return text;
