@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { NotifyTenantCommand } from '../domain/model/notify-tenant.command';
 import { TenantNotification } from '../domain/model/tenant-notification.entity';
-import { TenantDirectoryFacade } from '../infrastructure/acl/tenant-directory-facade';
 import { PROPERTY_COMMUNICATION_REPOSITORY } from '../infrastructure/property-communication.token';
 
 /** Active assignment of a tenant, as other contexts see it. */
@@ -21,11 +20,12 @@ export interface ActiveTenantAssignment {
 @Injectable({ providedIn: 'root' })
 export class ManagementTenantCommunicationFacade {
   private readonly repository = inject(PROPERTY_COMMUNICATION_REPOSITORY);
-  private readonly tenantDirectory = inject(TenantDirectoryFacade);
 
   async activeAssignments(): Promise<ActiveTenantAssignment[]> {
-    const assignments = await this.repository.listAssignments();
-    const tenants = await this.tenantDirectory.listTenants(assignments);
+    const [assignments, tenants] = await Promise.all([
+      this.repository.listAssignments(),
+      this.repository.listTenants(),
+    ]);
     const tenantById = new Map(tenants.map((tenant) => [tenant.id, tenant]));
     return assignments
       .filter((assignment) => assignment.isActive)
