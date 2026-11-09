@@ -1,16 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Lang, TranslationService } from '../../../infrastructure/i18n/translation.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 /**
- * EN / ES selector shown on every screen (5.1 bilingual guideline).
+ * EN / ES selector shown on every screen (bilingual guideline).
  */
 @Component({
   selector: 'app-language-switcher',
   imports: [MatButtonToggleModule, TranslatePipe],
   templateUrl: './language-switcher.html',
   styleUrl: './language-switcher.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LanguageSwitcher {
   protected readonly i18n = inject(TranslationService);

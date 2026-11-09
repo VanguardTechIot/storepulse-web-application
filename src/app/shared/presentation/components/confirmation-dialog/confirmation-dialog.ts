@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -30,6 +30,7 @@ export interface ConfirmationData {
   imports: [MatButtonModule, MatDialogModule, MatIconModule, TranslatePipe],
   templateUrl: './confirmation-dialog.html',
   styleUrls: ['../../styles/storepulse-theme.css', './confirmation-dialog.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmationDialog {
   protected readonly data = inject<ConfirmationData>(MAT_DIALOG_DATA);
