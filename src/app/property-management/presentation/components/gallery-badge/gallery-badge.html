@@ -1,0 +1,15 @@
+<a id="gallery-badge" class="badge" [routerLink]="galleryRoute">
+  <mat-icon class="badge__icon" aria-hidden="true">storefront</mat-icon>
+  <span class="badge__text">
+    @if (gallery(); as current) {
+      <strong>{{ current.name }}</strong>
+      <small>
+        {{ 'property.gallery_badge.units' | translate: { count: current.totalUnits } }} ·
+        {{ current.address }}
+      </small>
+    } @else {
+      <strong>{{ 'property.gallery_badge.empty' | translate }}</strong>
+      <small>{{ 'property.gallery_badge.register' | translate }}</small>
+    }
+  </span>
+</a>
