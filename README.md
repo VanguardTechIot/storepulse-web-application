@@ -20,24 +20,26 @@ are therefore attended from the mobile application and no longer have views here
 - Angular 22 (standalone components, signals, lazy routes) and Angular Material 22.
 - TypeScript 5, Vitest for unit tests.
 - Own i18n layer (`TranslationService`) with `en-US` and `es-419` dictionaries in `public/i18n/`.
-- `json-server` as local data server while an endpoint of the REST API is not available.
+- [StorePulse REST API](https://github.com/VanguardTechIot/storepulse-platform) (Spring Boot) as the only data source.
 
 ## Getting started
 
+Start the REST API first (`storepulse-platform`, http://localhost:8080/api/v1), then:
+
 ```bash
 npm install
-npm run mock:api   # local JSON API at http://localhost:3000/api/v1 (server/db.json)
 npm start          # http://localhost:4200
 ```
 
 | Script | Purpose |
 |---|---|
-| `npm start` | Development server with the `development` configuration (`src/environments/environment.development.ts`, API at `localhost:3000`). |
-| `npm run mock:api` | Starts json-server with the routes and middleware of `server/`. |
+| `npm start` | Development server with the `development` configuration (`src/environments/environment.development.ts`, API at `localhost:8080`). |
 | `npm run build` | Production build into `dist/storepulse-web-application` (API URL from `src/environments/environment.ts`). |
 | `npm test` | Unit tests with Vitest. |
 
 The REST API base URL and every endpoint path live in the environment files; no component builds a URL by itself.
+The IAM interceptor sends the JWT of the session to the API, and a `401` answer closes the session and goes back
+to sign-in.
 
 ## Architecture
 
@@ -94,7 +96,8 @@ areas by name); a store is removed only when it has no tenant and no devices; in
 only for available stores, and a pending invitation can be revoked or resent.
 
 REST API endpoints used: `GET/POST /galleries`, `PUT /galleries/{id}`, `GET/POST /galleries/{galleryId}/units`,
-`GET/PATCH /units/{id}`, `POST /units/{unitId}/invite`, `GET/PATCH /tenant-invitations`.
+`GET/PATCH /units/{id}`, `POST /units/{unitId}/invite`, `GET /tenant-invitations`,
+`PATCH /tenant-invitations/{id}/revoke`.
 
 ## Property Communication
 
@@ -113,7 +116,9 @@ Business rules kept in the domain: a conversation accepts messages only while it
 assignment; a failed notification can be retried.
 
 REST API endpoints used: `/conversations`, `/conversations/{id}/messages`, `/conversations/{id}/resolve`,
-`/tenant-notifications`, `/communication-logs`, `/tenant-assignments`, `/tenant-assignments/{id}/terminate`.
+`/tenant-notifications`, `/tenant-notifications/announcements`, `/tenant-notifications/{id}/retry`,
+`/communication-logs`, `/tenant-assignments`, `/tenant-assignments/{id}/terminate`. The platform registers the
+communication logs, occupies or frees the store and notifies the tenant on assignment.
 
 ## Styles
 
