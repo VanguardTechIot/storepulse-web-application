@@ -1,0 +1,29 @@
+/* Layout specific to the Monitoring views. */
+.kpis {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px 0;
+}
+
+.filters mat-form-field {
+  width: 240px;
+}
+
+.up {
+  color: var(--sp-success);
+}
+
+.warn {
+  color: var(--sp-warning);
+}
+
+@media (max-width: 639px) {
+  .filters mat-form-field {
+    width: 100%;
+  }
+}

@@ -1,15 +1,32 @@
 import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
-import { Icon } from '../../../../shared/presentation/components/icon/icon';
-import { ViewState } from '../../../../shared/presentation/components/view-state/view-state';
-import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { Callout } from '../../../../shared/presentation/components/callout/callout';
+import { KpiCard } from '../../../../shared/presentation/components/kpi-card/kpi-card';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
+import { StatusChip } from '../../../../shared/presentation/components/status-chip/status-chip';
+import { Tone } from '../../../../shared/presentation/components/tone-icon/tone-icon';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
 import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
-import { ConsumptionHistoryChart } from '../../components/consumption-history-chart/consumption-history-chart';
-import { MeasurementTypeLabel } from '../../components/measurement-type-label/measurement-type-label';
-import { CONSUMPTION_TYPES, ConsumptionType, MEASUREMENT_UNITS } from '../../../domain/model/measurement-type';
+import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { Consumption } from '../../../domain/model/consumption.entity';
-import { ConsumptionBaseline, MIN_BASELINE_PERIODS } from '../../../domain/model/consumption-baseline';
+import {
+  ConsumptionBaseline,
+  MIN_BASELINE_PERIODS,
+} from '../../../domain/model/consumption-baseline';
+import {
+  CONSUMPTION_TYPES,
+  ConsumptionType,
+  MEASUREMENT_UNITS,
+} from '../../../domain/model/measurement-type';
 import { MonitoredResource } from '../../../domain/model/monitored-resource';
+import { ConsumptionHistoryChart } from '../../components/consumption-history-chart/consumption-history-chart';
+import { MEASUREMENT_TYPE_ICONS } from '../../components/measurement-type-label/measurement-type-label';
 import { MonitoringView } from '../monitoring-view';
 
 type RowStatus = 'WITH_BASELINE' | 'NO_BASELINE' | 'NO_DATA';
@@ -20,34 +37,53 @@ interface ConsumptionRow {
   status: RowStatus;
 }
 
-const ROW_STATUS_TONES: Record<RowStatus, string> = {
-  WITH_BASELINE: 'badge--success',
-  NO_BASELINE: 'badge--neutral',
-  NO_DATA: 'badge--violet',
+const ROW_STATUS_TONES: Record<RowStatus, Tone> = {
+  WITH_BASELINE: 'success',
+  NO_BASELINE: 'neutral',
+  NO_DATA: 'violet',
 };
 
 const HISTORY_PERIODS = 12;
 
+/** Consolidated consumption of the period and history of each location against its baseline. */
 @Component({
   selector: 'app-consumption',
   imports: [
-    Icon,
-    ViewState,
-    TranslatePipe,
+    Callout,
+    ConsumptionHistoryChart,
+    KpiCard,
     LocalizedDatePipe,
     LocalizedNumberPipe,
-    ConsumptionHistoryChart,
-    MeasurementTypeLabel,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatSelectModule,
+    MatTableModule,
+    PageState,
+    StatusChip,
+    TranslatePipe,
   ],
   templateUrl: './consumption.html',
-  styleUrl: './consumption.css',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+    '../monitoring.css',
+    './consumption.css',
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConsumptionView extends MonitoringView {
   protected readonly consumptionTypes = CONSUMPTION_TYPES;
   protected readonly units = MEASUREMENT_UNITS;
-  protected readonly statusTones = ROW_STATUS_TONES;
   protected readonly minBaselinePeriods = MIN_BASELINE_PERIODS;
+  protected readonly typeIcons = MEASUREMENT_TYPE_ICONS;
+  protected readonly columns = [
+    'location',
+    ...CONSUMPTION_TYPES.flatMap((type) => [type, type + '-deviation']),
+    'status',
+  ];
 
   protected readonly period = signal('');
   protected readonly selectedResourceId = signal('');
@@ -59,11 +95,14 @@ export class ConsumptionView extends MonitoringView {
   });
 
   private readonly meteredResources = computed(() =>
-    this.store.resources().filter(
-      (resource) =>
-        resource.monitoredTypes.some((type) => CONSUMPTION_TYPES.includes(type as ConsumptionType)) ||
-        this.store.consumption().some((c) => c.resourceId === resource.resourceId),
-    ),
+    this.store
+      .resources()
+      .filter(
+        (resource) =>
+          resource.monitoredTypes.some((type) =>
+            CONSUMPTION_TYPES.includes(type as ConsumptionType),
+          ) || this.store.consumption().some((c) => c.resourceId === resource.resourceId),
+      ),
   );
 
   protected readonly rows = computed<ConsumptionRow[]>(() =>
@@ -106,7 +145,9 @@ export class ConsumptionView extends MonitoringView {
     CONSUMPTION_TYPES.some((type) => this.totals()[type].records > 0),
   );
 
-  protected readonly rowsWithoutData = computed(() => this.rows().filter((row) => row.status === 'NO_DATA').length);
+  protected readonly rowsWithoutData = computed(
+    () => this.rows().filter((row) => row.status === 'NO_DATA').length,
+  );
 
   protected readonly openPeriodUntil = computed(() => {
     const [year, month] = this.period().split('-').map(Number);
@@ -119,10 +160,15 @@ export class ConsumptionView extends MonitoringView {
   });
 
   protected readonly selectedRow = computed(
-    () => this.rows().find((row) => row.resource.resourceId === this.selectedResourceId()) ?? this.rows()[0] ?? null,
+    () =>
+      this.rows().find((row) => row.resource.resourceId === this.selectedResourceId()) ??
+      this.rows()[0] ??
+      null,
   );
 
-  protected readonly selectedBaseline = computed(() => this.selectedRow()?.byType[this.selectedType()] ?? null);
+  protected readonly selectedBaseline = computed(
+    () => this.selectedRow()?.byType[this.selectedType()] ?? null,
+  );
 
   protected readonly selectedHistory = computed(() => {
     const row = this.selectedRow();
@@ -148,12 +194,12 @@ export class ConsumptionView extends MonitoringView {
     });
   }
 
+  protected statusTone(status: RowStatus): Tone {
+    return ROW_STATUS_TONES[status];
+  }
+
   protected periodDate(key: string): Date {
     const [year, month] = key.split('-').map(Number);
     return new Date(year, month - 1, 15);
-  }
-
-  protected selectResource(resourceId: string): void {
-    this.selectedResourceId.set(resourceId);
   }
 }

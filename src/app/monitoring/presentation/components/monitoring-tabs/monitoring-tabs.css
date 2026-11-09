@@ -1,5 +1,0 @@
-.monitoring-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--sp-border); overflow-x: auto; overflow-y: hidden; }
-.monitoring-tabs a { display: flex; align-items: center; gap: 8px; padding: 10px 14px; color: var(--sp-text-muted); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
-.monitoring-tabs a:hover { color: var(--sp-text); }
-.monitoring-tabs a.is-active { color: var(--sp-primary); border-bottom-color: var(--sp-primary); font-weight: 600; }
-.monitoring-tabs a:focus-visible { outline: 2px solid var(--sp-primary); outline-offset: -2px; border-radius: 6px; }
