@@ -3,6 +3,8 @@
  * KPI cards, filters, tables and empty/error states. Each context stylesheet imports this file
  * and keeps only what is specific to its own views.
  */
+@import './table.css';
+
 :host {
   display: flex;
   flex-direction: column;

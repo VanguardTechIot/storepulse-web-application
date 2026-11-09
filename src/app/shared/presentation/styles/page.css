@@ -1,4 +1,5 @@
-/* Page layout shared by the views: header, cards, indicators, tables, segmented tabs and links. */
+/* Page layout shared by the views: header, cards, indicators, segmented tabs and links. */
+@import './table.css';
 :host {
   display: flex;
   flex-direction: column;
@@ -110,6 +111,14 @@ p {
   border-color: var(--sp-border);
 }
 
+/* Main content with a side column */
+.main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  align-items: start;
+  gap: 24px;
+}
+
 /* Row of key indicator cards */
 .kpis {
   display: grid;
@@ -117,41 +126,11 @@ p {
   gap: 24px;
 }
 
-/* Material tables inside a card */
-.table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  --mat-table-background-color: transparent;
-  --mat-table-header-container-height: 44px;
-  --mat-table-header-headline-color: var(--sp-text-muted);
-  --mat-table-header-headline-font: var(--sp-font);
-  --mat-table-header-headline-size: 12px;
-  --mat-table-header-headline-weight: 600;
-  --mat-table-row-item-container-height: 52px;
-  --mat-table-row-item-label-text-color: var(--sp-text);
-  --mat-table-row-item-label-text-font: var(--sp-font-data);
-  --mat-table-row-item-label-text-size: 13px;
-  --mat-table-row-item-outline-color: var(--sp-border);
-  width: 100%;
-}
-
-th,
-td {
-  padding: 0 20px;
-  white-space: nowrap;
-}
-
-tr:last-child td {
-  border-bottom: 0;
-}
-
-.amount {
-  text-align: right;
-}
-
 @media (max-width: 1279px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
   .kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
