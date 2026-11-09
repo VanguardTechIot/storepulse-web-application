@@ -14,6 +14,8 @@ interface CommercialUnitProps {
   floor: string;
   areaSquareMeters: number;
   businessName: string | null;
+  /** Monitored resource (Resource and Asset Management) whose consumption is billed to the unit. */
+  resourceId: string | null;
   status: UnitStatus;
   /** `false` after a logical removal: kept for traceability, no longer managed. */
   active: boolean;
@@ -25,6 +27,7 @@ interface UnitData {
   floor: string;
   areaSquareMeters: number;
   businessName: string | null;
+  resourceId: string | null;
 }
 
 /**
@@ -95,6 +98,10 @@ export class CommercialUnit implements BaseEntity {
 
   get businessName(): string | null {
     return this.props.businessName;
+  }
+
+  get resourceId(): string | null {
+    return this.props.resourceId;
   }
 
   get status(): UnitStatus {
@@ -225,6 +232,7 @@ export class CommercialUnit implements BaseEntity {
       areaSquareMeters: new UnitDimensions(data.areaSquareMeters).areaSquareMeters,
       // A common area has no tenant, so it has no business either.
       businessName: type === UnitType.Store ? businessName : null,
+      resourceId: data.resourceId,
     };
   }
 

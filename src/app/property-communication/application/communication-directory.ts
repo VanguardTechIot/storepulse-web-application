@@ -1,17 +1,20 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { CommunicationError, CommunicationErrorCode } from '../domain/model/communication-error';
 import { Tenant } from '../domain/model/tenant';
+import { TenantAssignment } from '../domain/model/tenant-assignment.entity';
 import { UnitReference } from '../domain/model/unit-reference';
 import { IamContextFacade } from '../infrastructure/acl/iam-context-facade';
 import { PropertyContextFacade } from '../infrastructure/acl/property-context-facade';
 import { TenantDirectoryFacade } from '../infrastructure/acl/tenant-directory-facade';
+import { PROPERTY_COMMUNICATION_REPOSITORY } from '../infrastructure/property-communication.token';
 
 /**
- * Names shown by every Property Communication screen: the registered tenants and the units of the
- * gallery, read from the other contexts through their anti-corruption layers.
+ * Names shown by every Property Communication screen: the tenants of the gallery and its units,
+ * read from the other contexts through their anti-corruption layers.
  */
 @Injectable({ providedIn: 'root' })
 export class CommunicationDirectory {
+  private readonly repository = inject(PROPERTY_COMMUNICATION_REPOSITORY);
   private readonly iamContext = inject(IamContextFacade);
   private readonly propertyContext = inject(PropertyContextFacade);
   private readonly tenantDirectory = inject(TenantDirectoryFacade);
@@ -31,20 +34,21 @@ export class CommunicationDirectory {
     () => new Map(this.unitsState().map((unit) => [unit.id, unit])),
   );
 
-  async load(): Promise<string> {
-    const administratorId = this.requireAdministrator();
-    const [tenants, units] = await Promise.all([
-      this.tenantDirectory.listTenants(),
-      this.propertyContext.listUnits(administratorId),
+  /** Reads the tenants and the units; answers the assignments the tenants come from. */
+  async load(): Promise<TenantAssignment[]> {
+    this.requireAdministrator();
+    const [assignments, units] = await Promise.all([
+      this.repository.listAssignments(),
+      this.propertyContext.listUnits(),
     ]);
-    this.tenantsState.set(tenants);
+    this.tenantsState.set(await this.tenantDirectory.listTenants(assignments));
     this.unitsState.set(units);
-    return administratorId;
+    return assignments;
   }
 
   /** Units change when a tenant is assigned or leaves. */
   async reloadUnits(): Promise<void> {
-    this.unitsState.set(await this.propertyContext.listUnits(this.requireAdministrator()));
+    this.unitsState.set(await this.propertyContext.listUnits());
   }
 
   tenant(tenantId: string): Tenant | null {

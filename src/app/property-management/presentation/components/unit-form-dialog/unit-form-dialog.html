@@ -7,8 +7,8 @@
     <div class="form">
       @if (store.error(); as error) {
         <app-callout type="danger" icon="error" role="alert">{{
-          'property.errors.' + error | translate
-        }}</app-callout>
+            'property.errors.' + error | translate
+          }}</app-callout>
       }
 
       @if (!editing) {
@@ -31,9 +31,9 @@
       <div class="row">
         <mat-form-field>
           <mat-label>{{
-            (isStore ? 'property.fields.unit_number' : 'property.fields.common_area_name')
-              | translate
-          }}</mat-label>
+              (isStore ? 'property.fields.unit_number' : 'property.fields.common_area_name')
+                | translate
+            }}</mat-label>
           <input
             matInput
             formControlName="code"
@@ -46,8 +46,8 @@
             <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
           } @else if (form.controls.code.hasError('maxlength')) {
             <mat-error>{{
-              'property.validation.max_length' | translate: { count: codeMaxLength }
-            }}</mat-error>
+                'property.validation.max_length' | translate: { count: codeMaxLength }
+              }}</mat-error>
           }
         </mat-form-field>
 
@@ -87,6 +87,17 @@
           </mat-form-field>
         }
       </div>
+
+      <mat-form-field id="resource-field">
+        <mat-label>{{ 'property.fields.resource' | translate }}</mat-label>
+        <mat-select formControlName="resourceId">
+          <mat-option [value]="null">{{ 'property.unit_form.no_resource' | translate }}</mat-option>
+          @for (resource of store.resources(); track resource.resourceId) {
+            <mat-option [value]="resource.resourceId">{{ resource.name }}</mat-option>
+          }
+        </mat-select>
+        <mat-hint>{{ 'property.unit_form.resource_hint' | translate }}</mat-hint>
+      </mat-form-field>
     </div>
   </mat-dialog-content>
 
@@ -97,10 +108,10 @@
     <button matButton="filled" type="submit" [disabled]="store.saving()">
       {{
         (store.saving()
-          ? 'property.actions.saving'
-          : editing
-            ? 'property.actions.save'
-            : 'property.unit_form.register'
+            ? 'property.actions.saving'
+            : editing
+              ? 'property.actions.save'
+              : 'property.unit_form.register'
         ) | translate
       }}
     </button>

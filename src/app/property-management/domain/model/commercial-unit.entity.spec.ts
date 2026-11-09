@@ -15,6 +15,7 @@ describe('CommercialUnit', () => {
       floor: '1',
       areaSquareMeters: 20,
       businessName: null,
+      resourceId: null,
       status,
       active: true,
       createdAt: new Date('2026-03-02T15:00:00Z'),
@@ -35,6 +36,7 @@ describe('CommercialUnit', () => {
       floor: '1',
       areaSquareMeters: 20.456,
       businessName: '  ',
+      resourceId: null,
       ...changes,
     });
   }
@@ -71,6 +73,7 @@ describe('CommercialUnit', () => {
             floor: '1',
             areaSquareMeters: 20,
             businessName: null,
+            resourceId: null,
           }),
           [...gallery, free],
         ),
@@ -86,12 +89,14 @@ describe('CommercialUnit', () => {
         floor: '2',
         areaSquareMeters: 25,
         businessName: 'Calzados Roma',
+        resourceId: '1',
       }),
       gallery,
     );
 
     expect(updated.floor).toBe('2');
     expect(updated.businessName).toBe('Calzados Roma');
+    expect(updated.resourceId).toBe('1');
   });
 
   it('registers a common area without tenant and rejects a repeated name', () => {

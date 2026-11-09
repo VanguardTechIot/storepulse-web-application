@@ -112,15 +112,6 @@ export class TenantNotification implements BaseEntity {
     return this.props.status === NotificationStatus.Failed;
   }
 
-  /** Delivery confirmed (TenantNotifiedEvent). */
-  markSent(): TenantNotification {
-    return new TenantNotification({ ...this.props, status: NotificationStatus.Sent });
-  }
-
-  markFailed(): TenantNotification {
-    return new TenantNotification({ ...this.props, status: NotificationStatus.Failed });
-  }
-
   /** A failed notification goes back to pending to be delivered again. */
   retry(): TenantNotification {
     if (!this.isFailed) throw new CommunicationError(CommunicationErrorCode.NotificationNotFailed);

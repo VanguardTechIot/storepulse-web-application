@@ -13,8 +13,9 @@ export class PropertyContextFacade {
   /** Gallery registration, where a new administrator must start before subscribing. */
   readonly galleryRegistrationRoute = ['/commercial-units/gallery'];
 
-  async getGalleryOf(administratorId: string): Promise<GalleryReference | null> {
-    const gallery = await this.repository.findGalleryByAdministrator(administratorId);
+  /** Gallery of the signed-in administrator, or `null` when it was not registered yet. */
+  async getGallery(): Promise<GalleryReference | null> {
+    const gallery = await this.repository.findGallery();
     if (!gallery) return null;
     const units = await this.repository.listUnits(gallery.id);
     return {

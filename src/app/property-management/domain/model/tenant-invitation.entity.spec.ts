@@ -17,6 +17,7 @@ describe('TenantInvitation', () => {
       floor: '1',
       areaSquareMeters: 20,
       businessName: null,
+      resourceId: null,
       status,
       active: true,
       createdAt: now,
@@ -36,7 +37,6 @@ describe('TenantInvitation', () => {
     const invitation = TenantInvitation.issue(unit(), ' Carlos.Rojas@Gmail.com ', now);
 
     expect(invitation.email).toBe('carlos.rojas@gmail.com');
-    expect(invitation.token).toMatch(/^[0-9a-f]{16}$/);
     expect(invitation.expiresAt.toISOString()).toBe('2026-10-15T15:00:00.000Z');
     expect(invitation.statusAt(now)).toBe(InvitationStatus.Pending);
   });

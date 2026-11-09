@@ -20,7 +20,9 @@ export enum PropertyErrorCode {
   UnitNotAvailable = 'unit_not_available',
   CommonAreaWithoutTenant = 'common_area_without_tenant',
   InvalidEmail = 'invalid_email',
+  InvitationNotFound = 'invitation_not_found',
   InvitationNotPending = 'invitation_not_pending',
+  AdministratorNotAuthenticated = 'administrator_not_authenticated',
   Unexpected = 'unexpected',
 }
 
