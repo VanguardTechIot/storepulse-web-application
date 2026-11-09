@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { runCommand } from '../../shared/application/run-command';
 import { AlertStatus } from '../domain/enums/alert-status.enum';
 import { Alert } from '../domain/model/alert.entity';
 import { AnalyticsError, AnalyticsErrorCode } from '../domain/model/analytics-error';
@@ -94,17 +95,9 @@ export class AnalyticsStore {
     this.summaryState.set(await this.repository.getSummary());
   }
 
-  private async execute(operation: () => Promise<void>): Promise<boolean> {
-    this.processing.set(true);
-    this.error.set(null);
-    try {
-      await operation();
-      return true;
-    } catch (error) {
-      this.error.set(error instanceof AnalyticsError ? error.code : AnalyticsErrorCode.Unexpected);
-      return false;
-    } finally {
-      this.processing.set(false);
-    }
+  private async execute(command: () => Promise<void>): Promise<boolean> {
+    const toCode = (failure: unknown) =>
+      failure instanceof AnalyticsError ? failure.code : AnalyticsErrorCode.Unexpected;
+    return (await runCommand(this.processing, this.error, toCode, command)) !== null;
   }
 }

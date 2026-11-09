@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -7,16 +7,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { ConversationsStore } from '../../../application/conversations.store';
 import { ConversationStatus } from '../../../domain/model/conversation-status.enum';
-import { CommunicationTabs } from '../../components/communication-tabs/communication-tabs';
 import { NewConversationDialog } from '../../components/new-conversation-dialog/new-conversation-dialog';
 import { CommunicationStatusBadge } from '../../components/status-badge/status-badge';
+import { SectionTabs } from '../../../../shared/presentation/components/section-tabs/section-tabs';
+import { communicationTabs } from '../../communication.tabs';
 
 type ConversationFilter = 'ALL' | ConversationStatus;
 
@@ -25,7 +26,6 @@ type ConversationFilter = 'ALL' | ConversationStatus;
   selector: 'app-conversation-list',
   imports: [
     CommunicationStatusBadge,
-    CommunicationTabs,
     FormsModule,
     LocalizedDatePipe,
     MatButtonModule,
@@ -34,14 +34,17 @@ type ConversationFilter = 'ALL' | ConversationStatus;
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatProgressSpinnerModule,
+    PageState,
     RouterLink,
+    SectionTabs,
     TranslatePipe,
   ],
   templateUrl: './conversation-list.html',
   styleUrl: '../../styles/communication.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationList {
+  protected readonly tabs = communicationTabs;
   protected readonly store = inject(ConversationsStore);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);

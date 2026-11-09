@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,8 +19,8 @@ import { profilePhotoValidator } from '../../profiles.validators';
 import { ProfileAvatar } from '../profile-avatar/profile-avatar';
 
 /**
- * Who the user is (US-06): photo or default image, name, email and role. Photos are stored as
- * links, so changing it means entering the link of a JPG or PNG image (US-07, scenario 3).
+ * Who the user is: photo or default image, name, email and role. Photos are stored as
+ * links, so changing it means entering the link of a JPG or PNG image.
  */
 @Component({
   selector: 'app-profile-photo-card',
@@ -37,6 +37,7 @@ import { ProfileAvatar } from '../profile-avatar/profile-avatar';
   ],
   templateUrl: './profile-photo-card.html',
   styleUrl: './profile-photo-card.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfilePhotoCard {
   protected readonly store = inject(ProfilesStore);

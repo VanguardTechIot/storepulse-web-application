@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +15,7 @@ import { iamNav } from '../../iam.nav';
 import { emailValidator } from '../../iam.validators';
 
 /**
- * First step of the password recovery (US-03): request the 6-digit code by email.
+ * First step of the password recovery: request the 6-digit code by email.
  */
 @Component({
   selector: 'app-forgot-password',
@@ -32,6 +32,7 @@ import { emailValidator } from '../../iam.validators';
     TranslatePipe,
   ],
   templateUrl: './forgot-password.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotPassword {
   /** IAM application state used to request the password reset. */
@@ -42,7 +43,10 @@ export class ForgotPassword {
   protected readonly iamNav = iamNav;
   /** Form containing the email address for the reset request. */
   protected readonly form = new FormGroup({
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, emailValidator] }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, emailValidator],
+    }),
   });
 
   constructor() {

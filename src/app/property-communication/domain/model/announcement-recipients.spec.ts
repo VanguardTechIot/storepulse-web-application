@@ -43,7 +43,7 @@ describe('resolveAnnouncementRecipients', () => {
     assignment('asg-006', 'usr-007', 'unit-c07', AssignmentStatus.Terminated),
   ];
 
-  it('notifies the tenant of each selected store (US-34, scenario 2)', () => {
+  it('notifies the tenant of each selected store', () => {
     const result = resolveAnnouncementRecipients(
       [store('unit-a03'), store('unit-a10')],
       false,
@@ -54,7 +54,7 @@ describe('resolveAnnouncementRecipients', () => {
     expect(result.unitsWithoutTenant.map((u) => u.id)).toEqual(['unit-a10']);
   });
 
-  it('notifies every active tenant for a common area or the whole gallery (US-35, scenario 2)', () => {
+  it('notifies every active tenant for a common area or the whole gallery', () => {
     expect(resolveAnnouncementRecipients([corridor], false, assignments).assignments).toHaveLength(
       2,
     );

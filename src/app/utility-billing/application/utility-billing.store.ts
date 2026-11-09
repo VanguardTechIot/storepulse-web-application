@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { runCommand } from '../../shared/application/run-command';
 import { UtilityBillStatus } from '../domain/enums/utility-bill-status.enum';
 import { BillingDispute } from '../domain/model/billing-dispute.entity';
 import { BillingError, BillingErrorCode } from '../domain/model/billing-error';
@@ -158,16 +159,9 @@ export class UtilityBillingStore {
     return updated;
   }
 
-  private async execute<T>(operation: () => Promise<T>): Promise<T | null> {
-    this.processing.set(true);
-    this.error.set(null);
-    try {
-      return await operation();
-    } catch (error) {
-      this.error.set(error instanceof BillingError ? error.code : BillingErrorCode.Unexpected);
-      return null;
-    } finally {
-      this.processing.set(false);
-    }
+  private execute<T>(command: () => Promise<T>): Promise<T | null> {
+    const toCode = (failure: unknown) =>
+      failure instanceof BillingError ? failure.code : BillingErrorCode.Unexpected;
+    return runCommand(this.processing, this.error, toCode, command);
   }
 }

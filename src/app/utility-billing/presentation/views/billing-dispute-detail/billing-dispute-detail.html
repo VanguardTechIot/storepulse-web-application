@@ -19,7 +19,11 @@
 
 @if (!store.ready()) {
   <mat-card id="state-card" appearance="outlined">
-    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
   </mat-card>
 } @else if (dispute(); as dispute) {
   @if (store.error(); as error) {
@@ -165,13 +169,21 @@
           </div>
         </dl>
       } @else {
-        <app-page-state icon="search_off" [title]="'billing.detail.not_found' | translate" />
+        <app-page-state
+          id="detail-not-found"
+          icon="search_off"
+          [title]="'billing.detail.not_found' | translate"
+        />
       }
     </mat-card>
   </div>
 } @else {
   <mat-card id="not-found-card" appearance="outlined">
-    <app-page-state icon="search_off" [title]="'billing.dispute.not_found' | translate">
+    <app-page-state
+      id="dispute-not-found"
+      icon="search_off"
+      [title]="'billing.dispute.not_found' | translate"
+    >
       <a matButton="outlined" routerLink="/billing/disputes">{{
           'billing.actions.back' | translate
         }}</a>

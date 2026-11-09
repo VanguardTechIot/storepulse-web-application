@@ -26,7 +26,11 @@
 
 @if (!store.ready()) {
   <mat-card id="state-card" appearance="outlined">
-    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
   </mat-card>
 } @else if (bill(); as bill) {
   @if (store.error(); as error) {
@@ -159,7 +163,11 @@
             <app-billing-status-badge [dispute]="dispute.status" />
           </a>
         } @empty {
-          <app-page-state icon="forum" [title]="'billing.detail.no_disputes' | translate" />
+          <app-page-state
+            id="detail-no-disputes"
+            icon="forum"
+            [title]="'billing.detail.no_disputes' | translate"
+          />
         }
       </mat-card>
     </div>
@@ -248,7 +256,11 @@
   </div>
 } @else {
   <mat-card id="not-found-card" appearance="outlined">
-    <app-page-state icon="search_off" [title]="'billing.detail.not_found' | translate">
+    <app-page-state
+      id="detail-not-found"
+      icon="search_off"
+      [title]="'billing.detail.not_found' | translate"
+    >
       <a matButton="outlined" routerLink="/billing">{{ 'billing.actions.back' | translate }}</a>
     </app-page-state>
   </mat-card>

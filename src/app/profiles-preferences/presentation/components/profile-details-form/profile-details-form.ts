@@ -1,4 +1,11 @@
-import { Component, effect, inject, input, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  input,
+  untracked,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,7 +25,7 @@ import {
 } from '../../profiles.validators';
 
 /**
- * Edit details card of My profile (US-07). Invalid data shows its error and is not saved.
+ * Edit details card of My profile. Invalid data shows its error and is not saved.
  */
 @Component({
   selector: 'app-profile-details-form',
@@ -33,6 +40,7 @@ import {
   ],
   templateUrl: './profile-details-form.html',
   styleUrl: './profile-details-form.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileDetailsForm {
   protected readonly store = inject(ProfilesStore);
@@ -48,11 +56,19 @@ export class ProfileDetailsForm {
   protected readonly form = new FormGroup({
     firstName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, notBlankValidator, Validators.maxLength(Profile.nameMaxLength)],
+      validators: [
+        Validators.required,
+        notBlankValidator,
+        Validators.maxLength(Profile.nameMaxLength),
+      ],
     }),
     lastName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, notBlankValidator, Validators.maxLength(Profile.nameMaxLength)],
+      validators: [
+        Validators.required,
+        notBlankValidator,
+        Validators.maxLength(Profile.nameMaxLength),
+      ],
     }),
     email: new FormControl('', {
       nonNullable: true,

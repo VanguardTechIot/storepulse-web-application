@@ -11,7 +11,11 @@
 
 @if (!store.ready()) {
   <mat-card id="state-card" appearance="outlined">
-    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
   </mat-card>
 } @else {
   <mat-card id="disputes-card" appearance="outlined">
@@ -37,7 +41,11 @@
     </div>
 
     @if (visibleDisputes().length === 0) {
-      <app-page-state icon="forum" [title]="'billing.disputes.empty' | translate" />
+      <app-page-state
+        id="disputes-empty"
+        icon="forum"
+        [title]="'billing.disputes.empty' | translate"
+      />
     } @else {
       <div class="table-wrap">
         <table id="disputes-table" mat-table [dataSource]="visibleDisputes()">

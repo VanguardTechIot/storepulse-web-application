@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { runCommand } from '../../shared/application/run-command';
 import { GalleryReference } from '../domain/model/gallery-reference';
 import { Payment } from '../domain/model/payment.entity';
 import { PaymentCard } from '../domain/value-objects/payment-card.value-object';
@@ -145,21 +146,11 @@ export class SubscriptionsStore {
   }
 
   private async execute(
-    flag: WritableSignal<boolean>,
-    operation: () => Promise<void>,
+    busy: WritableSignal<boolean>,
+    command: () => Promise<void>,
   ): Promise<boolean> {
-    flag.set(true);
-    this.error.set(null);
-    try {
-      await operation();
-      return true;
-    } catch (error) {
-      this.error.set(
-        error instanceof SubscriptionsError ? error.code : SubscriptionsErrorCode.Unexpected,
-      );
-      return false;
-    } finally {
-      flag.set(false);
-    }
+    const toCode = (failure: unknown) =>
+      failure instanceof SubscriptionsError ? failure.code : SubscriptionsErrorCode.Unexpected;
+    return (await runCommand(busy, this.error, toCode, command)) !== null;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,8 +21,8 @@ import { notBlankValidator } from '../../communication.validators';
 type AnnouncementType = NotificationType.Announcement | NotificationType.Incident;
 
 /**
- * Publishes a communication to the affected tenants (US-34) or notifies an incident (US-35). An
- * incident in a common area reaches every tenant of the gallery (US-35, scenario 2).
+ * Publishes a communication to the affected tenants or notifies an incident. An
+ * incident in a common area reaches every tenant of the gallery.
  */
 @Component({
   selector: 'app-publish-announcement-dialog',
@@ -40,26 +40,8 @@ type AnnouncementType = NotificationType.Announcement | NotificationType.Inciden
     TranslatePipe,
   ],
   templateUrl: './publish-announcement-dialog.html',
-  styles: `
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding-top: 4px;
-    }
-    .type {
-      margin-bottom: 16px;
-    }
-    .scope {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px 16px;
-      margin: 0 0 12px;
-    }
-    app-callout {
-      margin-bottom: 12px;
-    }
-  `,
+  styleUrl: './publish-announcement-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PublishAnnouncementDialog {
   protected readonly store = inject(TenantNotificationsStore);

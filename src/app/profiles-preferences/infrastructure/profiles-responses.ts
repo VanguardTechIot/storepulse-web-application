@@ -1,6 +1,6 @@
 import { BaseResource } from '../../shared/infrastructure/base-response';
 
-/** User profile, as `GET /users/{userId}/profile` returns it (TS-04). */
+/** User profile, as `GET /users/{userId}/profile` returns it. */
 export interface ProfileResource extends BaseResource {
   /** Identifier of the account that owns the profile. */
   userId: string;

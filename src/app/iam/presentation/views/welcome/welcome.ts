@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,7 +9,7 @@ import { AuthenticationLayout } from '../../components/authentication-layout/aut
 import { iamNav } from '../../iam.nav';
 
 /**
- * Entry point of the web application (mock-up 01).
+ * Entry point of the web application.
  */
 @Component({
   selector: 'app-welcome',
@@ -23,6 +23,7 @@ import { iamNav } from '../../iam.nav';
     TranslatePipe,
   ],
   templateUrl: './welcome.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Welcome {
   /** Navigation commands for IAM pages. */

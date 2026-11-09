@@ -24,10 +24,9 @@ interface ProfileProps {
 }
 
 /**
- * Personal data of a StorePulse user (Aggregate Root): name, contact data and photo (US-06,
- * US-07). The role and the credentials belong to Identity and Access Management.
+ * Personal data of a StorePulse user (Aggregate Root): name, contact data and photo. The role and the credentials belong to Identity and Access Management.
  *
- * Changes return a new profile, so invalid data never alters the current one (US-07, scenario 2).
+ * Changes return a new profile, so invalid data never alters the current one.
  */
 export class Profile implements BaseEntity {
   /** Maximum allowed length for each name field. */
