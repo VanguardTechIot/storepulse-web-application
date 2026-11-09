@@ -45,6 +45,8 @@ export class RegisterDeviceDialog {
   protected readonly busy = signal(false);
   /** Serial number already registered, shown until the field changes. */
   protected readonly duplicated = signal<string | null>(null);
+  /** The chosen resource is not linked to a unit of the gallery yet. */
+  protected readonly unlinked = signal(false);
   protected readonly form = new FormGroup({
     serialNumber: new FormControl('', { nonNullable: true, validators: Validators.required }),
     type: new FormControl<IoTDeviceType>('INTRUSION_NODE', { nonNullable: true }),
@@ -53,6 +55,7 @@ export class RegisterDeviceDialog {
 
   constructor() {
     this.form.controls.serialNumber.valueChanges.subscribe(() => this.duplicated.set(null));
+    this.form.controls.resourceId.valueChanges.subscribe(() => this.unlinked.set(false));
   }
 
   protected async register(): Promise<void> {
@@ -65,6 +68,7 @@ export class RegisterDeviceDialog {
     try {
       const outcome = await this.store.registerDevice(serialNumber, type, resourceId);
       if (outcome === 'duplicated') this.duplicated.set(serialNumber.trim().toUpperCase());
+      else if (outcome === 'unlinked') this.unlinked.set(true);
       else this.dialogRef.close(true);
     } finally {
       this.busy.set(false);

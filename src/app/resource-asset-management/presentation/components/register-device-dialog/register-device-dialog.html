@@ -8,6 +8,11 @@
           {{ 'devices.register.duplicated' | translate: { id: serial } }}
         </app-callout>
       }
+      @if (unlinked()) {
+        <app-callout type="danger" icon="error" role="alert">
+          {{ 'devices.register.unlinked' | translate }}
+        </app-callout>
+      }
       <mat-form-field>
         <mat-label>{{ 'devices.register.identifier' | translate }}</mat-label>
         <input

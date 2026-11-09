@@ -1,11 +1,8 @@
 import { ResourceStatus } from '../domain/model/resource.entity';
 import { AssetStatus, ConnectivityStatus, IoTDeviceType } from '../domain/model/iot-device.entity';
 
-/** Identifier as the platform writes it: numeric in the REST API, text in the local data server. */
-export type ResourceId = number | string;
-
 export interface ResourceResource {
-  id: ResourceId;
+  id: number;
   name: string;
   description: string;
   address: string;
@@ -15,9 +12,9 @@ export interface ResourceResource {
 }
 
 export interface IoTDeviceResource {
-  id: ResourceId;
-  assetId: ResourceId;
-  resourceId: ResourceId;
+  id: number;
+  assetId: number;
+  resourceId: number;
   serialNumber: string;
   manufacturer: string | null;
   firmwareVersion: string | null;
@@ -34,7 +31,7 @@ export interface IoTDeviceResource {
 export interface RegisterIoTDeviceResource {
   serialNumber: string;
   type: IoTDeviceType;
-  resourceId: ResourceId;
+  resourceId: number;
 }
 
 export interface DeactivateIoTDeviceResource {
