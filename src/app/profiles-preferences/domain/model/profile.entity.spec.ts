@@ -40,7 +40,11 @@ describe('Profile', () => {
 
   it('saves valid details, normalizing the email and the phone number', () => {
     const updated = profile.update(
-      details({ firstName: ' Carmen Rosa ', email: ' Carmen.Rosa@GaleriaCentral.pe ', phoneNumber: '+51  999 111 222' }),
+      details({
+        firstName: ' Carmen Rosa ',
+        email: ' Carmen.Rosa@GaleriaCentral.pe ',
+        phoneNumber: '+51  999 111 222',
+      }),
     );
 
     expect(updated.firstName).toBe('Carmen Rosa');
@@ -52,11 +56,13 @@ describe('Profile', () => {
     expect(profile.update(details({ phoneNumber: '  ' })).phoneNumber).toBeNull();
   });
 
-  it('rejects invalid data without changing the profile (US-07, scenario 2)', () => {
+  it('rejects invalid data without changing the profile', () => {
     expect(errorOf(() => profile.update(details({ email: 'carmen.mendoza@galeriacentral' })))).toBe(
       ProfilesErrorCode.InvalidEmail,
     );
-    expect(errorOf(() => profile.update(details({ firstName: ' ' })))).toBe(ProfilesErrorCode.InvalidName);
+    expect(errorOf(() => profile.update(details({ firstName: ' ' })))).toBe(
+      ProfilesErrorCode.InvalidName,
+    );
     expect(errorOf(() => profile.update(details({ lastName: 'x'.repeat(51) })))).toBe(
       ProfilesErrorCode.InvalidName,
     );
@@ -66,8 +72,9 @@ describe('Profile', () => {
     expect(profile.email).toBe('carmen.mendoza@galeriacentral.pe');
   });
 
-  it('accepts JPG and PNG photo links (US-07, scenario 3)', () => {
-    const photo = (photoUrl: string) => profile.changePhoto(new UpdateProfilePhotoCommand({ photoUrl }));
+  it('accepts JPG and PNG photo links', () => {
+    const photo = (photoUrl: string) =>
+      profile.changePhoto(new UpdateProfilePhotoCommand({ photoUrl }));
 
     expect(photo('https://cdn.storepulse.pe/users/carmen.JPG').photoUrl).toBe(
       'https://cdn.storepulse.pe/users/carmen.JPG',
@@ -88,13 +95,13 @@ describe('Profile', () => {
     expect(photoError('carmen.png')).toBe(ProfilesErrorCode.UnsupportedPhotoFormat);
   });
 
-  it('goes back to the default image when the photo is removed (US-06, scenario 2)', () => {
+  it('goes back to the default image when the photo is removed', () => {
     const withPhoto = profile.changePhoto(
       new UpdateProfilePhotoCommand({ photoUrl: 'https://cdn.storepulse.pe/users/carmen.png' }),
     );
 
-    expect(withPhoto.changePhoto(new UpdateProfilePhotoCommand({ photoUrl: null })).hasPhoto()).toBe(
-      false,
-    );
+    expect(
+      withPhoto.changePhoto(new UpdateProfilePhotoCommand({ photoUrl: null })).hasPhoto(),
+    ).toBe(false);
   });
 });
