@@ -1,0 +1,25 @@
+<header class="page-head">
+  <div>
+    <h1>{{ 'property.gallery.page_title' | translate }}</h1>
+    <p>
+      @if (store.gallery(); as gallery) {
+        {{
+          'property.gallery.registered_on'
+            | translate: { date: (gallery.registeredAt | localizedDate: 'date') }
+        }}
+      } @else {
+        {{ 'property.gallery.register_subtitle' | translate }}
+      }
+    </p>
+  </div>
+</header>
+
+@if (store.gallery()) {
+  <app-section-tabs [tabs]="tabs" label="property.tabs.label" />
+}
+
+@if (store.loading() && !store.loaded()) {
+  <app-page-state id="page-state" status="loading" />
+} @else {
+  <app-gallery-form [gallery]="store.gallery()" (saved)="saved()" />
+}
