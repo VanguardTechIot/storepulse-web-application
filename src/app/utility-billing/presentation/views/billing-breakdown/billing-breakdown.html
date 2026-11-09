@@ -12,7 +12,11 @@
 
 @if (!store.ready()) {
   <mat-card id="state-card" appearance="outlined">
-    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
   </mat-card>
 } @else if (bill(); as bill) {
   @if (bill.exceededItems.length > 0) {
@@ -99,7 +103,11 @@
   </mat-card>
 } @else {
   <mat-card id="not-found-card" appearance="outlined">
-    <app-page-state icon="search_off" [title]="'billing.detail.not_found' | translate">
+    <app-page-state
+      id="detail-not-found"
+      icon="search_off"
+      [title]="'billing.detail.not_found' | translate"
+    >
       <a matButton="outlined" routerLink="/billing">{{ 'billing.actions.back' | translate }}</a>
     </app-page-state>
   </mat-card>
