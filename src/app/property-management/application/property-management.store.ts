@@ -1,7 +1,6 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { CommercialGallery } from '../domain/model/commercial-gallery.entity';
 import { CommercialUnit } from '../domain/model/commercial-unit.entity';
-import { InvitationStatus } from '../domain/model/invitation-status.enum';
 import { InviteTenantCommand } from '../domain/model/invite-tenant.command';
 import { PropertyError, PropertyErrorCode } from '../domain/model/property-error';
 import { RegisterCommercialGalleryCommand } from '../domain/model/register-commercial-gallery.command';
