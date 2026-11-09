@@ -1,11 +1,15 @@
 const codePattern = /^\d{6}$/;
 
 /**
- * 6-digit code that confirms a password recovery.
+ * 6-digit code that confirms a password recovery. The platform emails it and keeps it valid for
+ * 15 minutes.
  */
 export class PasswordResetCode {
   /** Number of digits required for a password reset code. */
   static readonly length = 6;
+
+  /** Number of minutes for which a code remains valid. */
+  static readonly validityInMinutes = 15;
 
   /** The validated six-digit reset code. */
   readonly value: string;
@@ -31,25 +35,5 @@ export class PasswordResetCode {
    */
   static isValid(value: string): boolean {
     return codePattern.test(value);
-  }
-
-  /**
-   * Generates a six-digit password reset code.
-   *
-   * @returns A new password reset code.
-   */
-  static generate(): PasswordResetCode {
-    const [random] = crypto.getRandomValues(new Uint32Array(1));
-    return new PasswordResetCode((random % 1_000_000).toString().padStart(PasswordResetCode.length, '0'));
-  }
-
-  /**
-   * Checks whether a candidate matches this code after trimming whitespace.
-   *
-   * @param code - Candidate code to compare.
-   * @returns `true` if the candidate matches; otherwise, `false`.
-   */
-  matches(code: string): boolean {
-    return this.value === code.trim();
   }
 }

@@ -28,7 +28,7 @@ export interface IamRepository {
   signUp(command: SignUpCommand): Promise<UserSession>;
 
   /**
-   * Requests a password reset by generating a six-digit code.
+   * Requests a password reset; the REST API emails a six-digit code.
    *
    * @param command - Password reset request details.
    * @returns A promise that resolves to the code's expiration date.
