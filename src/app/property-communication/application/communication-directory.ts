@@ -5,19 +5,17 @@ import { TenantAssignment } from '../domain/model/tenant-assignment.entity';
 import { UnitReference } from '../domain/model/unit-reference';
 import { IamContextFacade } from '../infrastructure/acl/iam-context-facade';
 import { PropertyContextFacade } from '../infrastructure/acl/property-context-facade';
-import { TenantDirectoryFacade } from '../infrastructure/acl/tenant-directory-facade';
 import { PROPERTY_COMMUNICATION_REPOSITORY } from '../infrastructure/property-communication.token';
 
 /**
- * Names shown by every Property Communication screen: the tenants of the gallery and its units,
- * read from the other contexts through their anti-corruption layers.
+ * Names shown by every Property Communication screen: the tenants of the gallery, read from their
+ * assignments, and its units, read from Property Management.
  */
 @Injectable({ providedIn: 'root' })
 export class CommunicationDirectory {
   private readonly repository = inject(PROPERTY_COMMUNICATION_REPOSITORY);
   private readonly iamContext = inject(IamContextFacade);
   private readonly propertyContext = inject(PropertyContextFacade);
-  private readonly tenantDirectory = inject(TenantDirectoryFacade);
 
   private readonly tenantsState = signal<Tenant[]>([]);
   private readonly unitsState = signal<UnitReference[]>([]);
@@ -37,11 +35,12 @@ export class CommunicationDirectory {
   /** Reads the tenants and the units; answers the assignments the tenants come from. */
   async load(): Promise<TenantAssignment[]> {
     this.requireAdministrator();
-    const [assignments, units] = await Promise.all([
+    const [assignments, tenants, units] = await Promise.all([
       this.repository.listAssignments(),
+      this.repository.listTenants(),
       this.propertyContext.listUnits(),
     ]);
-    this.tenantsState.set(await this.tenantDirectory.listTenants(assignments));
+    this.tenantsState.set(tenants);
     this.unitsState.set(units);
     return assignments;
   }

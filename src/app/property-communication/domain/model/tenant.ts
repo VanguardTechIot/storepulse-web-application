@@ -1,5 +1,5 @@
 /**
- * Registered tenant, translated from Identity and Access Management and Profiles and Preferences.
+ * Registered tenant of the gallery, with the name and email of its profile.
  */
 export interface Tenant {
   id: string;
