@@ -9,7 +9,11 @@
   <app-subscription-state />
 } @else if (store.payments().length === 0) {
   <mat-card id="empty-card" appearance="outlined">
-    <app-page-state icon="receipt_long" [title]="'subscriptions.payments.empty' | translate" />
+    <app-page-state
+      id="payments-empty"
+      icon="receipt_long"
+      [title]="'subscriptions.payments.empty' | translate"
+    />
   </mat-card>
 } @else {
   <mat-card id="payments-card" appearance="outlined">
