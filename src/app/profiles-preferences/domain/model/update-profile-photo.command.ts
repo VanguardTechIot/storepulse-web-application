@@ -1,6 +1,6 @@
 /**
- * Sets the link of a new profile photo (US-07, scenario 3), or removes it with `null` so the
- * default image is shown again (US-06, scenario 2).
+ * Sets the link of a new profile photo, or removes it with `null` so the
+ * default image is shown again.
  */
 export class UpdateProfilePhotoCommand {
   /** New photo URL, or `null` to remove the current photo. */

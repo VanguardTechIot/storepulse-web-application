@@ -3,7 +3,7 @@ const supportedProtocols = ['http:', 'https:'];
 
 /**
  * Profile photo, stored as a link to the image. Only JPG and PNG images are supported
- * (mock-up 12); the REST API answers 415 to any other format (TS-04).
+ *; the REST API answers 415 to any other format.
  */
 export class ProfilePhoto {
   /** Validated URL of the profile photo. */

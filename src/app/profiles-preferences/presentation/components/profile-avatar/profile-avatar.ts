@@ -1,9 +1,9 @@
-import { Component, input, linkedSignal, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 /**
  * Profile photo, or the default image when there is none or the link cannot be loaded
- * (US-06, scenario 2).
+ *.
  */
 @Component({
   selector: 'app-profile-avatar',
@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './profile-avatar.html',
   styleUrl: './profile-avatar.css',
   host: { '[style.--avatar-size.px]': 'size()' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileAvatar {
   /** URL of the profile photo, or `null` to show the default avatar. */

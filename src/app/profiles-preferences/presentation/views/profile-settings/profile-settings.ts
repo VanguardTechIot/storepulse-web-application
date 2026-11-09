@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -11,8 +11,8 @@ import { ProfilePhotoCard } from '../../components/profile-photo-card/profile-ph
 import { SubscriptionSummaryCard } from '../../components/subscription-summary-card/subscription-summary-card';
 
 /**
- * My profile (mock-up 12): view and edit the user details (US-06, US-07), see the subscription
- * status (US-45) and Log Out (US-04).
+ * My profile: view and edit the user details, see the subscription
+ * status and Log Out.
  */
 @Component({
   selector: 'app-profile-settings',
@@ -28,6 +28,7 @@ import { SubscriptionSummaryCard } from '../../components/subscription-summary-c
   ],
   templateUrl: './profile-settings.html',
   styleUrls: ['../../../../shared/presentation/styles/page.css', './profile-settings.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileSettings {
   /** Profiles state used to load and manage the profile and subscription. */

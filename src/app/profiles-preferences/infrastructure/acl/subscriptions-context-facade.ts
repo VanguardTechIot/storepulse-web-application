@@ -4,11 +4,11 @@ import { SubscriptionStatus } from '../../domain/model/subscription-status.enum'
 import { SubscriptionSummary } from '../../domain/model/subscription-summary.value-object';
 
 /**
- * Anti-corruption layer towards Subscriptions and Payments (US-45).
+ * Anti-corruption layer towards Subscriptions and Payments.
  *
  * That context is not implemented yet, so this facade answers with the sample subscription of
- * mock-up 12. When it exists, only this class changes: read the gallery subscription from that
- * context (TS-28, `GET /subscriptions/{galleryId}/status`) and translate it to the summary.
+ * the design. When it exists, only this class changes: read the gallery subscription from that
+ * context (`GET /subscriptions/{galleryId}/status`) and translate it to the summary.
  */
 @Injectable({ providedIn: 'root' })
 export class SubscriptionsContextFacade {

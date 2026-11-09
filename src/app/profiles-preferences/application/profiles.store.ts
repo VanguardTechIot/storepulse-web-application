@@ -27,7 +27,7 @@ export class ProfilesStore {
 
   /** Profile of the currently signed-in user, if loaded. */
   readonly profile = this.profileState.asReadonly();
-  /** Shown next to the profile (US-45); `null` when there is none or it cannot be read. */
+  /** Shown next to the profile; `null` when there is none or it cannot be read. */
   readonly subscription = this.subscriptionState.asReadonly();
   /** Current account that owns the profile, or `null` if signed out. */
   readonly owner = this.iamContext.currentOwner;
@@ -43,7 +43,7 @@ export class ProfilesStore {
   readonly error = signal<ProfilesErrorCode | null>(null);
 
   /**
-   * Loads the signed-in user's profile (US-06) and the gallery subscription summary (US-45).
+   * Loads the signed-in user's profile and the gallery subscription summary.
    *
    * @returns A promise that resolves to `true` on success or `false` on failure.
    */

@@ -1,5 +1,5 @@
 /**
- * Edits the personal and contact data of the profile (US-07). The email is also the sign-in
+ * Edits the personal and contact data of the profile. The email is also the sign-in
  * email, so changing it changes how the user logs in.
  */
 export class UpdateProfileCommand {

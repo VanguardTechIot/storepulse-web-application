@@ -2,7 +2,7 @@ import { SubscriptionPlan } from './subscription-plan.enum';
 import { SubscriptionStatus } from './subscription-status.enum';
 
 /**
- * Subscription of the gallery as the profile shows it (US-45): plan, status and expiration date.
+ * Subscription of the gallery as the profile shows it: plan, status and expiration date.
  * It belongs to Subscriptions and Payments; this context only reads it.
  */
 export class SubscriptionSummary {
@@ -33,7 +33,7 @@ export class SubscriptionSummary {
   }
 
   /**
-   * Determines whether the subscription is nearing expiration (US-45, scenario 2).
+   * Determines whether the subscription is nearing expiration.
    *
    * @returns `true` if the subscription status is expiring soon; otherwise, `false`.
    */
