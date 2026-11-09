@@ -5,7 +5,6 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { provideRouter, TitleStrategy, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
@@ -20,7 +19,6 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(TranslationService).load()),
     provideRouter(routes, withComponentInputBinding()),
     { provide: TitleStrategy, useClass: TranslatedTitleStrategy },
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     { provide: MAT_ICON_DEFAULT_OPTIONS, useValue: { fontSet: 'material-symbols-outlined' } },
   ],
 };
