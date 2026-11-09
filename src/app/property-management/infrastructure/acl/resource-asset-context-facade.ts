@@ -4,7 +4,7 @@ import { RESOURCE_ASSET_REPOSITORY } from '../../../resource-asset-management/in
 
 /**
  * Anti-corruption layer towards Resource and Asset Management: the IoT devices installed in a
- * unit, which prevent its removal (US-11, scenario 2).
+ * unit, which prevent its removal.
  *
  * That context names its resources after the unit (`Local A-03`, or the common area name), so the
  * unit is matched by that name. When resources carry the unit id, only this class changes.

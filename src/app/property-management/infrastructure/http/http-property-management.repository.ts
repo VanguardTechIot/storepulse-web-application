@@ -44,7 +44,7 @@ function withoutId<T extends { id: string }>(resource: T): Omit<T, 'id'> {
 /**
  * HTTP implementation of the repository over the local data server (json-server).
  *
- * json-server only stores data, so the duplicated unit check (409, TS-07 and TS-08) is done by the
+ * json-server only stores data, so the duplicated unit check (409) is done by the
  * domain before saving, and the logical removal is sent as a `PATCH` (a `DELETE` would erase the
  * row). When the REST API exists, only this class changes.
  */
@@ -216,7 +216,7 @@ export class HttpPropertyManagementRepository implements PropertyManagementRepos
     }
   }
 
-  /** Maps the TS-05 to TS-10 status codes to business errors; anything else stays unexpected. */
+  /** Maps the status codes of the gallery, unit and invitation endpoints to business errors; anything else stays unexpected. */
   private translate(error: unknown, notFound: PropertyErrorCode, type?: UnitType): unknown {
     if (!(error instanceof HttpErrorResponse)) return error;
     switch (error.status) {

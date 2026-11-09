@@ -11,7 +11,7 @@ interface TenantInvitationProps {
   unitId: string;
   galleryId: string;
   email: string;
-  /** Goes inside the sign-up link; the tenant registers with it (US-12, scenario 2). */
+  /** Goes inside the sign-up link; the tenant registers with it. */
   token: string;
   status: InvitationStatus;
   sentAt: Date;
@@ -19,8 +19,8 @@ interface TenantInvitationProps {
 }
 
 /**
- * Invitation for a tenant to sign up linked to one store (US-12, TS-10). It is valid for 7 days;
- * sending it again revokes the previous link and issues a new one (US-12, scenario 3).
+ * Invitation for a tenant to sign up linked to one store. It is valid for 7 days;
+ * sending it again revokes the previous link and issues a new one.
  */
 export class TenantInvitation implements BaseEntity {
   static readonly validityDays = 7;

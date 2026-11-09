@@ -3,7 +3,7 @@ import { CommercialUnit } from '../model/commercial-unit.entity';
 import { TenantInvitation } from '../model/tenant-invitation.entity';
 
 /**
- * Access abstraction of the Property Management context. Mirrors TS-05 to TS-10:
+ * Access abstraction of the Property Management context. Mirrors
  * `/galleries`, `/galleries/{id}/units`, `/units/{id}` and `/units/{id}/invite`.
  * Business errors are thrown as `PropertyError`.
  */
@@ -19,7 +19,7 @@ export interface PropertyManagementRepository {
   registerUnit(unit: CommercialUnit): Promise<CommercialUnit>;
   /** Saves the whole unit: edition and status changes. */
   updateUnit(unit: CommercialUnit): Promise<CommercialUnit>;
-  /** Logical removal: the unit is kept as inactive (TS-09). */
+  /** Logical removal: the unit is kept as inactive. */
   removeUnit(unit: CommercialUnit): Promise<void>;
 
   listInvitations(galleryId: string): Promise<TenantInvitation[]>;

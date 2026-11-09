@@ -1,6 +1,6 @@
 import { UnitType } from './unit-type.enum';
 
-/** Registers a store (US-09, TS-07) or a common area (US-57) in the gallery. */
+/** Registers a store or a common area in the gallery. */
 export class RegisterCommercialUnitCommand {
   readonly type: UnitType;
   /** Unit number of a store (`A-03`) or name of a common area (`Pasillo norte`). */

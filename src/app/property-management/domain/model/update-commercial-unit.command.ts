@@ -1,4 +1,4 @@
-/** Edits the data of a unit (US-10, TS-08). Its type cannot change. */
+/** Edits the data of a unit. Its type cannot change. */
 export class UpdateCommercialUnitCommand {
   readonly code: string;
   readonly floor: string;

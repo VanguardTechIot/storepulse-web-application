@@ -48,7 +48,7 @@ describe('CommercialUnit', () => {
     }
   }
 
-  it('registers an available store linked to the gallery (US-09, scenario 1)', () => {
+  it('registers an available store linked to the gallery', () => {
     const store = CommercialUnit.register('gal-001', command(), gallery);
 
     expect(store.galleryId).toBe('gal-001');
@@ -58,7 +58,7 @@ describe('CommercialUnit', () => {
     expect(store.status).toBe(UnitStatus.Available);
   });
 
-  it('rejects a unit number already used in the gallery (US-09 and US-10, scenario 2)', () => {
+  it('rejects a unit number already used in the gallery', () => {
     expect(
       errorOf(() => CommercialUnit.register('gal-001', command({ code: 'a-03' }), gallery)),
     ).toBe(PropertyErrorCode.DuplicatedUnitCode);
@@ -78,7 +78,7 @@ describe('CommercialUnit', () => {
     ).toBe(PropertyErrorCode.DuplicatedUnitCode);
   });
 
-  it('keeps its own number when it is edited (US-10, scenario 1)', () => {
+  it('keeps its own number when it is edited', () => {
     const store = gallery[0];
     const updated = store.update(
       new UpdateCommercialUnitCommand({
@@ -94,7 +94,7 @@ describe('CommercialUnit', () => {
     expect(updated.businessName).toBe('Calzados Roma');
   });
 
-  it('registers a common area without tenant and rejects a repeated name (US-57)', () => {
+  it('registers a common area without tenant and rejects a repeated name', () => {
     const area = CommercialUnit.register(
       'gal-001',
       command({ type: UnitType.CommonArea, code: 'Patio de comidas', businessName: 'X' }),
@@ -116,7 +116,7 @@ describe('CommercialUnit', () => {
     ).toBe(PropertyErrorCode.DuplicatedCommonAreaName);
   });
 
-  it('rejects invalid data (TS-08, scenario 2)', () => {
+  it('rejects invalid data', () => {
     expect(errorOf(() => CommercialUnit.register('gal-001', command({ code: ' ' }), gallery))).toBe(
       PropertyErrorCode.InvalidUnitCode,
     );
@@ -128,7 +128,7 @@ describe('CommercialUnit', () => {
     ).toBe(PropertyErrorCode.InvalidArea);
   });
 
-  it('is removed logically only without devices or tenant (US-11)', () => {
+  it('is removed logically only without devices or tenant', () => {
     const free = unit('unit-a10', 'A-10');
 
     expect(free.remove([]).active).toBe(false);

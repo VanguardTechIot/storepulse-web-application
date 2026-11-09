@@ -1,4 +1,4 @@
-/** Registers the gallery of the signed-in administrator (US-08, TS-05). */
+/** Registers the gallery of the signed-in administrator. */
 export class RegisterCommercialGalleryCommand {
   readonly name: string;
   readonly address: string;
