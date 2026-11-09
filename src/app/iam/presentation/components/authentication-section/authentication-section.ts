@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,8 +11,8 @@ import { IamStore } from '../../../application/iam.store';
 import { iamNav } from '../../iam.nav';
 
 /**
- * Account menu of the top bar (mock-up 04b): who is signed in, the way to My profile and the
- * Log Out action (US-04).
+ * Account menu of the top bar: who is signed in, the way to My profile and the
+ * Log Out action.
  */
 @Component({
   selector: 'app-authentication-section',
@@ -27,6 +27,7 @@ import { iamNav } from '../../iam.nav';
   ],
   templateUrl: './authentication-section.html',
   styleUrl: './authentication-section.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthenticationSection {
   private readonly store = inject(IamStore);

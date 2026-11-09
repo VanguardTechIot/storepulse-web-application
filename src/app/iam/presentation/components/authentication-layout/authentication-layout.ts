@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -11,7 +11,7 @@ import { ToneIcon } from '../../../../shared/presentation/components/tone-icon/t
 import { appNav } from '../../../../shared/routing/app-nav';
 
 /**
- * Pre-login frame (mock-ups 01, 02, 02a, 03): brand panel on the left, form on the right.
+ * Pre-login frame: brand panel on the left, form on the right.
  * Views project their header actions with the `authTop` attribute and their form as content.
  * Styles are not encapsulated so they also apply to the projected form; every class is
  * prefixed with `auth-`.
@@ -32,6 +32,7 @@ import { appNav } from '../../../../shared/routing/app-nav';
   templateUrl: './authentication-layout.html',
   styleUrl: './authentication-layout.css',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthenticationLayout {
   /** Navigation commands for the main application. */

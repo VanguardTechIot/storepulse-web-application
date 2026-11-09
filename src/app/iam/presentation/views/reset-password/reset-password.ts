@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ import { iamNav } from '../../iam.nav';
 import { passwordPolicyValidator, resetCodeValidator } from '../../iam.validators';
 
 /**
- * Second step of the password recovery (mock-up 02a, US-03): validate the code and set the new
+ * Second step of the password recovery: validate the code and set the new
  * password. The code is valid for 15 minutes and can be used once.
  */
 @Component({
@@ -40,6 +40,7 @@ import { passwordPolicyValidator, resetCodeValidator } from '../../iam.validator
   ],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResetPassword {
   /** IAM application state used to validate and complete password recovery. */
@@ -56,7 +57,10 @@ export class ResetPassword {
   protected readonly codeResent = signal(false);
   /** Form containing the reset code and new password. */
   protected readonly form = new FormGroup({
-    code: new FormControl('', { nonNullable: true, validators: [Validators.required, resetCodeValidator] }),
+    code: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, resetCodeValidator],
+    }),
     newPassword: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, passwordPolicyValidator],

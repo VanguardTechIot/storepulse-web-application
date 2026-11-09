@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +19,7 @@ import { iamNav } from '../../iam.nav';
 import { emailValidator, passwordPolicyValidator } from '../../iam.validators';
 
 /**
- * First step of the registration flow: the gallery administrator account (mock-up 03, US-01).
+ * First step of the registration flow: the gallery administrator account.
  */
 @Component({
   selector: 'app-sign-up',
@@ -38,6 +38,7 @@ import { emailValidator, passwordPolicyValidator } from '../../iam.validators';
     TranslatePipe,
   ],
   templateUrl: './sign-up.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignUp {
   /** IAM application state used to register the user. */
@@ -56,12 +57,18 @@ export class SignUp {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(100)],
     }),
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, emailValidator] }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, emailValidator],
+    }),
     password: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, passwordPolicyValidator],
     }),
-    acceptTerms: new FormControl(false, { nonNullable: true, validators: [Validators.requiredTrue] }),
+    acceptTerms: new FormControl(false, {
+      nonNullable: true,
+      validators: [Validators.requiredTrue],
+    }),
   });
   /** Current password value used by the password requirements checklist. */
   protected readonly password = toSignal(this.form.controls.password.valueChanges, {
