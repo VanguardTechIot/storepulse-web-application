@@ -19,7 +19,11 @@
 
 @if (!store.ready()) {
   <mat-card id="state-card" appearance="outlined">
-    <app-page-state [status]="store.hasError() ? 'error' : 'loading'" (retry)="refresh()" />
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
   </mat-card>
 } @else if (summary(); as summary) {
   <div id="kpis" class="kpis">
@@ -72,6 +76,7 @@
   @if (!summary.hasActivity) {
     <mat-card id="empty-card" appearance="outlined">
       <app-page-state
+        id="dashboard-empty"
         icon="insights"
         [title]="'analytics.dashboard.empty.title' | translate"
         [message]="'analytics.dashboard.empty.message' | translate"
@@ -115,7 +120,11 @@
         @for (alert of recent(); track alert.id) {
           <app-alert-item [id]="'alert-' + alert.id" [alert]="alert" />
         } @empty {
-          <app-page-state icon="verified_user" [title]="'analytics.alerts.empty' | translate" />
+          <app-page-state
+            id="alerts-empty"
+            icon="verified_user"
+            [title]="'analytics.alerts.empty' | translate"
+          />
         }
       </mat-card>
     </div>

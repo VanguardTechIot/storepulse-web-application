@@ -1,11 +1,4 @@
 /* Layout specific to the Dashboard and Analytics views. */
-.main-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 400px;
-  align-items: start;
-  gap: 24px;
-}
-
 .delta {
   font-size: 12px;
   font-weight: 600;
@@ -43,10 +36,4 @@
   border: 1px solid var(--sp-border);
   border-radius: var(--sp-radius-sm);
   font-size: 13px;
-}
-
-@media (max-width: 1279px) {
-  .main-grid {
-    grid-template-columns: 1fr;
-  }
 }
