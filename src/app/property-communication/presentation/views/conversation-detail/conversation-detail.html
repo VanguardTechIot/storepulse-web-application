@@ -27,31 +27,31 @@
 
   @if (store.error(); as error) {
     <app-callout type="danger" icon="error" role="alert">{{
-      'communication.errors.' + error | translate
-    }}</app-callout>
+        'communication.errors.' + error | translate
+      }}</app-callout>
   }
 
   <mat-card appearance="outlined" class="thread-card">
     <div class="thread-info">
       <span
-        ><mat-icon aria-hidden="true">schedule</mat-icon
-        >{{
+      ><mat-icon aria-hidden="true">schedule</mat-icon
+      >{{
           'communication.conversation.started'
             | translate: { date: (conversation.startedAt | localizedDate: 'dateTime') }
         }}</span
       >
       @if (conversation.resolvedAt) {
         <span
-          ><mat-icon aria-hidden="true">task_alt</mat-icon
-          >{{
+        ><mat-icon aria-hidden="true">task_alt</mat-icon
+        >{{
             'communication.conversation.resolved_on'
               | translate: { date: (conversation.resolvedAt | localizedDate: 'dateTime') }
           }}</span
         >
       }
       <span
-        ><mat-icon aria-hidden="true">mail</mat-icon
-        >{{ store.directory.tenant(conversation.tenantId)?.email ?? '—' }}</span
+      ><mat-icon aria-hidden="true">mail</mat-icon
+      >{{ store.directory.tenant(conversation.tenantId)?.email ?? '—' }}</span
       >
     </div>
 
@@ -64,8 +64,8 @@
       @for (message of store.messages(); track message.id) {
         <article class="bubble" [class.mine]="message.isFromAdministrator">
           <span class="author">{{
-            authorName(message.senderId, message.isFromAdministrator)
-          }}</span>
+              authorName(message.senderId, message.isFromAdministrator)
+            }}</span>
           <p>{{ message.content }}</p>
           @if (message.hasAttachments) {
             <div class="attachments">
@@ -84,8 +84,8 @@
             </div>
           }
           <time [attr.datetime]="message.sentAt.toISOString()">{{
-            message.sentAt | localizedDate: 'dateTime'
-          }}</time>
+              message.sentAt | localizedDate: 'dateTime'
+            }}</time>
         </article>
       } @empty {
         <p class="muted">{{ 'communication.conversation.no_messages' | translate }}</p>
@@ -107,8 +107,8 @@
         </mat-form-field>
         @if (attachmentError(); as error) {
           <app-callout type="warn" icon="attach_file" role="alert">{{
-            'communication.errors.' + error | translate
-          }}</app-callout>
+              'communication.errors.' + error | translate
+            }}</app-callout>
         }
         <div class="row">
           <div class="attachments grow">
@@ -152,22 +152,22 @@
     } @else {
       <div class="composer">
         <app-callout type="ok" icon="task_alt">{{
-          'communication.conversation.closed_notice' | translate
-        }}</app-callout>
+            'communication.conversation.closed_notice' | translate
+          }}</app-callout>
       </div>
     }
   </mat-card>
 } @else if (store.loading()) {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state id="page-state" status="loading" />
 } @else {
-  <div class="state" role="alert">
-    <mat-icon class="state-icon error" aria-hidden="true">error</mat-icon>
-    <b>{{ 'communication.errors.' + (store.error() ?? 'conversation_not_found') | translate }}</b>
+  <app-page-state
+    id="conversation-not-found"
+    status="error"
+    [title]="'communication.errors.' + (store.error() ?? 'conversation_not_found') | translate"
+    [retryable]="false"
+  >
     <a matButton="outlined" routerLink="/communication/conversations">{{
-      'communication.conversation.back' | translate
-    }}</a>
-  </div>
+        'communication.conversation.back' | translate
+      }}</a>
+  </app-page-state>
 }

@@ -11,7 +11,7 @@
   </div>
 </header>
 
-<app-communication-tabs />
+<app-section-tabs [tabs]="tabs" label="communication.tabs.label" />
 
 <mat-button-toggle-group
   [value]="filter()"
@@ -32,60 +32,85 @@
 </mat-button-toggle-group>
 
 @if (store.loading() && store.assignments().length === 0) {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state id="page-state" status="loading" />
 } @else {
-  <mat-card appearance="outlined" class="table-card">
+  <mat-card id="assignments-card" appearance="outlined">
     @if (visible().length === 0) {
-      <div class="state">
-        <mat-icon class="state-icon" aria-hidden="true">assignment_ind</mat-icon>
-        <b>{{ 'communication.assignments.empty' | translate }}</b>
-      </div>
+      <app-page-state
+        id="assignments-empty"
+        icon="assignment_ind"
+        [title]="'communication.assignments.empty' | translate"
+      />
     } @else {
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">{{ 'communication.fields.tenant' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.unit' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.assigned_at' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.terminated_at' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.status' | translate }}</th>
-            <th scope="col">
+      <div class="table-wrap">
+        <table id="assignments-table" mat-table [dataSource]="visible()">
+          <ng-container matColumnDef="tenant">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.tenant' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let assignment">
+              <strong>{{ store.directory.tenantName(assignment.tenantId) }}</strong>
+              <small>{{ store.directory.tenant(assignment.tenantId)?.email }}</small>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="unit">
+            <th mat-header-cell *matHeaderCellDef>{{ 'communication.fields.unit' | translate }}</th>
+            <td mat-cell *matCellDef="let assignment">
+              {{ store.directory.unitLabel(assignment.commercialUnitId) }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="assignedAt">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.assigned_at' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let assignment">
+              {{ assignment.assignedAt | localizedDate: 'date' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="terminatedAt">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.terminated_at' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let assignment">
+              {{ assignment.terminatedAt | localizedDate: 'date' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.status' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let assignment">
+              <app-communication-status-badge [status]="assignment.status" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>
               <span class="sr-only">{{ 'communication.fields.actions' | translate }}</span>
             </th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (assignment of visible(); track assignment.id) {
-            <tr>
-              <td>
-                <strong>{{ store.directory.tenantName(assignment.tenantId) }}</strong>
-                <small>{{ store.directory.tenant(assignment.tenantId)?.email }}</small>
-              </td>
-              <td>{{ store.directory.unitLabel(assignment.commercialUnitId) }}</td>
-              <td>{{ assignment.assignedAt | localizedDate: 'date' }}</td>
-              <td>{{ assignment.terminatedAt | localizedDate: 'date' }}</td>
-              <td><app-communication-status-badge [status]="assignment.status" /></td>
-              <td class="end">
-                @if (assignment.isActive) {
-                  <button
-                    matButton
-                    type="button"
-                    class="danger-button"
-                    [disabled]="store.saving()"
-                    (click)="terminate(assignment)"
-                  >
-                    <mat-icon aria-hidden="true">person_remove</mat-icon>
-                    {{ 'communication.assignments.terminate' | translate }}
-                  </button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+            <td mat-cell *matCellDef="let assignment" class="end">
+              @if (assignment.isActive) {
+                <button
+                  matButton
+                  type="button"
+                  class="danger-button"
+                  [disabled]="store.saving()"
+                  (click)="terminate(assignment)"
+                >
+                  <mat-icon aria-hidden="true">person_remove</mat-icon>
+                  {{ 'communication.assignments.terminate' | translate }}
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let assignment; columns: columns"
+            [id]="'asg-' + assignment.id"
+          ></tr>
+        </table>
+      </div>
     }
   </mat-card>
 }

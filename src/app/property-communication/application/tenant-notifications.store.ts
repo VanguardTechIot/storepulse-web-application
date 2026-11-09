@@ -20,7 +20,7 @@ export interface PublicationResult {
 
 /**
  * Application service of the notifications sent to tenants: history, publication of
- * announcements and incident notices (US-34, US-35) and delivery retries.
+ * announcements and incident notices and delivery retries.
  */
 @Injectable({ providedIn: 'root' })
 export class TenantNotificationsStore {
@@ -53,7 +53,7 @@ export class TenantNotificationsStore {
   }
 
   /**
-   * Sends the communication to every affected tenant at once (US-34, US-35). Fails with
+   * Sends the communication to every affected tenant at once. Fails with
    * `no_recipients` when none of the selected units has a tenant.
    */
   publish(command: PublishAnnouncementCommand): Promise<boolean> {

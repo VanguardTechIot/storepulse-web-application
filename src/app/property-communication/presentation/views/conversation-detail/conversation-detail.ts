@@ -1,4 +1,12 @@
-import { Component, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  effect,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +15,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
@@ -15,6 +22,7 @@ import { Callout } from '../../../../shared/presentation/components/callout/call
 import { confirmAction } from '../../../../shared/presentation/components/confirmation-dialog/confirmation-dialog';
 import { ToastService } from '../../../../shared/presentation/components/toast-host/toast.service';
 import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { ConversationsStore } from '../../../application/conversations.store';
 import { CommunicationError } from '../../../domain/model/communication-error';
@@ -39,13 +47,14 @@ import { CommunicationStatusBadge } from '../../components/status-badge/status-b
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatProgressSpinnerModule,
+    PageState,
     ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
   ],
   templateUrl: './conversation-detail.html',
   styleUrl: '../../styles/communication.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationDetail {
   protected readonly store = inject(ConversationsStore);

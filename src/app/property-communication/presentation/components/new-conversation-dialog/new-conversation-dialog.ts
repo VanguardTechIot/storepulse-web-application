@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -31,45 +31,8 @@ import { notBlankValidator } from '../../communication.validators';
     TranslatePipe,
   ],
   templateUrl: './new-conversation-dialog.html',
-  styles: `
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding-top: 4px;
-    }
-    app-callout {
-      margin-bottom: 12px;
-    }
-    .attachments {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 6px;
-    }
-    .attachment {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 6px 4px 10px;
-      border: 1px solid var(--sp-border);
-      border-radius: 999px;
-      font-size: 12px;
-    }
-    .attachment .mat-icon {
-      width: 16px;
-      height: 16px;
-      font-size: 16px;
-    }
-    .attachment button {
-      display: inline-grid;
-      place-items: center;
-      padding: 0;
-      border: none;
-      background: none;
-      color: var(--sp-text-muted);
-    }
-  `,
+  styleUrl: './new-conversation-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewConversationDialog {
   protected readonly store = inject(ConversationsStore);
