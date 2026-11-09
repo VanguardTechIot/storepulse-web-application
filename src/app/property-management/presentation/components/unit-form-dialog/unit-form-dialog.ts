@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -23,7 +23,7 @@ export interface UnitFormData {
 }
 
 /**
- * Registers a store (US-09) or a common area (US-57), or edits a unit (US-10). A duplicated number
+ * Registers a store or a common area, or edits a unit. A duplicated number
  * or name is reported and nothing is saved.
  */
 @Component({
@@ -40,30 +40,8 @@ export interface UnitFormData {
     TranslatePipe,
   ],
   templateUrl: './unit-form-dialog.html',
-  styles: `
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding-top: 4px;
-    }
-    .type {
-      margin-bottom: 16px;
-    }
-    .row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0 16px;
-    }
-    app-callout {
-      margin-bottom: 12px;
-    }
-    @media (max-width: 559.98px) {
-      .row {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-  `,
+  styleUrl: './unit-form-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitFormDialog {
   protected readonly store = inject(PropertyManagementStore);
