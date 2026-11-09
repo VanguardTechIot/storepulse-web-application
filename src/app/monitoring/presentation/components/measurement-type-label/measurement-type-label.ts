@@ -9,6 +9,7 @@ export const MEASUREMENT_TYPE_ICONS: Record<MeasurementType, { icon: string; ton
   ELECTRICITY: { icon: 'bolt', tone: 'warning' },
   WATER: { icon: 'water_drop', tone: 'info' },
   MOTION: { icon: 'directions_run', tone: 'violet' },
+  SMOKE: { icon: 'detector_smoke', tone: 'neutral' },
 };
 
 /** Icon of a measurement type, optionally followed by its name. */

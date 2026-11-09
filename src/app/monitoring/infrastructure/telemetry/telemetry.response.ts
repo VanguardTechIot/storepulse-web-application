@@ -1,16 +1,17 @@
-import { BaseResource } from '../../../shared/infrastructure/base-response';
 import { MeasurementType } from '../../domain/model/measurement-type';
 
-export interface MeasurementResource extends BaseResource {
-  telemetryId: string;
+export interface MeasurementResource {
+  id: number;
   type: MeasurementType;
   value: number;
   unit: string;
   recordedAt: string;
 }
 
-export interface TelemetryResource extends BaseResource {
-  deviceId: string;
+/** Telemetry as `GET /telemetry` returns it, with its measurements embedded. */
+export interface TelemetryResource {
+  id: number;
+  deviceId: number;
   receivedAt: string;
-  measurements?: MeasurementResource[];
+  measurements: MeasurementResource[];
 }
