@@ -8,7 +8,7 @@ describe('toApiError', () => {
       new HttpErrorResponse({
         status: 404,
         statusText: 'Not Found',
-        url: 'http://localhost:3000/subscriptions/sub-1',
+        url: 'http://localhost:8080/api/v1/subscriptions/sub-1',
         error: {
           status: 404,
           error: 'Not Found',
@@ -31,20 +31,20 @@ describe('toApiError', () => {
       new HttpErrorResponse({
         status: 500,
         statusText: 'Internal Server Error',
-        url: 'http://localhost:3000/payments',
+        url: 'http://localhost:8080/api/v1/payments',
         error: 'boom',
       }),
     );
 
     expect(error.status).toBe(500);
     expect(error.error).toBe('Internal Server Error');
-    expect(error.path).toBe('/payments');
+    expect(error.path).toBe('/api/v1/payments');
     expect(error.isNetworkFailure).toBe(false);
   });
 
   it('marks a request without response as a network failure', () => {
     const error = toApiError(
-      new HttpErrorResponse({ status: 0, url: 'http://localhost:3000/plans' }),
+      new HttpErrorResponse({ status: 0, url: 'http://localhost:8080/api/v1/plans' }),
     );
 
     expect(error.isNetworkFailure).toBe(true);
