@@ -1,12 +1,14 @@
-import { HttpClient, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { firstValueFrom, Observable } from 'rxjs';
-import { retryOnDroppedConnection } from '../../../shared/infrastructure/retry-on-dropped-connection';
 import { environment } from '../../../../environments/environment';
+import { ApiError } from '../../../shared/domain/model/api-error';
+import { sendRequest } from '../../../shared/infrastructure/send-request';
 import { CommunicationError, CommunicationErrorCode } from '../../domain/model/communication-error';
 import { CommunicationLog } from '../../domain/model/communication-log.entity';
 import { Conversation } from '../../domain/model/conversation.entity';
 import { Message } from '../../domain/model/message.entity';
+import { NotifyTenantCommand } from '../../domain/model/notify-tenant.command';
+import { PublishAnnouncementCommand } from '../../domain/model/publish-announcement.command';
 import { TenantAssignment } from '../../domain/model/tenant-assignment.entity';
 import { TenantNotification } from '../../domain/model/tenant-notification.entity';
 import { PropertyCommunicationRepository } from '../../domain/repository/property-communication.repository';
@@ -31,22 +33,23 @@ const notificationsUrl = `${apiUrl}${environment.platformProviderTenantNotificat
 const logsUrl = `${apiUrl}${environment.platformProviderCommunicationLogsEndpointPath}`;
 const assignmentsUrl = `${apiUrl}${environment.platformProviderTenantAssignmentsEndpointPath}`;
 
+const codes = new Set<string>(Object.values(CommunicationErrorCode));
+
+/** The REST API answers the business code in `message`; anything else stays unexpected. */
+const failed = (error: ApiError) =>
+  new CommunicationError(
+    codes.has(error.message)
+      ? (error.message as CommunicationErrorCode)
+      : CommunicationErrorCode.Unexpected,
+  );
+
 function conversationUrl(conversationId: string, path = ''): string {
   return `${conversationsUrl}/${encodeURIComponent(conversationId)}${path}`;
 }
 
-/** New resources are sent without id: the server assigns it. */
-function withoutId<T extends { id: string }>(resource: T): Omit<T, 'id'> {
-  const { id: _id, ...rest } = resource;
-  return rest;
-}
-
 /**
- * HTTP implementation of the repository over the local data server (json-server).
- *
- * The REST API lists notifications and logs per tenant; the web application is the view of the
- * administrator, so here they are filtered by `galleryAdministratorId`. When the REST API exists,
- * only this class changes.
+ * HTTP implementation of the repository over the StorePulse REST API. The platform registers the
+ * communication logs and the side effects on the stores; this class only sends the commands.
  */
 export class HttpPropertyCommunicationRepository implements PropertyCommunicationRepository {
   private readonly http = inject(HttpClient);
@@ -57,175 +60,137 @@ export class HttpPropertyCommunicationRepository implements PropertyCommunicatio
   private readonly assignmentAssembler = new TenantAssignmentAssembler();
 
   // ---------- Conversations ----------
-  async listConversations(administratorId: string): Promise<Conversation[]> {
-    const url = `${conversationsUrl}/administrators/${encodeURIComponent(administratorId)}`;
-    const items = await this.request(this.http.get<ConversationResource[]>(url));
+  async listConversations(): Promise<Conversation[]> {
+    const items = await sendRequest(
+      this.http.get<ConversationResource[]>(conversationsUrl),
+      failed,
+    );
     return items.map((item) => this.conversationAssembler.toEntityFromResource(item));
   }
 
   async getConversation(conversationId: string): Promise<Conversation> {
-    const item = await this.request(
+    const item = await sendRequest(
       this.http.get<ConversationResource>(conversationUrl(conversationId)),
-      CommunicationErrorCode.ConversationNotFound,
+      failed,
     );
     return this.conversationAssembler.toEntityFromResource(item);
   }
 
   async startConversation(conversation: Conversation): Promise<Conversation> {
-    const item = await this.request(
+    const item = await sendRequest(
       this.http.post<ConversationResource>(
         conversationsUrl,
-        withoutId(this.conversationAssembler.toResourceFromEntity(conversation)),
+        this.conversationAssembler.toRequestFromEntity(conversation),
       ),
+      failed,
     );
     return this.conversationAssembler.toEntityFromResource(item);
   }
 
-  async updateConversation(conversation: Conversation): Promise<Conversation> {
-    const item = await this.request(
-      this.http.patch<ConversationResource>(conversationUrl(conversation.id), {
-        lastMessageAt: conversation.lastMessageAt.toISOString(),
-      }),
-      CommunicationErrorCode.ConversationNotFound,
-    );
-    return this.conversationAssembler.toEntityFromResource(item);
-  }
-
-  async resolveConversation(conversation: Conversation): Promise<Conversation> {
-    const item = await this.request(
-      this.http.patch<ConversationResource>(conversationUrl(conversation.id, '/resolve'), {
-        status: conversation.status,
-        resolvedAt: conversation.resolvedAt?.toISOString() ?? null,
-      }),
-      CommunicationErrorCode.ConversationNotFound,
+  async resolveConversation(conversationId: string): Promise<Conversation> {
+    const item = await sendRequest(
+      this.http.patch<ConversationResource>(conversationUrl(conversationId, '/resolve'), null),
+      failed,
     );
     return this.conversationAssembler.toEntityFromResource(item);
   }
 
   // ---------- Messages ----------
   async listMessages(conversationId: string): Promise<Message[]> {
-    const items = await this.request(
+    const items = await sendRequest(
       this.http.get<MessageResource[]>(conversationUrl(conversationId, '/messages')),
-      CommunicationErrorCode.ConversationNotFound,
+      failed,
     );
     return items.map((item) => this.messageAssembler.toEntityFromResource(item));
   }
 
   async sendMessage(message: Message): Promise<Message> {
-    const item = await this.request(
+    const item = await sendRequest(
       this.http.post<MessageResource>(
         conversationUrl(message.conversationId, '/messages'),
-        withoutId(this.messageAssembler.toResourceFromEntity(message)),
+        this.messageAssembler.toRequestFromEntity(message),
       ),
-      CommunicationErrorCode.ConversationNotFound,
+      failed,
     );
     return this.messageAssembler.toEntityFromResource(item);
   }
 
   // ---------- Notifications ----------
-  async listNotifications(administratorId: string): Promise<TenantNotification[]> {
-    const items = await this.request(
-      this.http.get<TenantNotificationResource[]>(notificationsUrl, {
-        params: { galleryAdministratorId: administratorId },
-      }),
+  async listNotifications(): Promise<TenantNotification[]> {
+    const items = await sendRequest(
+      this.http.get<TenantNotificationResource[]>(notificationsUrl),
+      failed,
     );
     return items.map((item) => this.notificationAssembler.toEntityFromResource(item));
   }
 
-  async createNotification(notification: TenantNotification): Promise<TenantNotification> {
-    const item = await this.request(
+  async notifyTenant(command: NotifyTenantCommand): Promise<TenantNotification> {
+    const item = await sendRequest(
       this.http.post<TenantNotificationResource>(
         notificationsUrl,
-        withoutId(this.notificationAssembler.toResourceFromEntity(notification)),
+        this.notificationAssembler.toRequestFromCommand(command),
       ),
+      failed,
     );
     return this.notificationAssembler.toEntityFromResource(item);
   }
 
-  async updateNotification(notification: TenantNotification): Promise<TenantNotification> {
-    const item = await this.request(
-      this.http.patch<TenantNotificationResource>(
-        `${notificationsUrl}/${encodeURIComponent(notification.id)}`,
-        { status: notification.status },
+  async publishAnnouncement(command: PublishAnnouncementCommand): Promise<TenantNotification[]> {
+    const items = await sendRequest(
+      this.http.post<TenantNotificationResource[]>(
+        `${notificationsUrl}/announcements`,
+        this.notificationAssembler.toAnnouncementRequestFromCommand(command),
       ),
+      failed,
+    );
+    return items.map((item) => this.notificationAssembler.toEntityFromResource(item));
+  }
+
+  async retryNotification(notificationId: string): Promise<TenantNotification> {
+    const item = await sendRequest(
+      this.http.patch<TenantNotificationResource>(
+        `${notificationsUrl}/${encodeURIComponent(notificationId)}/retry`,
+        null,
+      ),
+      failed,
     );
     return this.notificationAssembler.toEntityFromResource(item);
   }
 
   // ---------- Logs ----------
-  async listLogs(administratorId: string): Promise<CommunicationLog[]> {
-    const items = await this.request(
-      this.http.get<CommunicationLogResource[]>(logsUrl, {
-        params: { galleryAdministratorId: administratorId },
-      }),
-    );
+  async listLogs(): Promise<CommunicationLog[]> {
+    const items = await sendRequest(this.http.get<CommunicationLogResource[]>(logsUrl), failed);
     return items.map((item) => this.logAssembler.toEntityFromResource(item));
   }
 
-  async registerLog(log: CommunicationLog): Promise<CommunicationLog> {
-    const item = await this.request(
-      this.http.post<CommunicationLogResource>(
-        logsUrl,
-        withoutId(this.logAssembler.toResourceFromEntity(log)),
-      ),
-    );
-    return this.logAssembler.toEntityFromResource(item);
-  }
-
   // ---------- Assignments ----------
-  async listAssignments(administratorId: string): Promise<TenantAssignment[]> {
-    const items = await this.request(
-      this.http.get<TenantAssignmentResource[]>(assignmentsUrl, {
-        params: { galleryAdministratorId: administratorId },
-      }),
+  async listAssignments(): Promise<TenantAssignment[]> {
+    const items = await sendRequest(
+      this.http.get<TenantAssignmentResource[]>(assignmentsUrl),
+      failed,
     );
     return items.map((item) => this.assignmentAssembler.toEntityFromResource(item));
   }
 
   async assignTenant(assignment: TenantAssignment): Promise<TenantAssignment> {
-    const item = await this.request(
+    const item = await sendRequest(
       this.http.post<TenantAssignmentResource>(
         assignmentsUrl,
-        withoutId(this.assignmentAssembler.toResourceFromEntity(assignment)),
+        this.assignmentAssembler.toRequestFromEntity(assignment),
       ),
-      CommunicationErrorCode.UnitNotFound,
+      failed,
     );
     return this.assignmentAssembler.toEntityFromResource(item);
   }
 
-  async terminateAssignment(assignment: TenantAssignment): Promise<TenantAssignment> {
-    const item = await this.request(
+  async terminateAssignment(assignmentId: string): Promise<TenantAssignment> {
+    const item = await sendRequest(
       this.http.patch<TenantAssignmentResource>(
-        `${assignmentsUrl}/${encodeURIComponent(assignment.id)}/terminate`,
-        {
-          status: assignment.status,
-          terminatedAt: assignment.terminatedAt?.toISOString() ?? null,
-        },
+        `${assignmentsUrl}/${encodeURIComponent(assignmentId)}/terminate`,
+        null,
       ),
-      CommunicationErrorCode.AssignmentNotActive,
+      failed,
     );
     return this.assignmentAssembler.toEntityFromResource(item);
-  }
-
-  /** Runs a request and maps 404 and 409 to business errors; anything else stays unexpected. */
-  private async request<T>(
-    call: Observable<T>,
-    notFound: CommunicationErrorCode = CommunicationErrorCode.Unexpected,
-  ): Promise<T> {
-    try {
-      return await firstValueFrom(call.pipe(retryOnDroppedConnection()));
-    } catch (error) {
-      if (!(error instanceof HttpErrorResponse)) throw error;
-      if (
-        error.status === HttpStatusCode.NotFound &&
-        notFound !== CommunicationErrorCode.Unexpected
-      ) {
-        throw new CommunicationError(notFound);
-      }
-      if (error.status === HttpStatusCode.Conflict) {
-        throw new CommunicationError(CommunicationErrorCode.UnitAlreadyAssigned);
-      }
-      throw error;
-    }
   }
 }

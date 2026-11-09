@@ -13,7 +13,7 @@ export interface DeviceRow {
 export type DeviceFilter = 'ALL' | 'ACTIVE' | 'INACTIVE' | 'FAULTY' | 'DISCONNECTED';
 
 /** Result of a registration attempt. */
-export type RegisterDeviceOutcome = 'registered' | 'duplicated';
+export type RegisterDeviceOutcome = 'registered' | 'duplicated' | 'unlinked';
 
 type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
@@ -82,7 +82,10 @@ export class ResourceAssetStore {
     }
   }
 
-  /** Registers a device and links it to a resource; the serial number must be unique. */
+  /**
+   * Registers a device and links it to a resource; the serial number must be unique and the
+   * resource must be linked to a unit of the gallery.
+   */
   async registerDevice(
     serialNumber: string,
     type: IoTDeviceType,
@@ -91,11 +94,10 @@ export class ResourceAssetStore {
     try {
       await this.repository.registerIoTDevice(serialNumber.trim().toUpperCase(), type, resourceId);
     } catch (error) {
-      if (
-        error instanceof ResourceAssetError &&
-        error.code === ResourceAssetErrorCode.SerialNumberAlreadyRegistered
-      ) {
-        return 'duplicated';
+      if (error instanceof ResourceAssetError) {
+        if (error.code === ResourceAssetErrorCode.SerialNumberAlreadyRegistered)
+          return 'duplicated';
+        if (error.code === ResourceAssetErrorCode.ResourceNotFound) return 'unlinked';
       }
       throw error;
     }

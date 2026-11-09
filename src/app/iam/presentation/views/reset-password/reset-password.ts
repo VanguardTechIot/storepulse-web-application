@@ -11,7 +11,7 @@ import { interval, map } from 'rxjs';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
 import { ToneIcon } from '../../../../shared/presentation/components/tone-icon/tone-icon';
 import { IamStore } from '../../../application/iam.store';
-import { PasswordRecovery } from '../../../domain/model/password-recovery.entity';
+import { PasswordResetCode } from '../../../domain/model/password-reset-code.value-object';
 import { RequestPasswordResetCommand } from '../../../domain/model/request-password-reset.command';
 import { ResetPasswordCommand } from '../../../domain/model/reset-password.command';
 import { AuthenticationLayout } from '../../components/authentication-layout/authentication-layout';
@@ -50,7 +50,7 @@ export class ResetPassword {
   /** Navigation commands for IAM pages. */
   protected readonly iamNav = iamNav;
   /** Validity period for a password recovery code, in minutes. */
-  protected readonly validityInMinutes = PasswordRecovery.validityInMinutes;
+  protected readonly validityInMinutes = PasswordResetCode.validityInMinutes;
   /** Whether the new password is currently hidden in the form. */
   protected readonly hidePassword = signal(true);
   /** Whether a new reset code has been requested successfully. */

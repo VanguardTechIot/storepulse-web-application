@@ -3,7 +3,6 @@ import { NotifyTenantCommand } from '../domain/model/notify-tenant.command';
 import { TenantNotification } from '../domain/model/tenant-notification.entity';
 import { TenantDirectoryFacade } from '../infrastructure/acl/tenant-directory-facade';
 import { PROPERTY_COMMUNICATION_REPOSITORY } from '../infrastructure/property-communication.token';
-import { TenantNotifier } from './tenant-notifier';
 
 /** Active assignment of a tenant, as other contexts see it. */
 export interface ActiveTenantAssignment {
@@ -23,13 +22,10 @@ export interface ActiveTenantAssignment {
 export class ManagementTenantCommunicationFacade {
   private readonly repository = inject(PROPERTY_COMMUNICATION_REPOSITORY);
   private readonly tenantDirectory = inject(TenantDirectoryFacade);
-  private readonly notifier = inject(TenantNotifier);
 
-  async activeAssignments(administratorId: string): Promise<ActiveTenantAssignment[]> {
-    const [assignments, tenants] = await Promise.all([
-      this.repository.listAssignments(administratorId),
-      this.tenantDirectory.listTenants(),
-    ]);
+  async activeAssignments(): Promise<ActiveTenantAssignment[]> {
+    const assignments = await this.repository.listAssignments();
+    const tenants = await this.tenantDirectory.listTenants(assignments);
     const tenantById = new Map(tenants.map((tenant) => [tenant.id, tenant]));
     return assignments
       .filter((assignment) => assignment.isActive)
@@ -46,6 +42,6 @@ export class ManagementTenantCommunicationFacade {
   }
 
   notifyTenant(command: NotifyTenantCommand): Promise<TenantNotification> {
-    return this.notifier.notify(command);
+    return this.repository.notifyTenant(command);
   }
 }

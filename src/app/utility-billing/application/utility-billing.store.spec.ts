@@ -9,7 +9,7 @@ import { UtilityBill } from '../domain/model/utility-bill.entity';
 import { UtilityBillingRepository } from '../domain/repositories/utility-billing.repository';
 import { BillingItem } from '../domain/value-objects/billing-item.value-object';
 import { BillingMonth } from '../domain/value-objects/billing-month.value-object';
-import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
+import { PropertyContextFacade } from '../infrastructure/acl/property-context-facade';
 import { UTILITY_BILLING_REPOSITORY } from '../infrastructure/repositories/utility-billing.token';
 import { UtilityBillingStore } from './utility-billing.store';
 
@@ -17,7 +17,7 @@ function utilityBill(status: UtilityBillStatus): UtilityBill {
   return UtilityBill.restore({
     id: '1',
     code: 'FAC-202609-B12',
-    unitId: 'res-b12',
+    unitId: '12',
     unitCode: 'B-12',
     unitName: 'Local B-12',
     tenantName: 'Ópticas Visión',
@@ -48,7 +48,7 @@ function billingDispute(status: BillingDisputeStatus): BillingDispute {
 }
 
 describe('UtilityBillingStore', () => {
-  const unit = { id: 'res-b12', code: 'B-12', name: 'Local B-12', tenantName: 'Ópticas Visión' };
+  const unit = { id: '12', code: 'B-12', businessName: 'Ópticas Visión' };
 
   let repository: { [K in keyof UtilityBillingRepository]: ReturnType<typeof vi.fn> };
   let store: UtilityBillingStore;
@@ -67,7 +67,7 @@ describe('UtilityBillingStore', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: UTILITY_BILLING_REPOSITORY, useValue: repository },
-        { provide: ResourceAssetContextFacade, useValue: { listUnits: vi.fn(async () => [unit]) } },
+        { provide: PropertyContextFacade, useValue: { listUnits: vi.fn(async () => [unit]) } },
       ],
     });
     store = TestBed.inject(UtilityBillingStore);

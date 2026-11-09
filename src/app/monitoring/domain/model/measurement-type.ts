@@ -1,6 +1,14 @@
-export type MeasurementType = 'TEMPERATURE' | 'HUMIDITY' | 'WATER' | 'ELECTRICITY' | 'MOTION';
+export type MeasurementType =
+  'TEMPERATURE' | 'HUMIDITY' | 'WATER' | 'ELECTRICITY' | 'MOTION' | 'SMOKE';
 
-export const MEASUREMENT_TYPES: readonly MeasurementType[] = ['TEMPERATURE', 'HUMIDITY', 'ELECTRICITY', 'WATER', 'MOTION'];
+export const MEASUREMENT_TYPES: readonly MeasurementType[] = [
+  'TEMPERATURE',
+  'HUMIDITY',
+  'ELECTRICITY',
+  'WATER',
+  'MOTION',
+  'SMOKE',
+];
 
 export type ConsumptionType = Extract<MeasurementType, 'ELECTRICITY' | 'WATER'>;
 
@@ -12,4 +20,5 @@ export const MEASUREMENT_UNITS: Record<MeasurementType, string> = {
   ELECTRICITY: 'kWh',
   WATER: 'm³',
   MOTION: '',
+  SMOKE: 'ppm',
 };

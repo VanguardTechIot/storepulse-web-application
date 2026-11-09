@@ -3,9 +3,6 @@ import { DisputeReason } from '../../domain/enums/dispute-reason.enum';
 import { UtilityBillStatus } from '../../domain/enums/utility-bill-status.enum';
 import { UtilityType } from '../../domain/enums/utility-type.enum';
 
-/** Identifier as the platform writes it: numeric in the REST API, text in the local data server. */
-export type ResourceId = number | string;
-
 export interface BillingItemResource {
   utilityType: UtilityType;
   consumption: number;
@@ -16,9 +13,9 @@ export interface BillingItemResource {
 }
 
 export interface UtilityBillResource {
-  id: ResourceId;
+  id: number;
   code: string;
-  unitId: ResourceId;
+  unitId: number;
   unitCode: string;
   unitName: string | null;
   tenantName: string | null;
@@ -35,11 +32,9 @@ export interface UtilityBillResource {
   dueDate: string | null;
 }
 
+/** Body of `POST /utility-bills`: the platform reads the unit, its tenant and its consumption. */
 export interface GenerateUtilityBillResource {
-  unitId: ResourceId;
-  unitCode: string;
-  unitName: string;
-  tenantName: string;
+  unitId: number;
   /** Month as `yyyy-MM`. */
   period: string;
 }
@@ -49,9 +44,9 @@ export interface VerifyBillingDataResource {
 }
 
 export interface BillingDisputeResource {
-  id: ResourceId;
-  utilityBillId: ResourceId;
-  tenantId: ResourceId;
+  id: number;
+  utilityBillId: number;
+  tenantId: number;
   reason: DisputeReason;
   description: string | null;
   status: BillingDisputeStatus;

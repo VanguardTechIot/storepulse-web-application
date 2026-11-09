@@ -1,15 +1,13 @@
 export const environment = {
   production: true,
-  // Replace with the deployed StorePulse REST API URL when it is available.
+  // StorePulse REST API deployed on Render.
   platformProviderApiBaseUrl: 'https://storepulse-web-application.onrender.com/api/v1',
 
   // Profiles and Preferences: the profile is read and updated at /users/{userId}/profile.
   platformProviderUserProfileEndpointPath: '/users/{userId}/profile',
-  // Local JSON API only: sign-up creates the profile here; the REST API does it on its own.
-  platformProviderProfilesEndpointPath: '/profiles',
 
-  // Identity and Access Management
-  platformProviderUsersEndpointPath: '/users',
+  // Identity and Access Management: sign-in and sign-up answer the account and its JWT.
+  platformProviderAuthenticationEndpointPath: '/authentication',
   platformProviderPasswordRecoveriesEndpointPath: '/password-recoveries',
 
   // Property Management: galleries, their units (stores and common areas) and tenant invitations.

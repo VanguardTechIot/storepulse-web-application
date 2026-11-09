@@ -33,10 +33,7 @@ const failed = (error: ApiError) => {
   return new ResourceAssetError(ResourceAssetErrorCode.Unexpected);
 };
 
-/**
- * HTTP implementation of the repository over the platform API (json-server locally, with the
- * same contract as the REST API).
- */
+/** HTTP implementation of the repository over the StorePulse REST API. */
 export class HttpResourceAssetRepository implements ResourceAssetRepository {
   private readonly http = inject(HttpClient);
   private readonly resourceAssembler = new ResourceAssembler();
@@ -57,7 +54,7 @@ export class HttpResourceAssetRepository implements ResourceAssetRepository {
     type: IoTDeviceType,
     resourceId: string,
   ): Promise<IoTDevice> {
-    const body: RegisterIoTDeviceResource = { serialNumber, type, resourceId };
+    const body: RegisterIoTDeviceResource = { serialNumber, type, resourceId: Number(resourceId) };
     return this.sendDevice(this.http.post<IoTDeviceResource>(devicesUrl, body));
   }
 

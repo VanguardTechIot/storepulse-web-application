@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Callout } from '../../../../shared/presentation/components/callout/callout';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { PropertyManagementStore } from '../../../application/property-management.store';
@@ -36,6 +37,7 @@ export interface UnitFormData {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatSelectModule,
     ReactiveFormsModule,
     TranslatePipe,
   ],
@@ -76,6 +78,7 @@ export class UnitFormDialog {
       nonNullable: true,
       validators: [Validators.maxLength(CommercialUnit.businessNameMaxLength)],
     }),
+    resourceId: new FormControl<string | null>(this.editing?.resourceId ?? null),
   });
 
   constructor() {
@@ -93,7 +96,8 @@ export class UnitFormDialog {
   }
 
   protected async submit(): Promise<void> {
-    const { type, code, floor, areaSquareMeters, businessName } = this.form.getRawValue();
+    const { type, code, floor, areaSquareMeters, businessName, resourceId } =
+      this.form.getRawValue();
     if (code.trim().length > this.codeMaxLength) {
       this.form.controls.code.setErrors({ maxlength: true });
     }
@@ -106,6 +110,7 @@ export class UnitFormDialog {
       floor,
       areaSquareMeters: Number(areaSquareMeters),
       businessName: type === UnitType.Store ? businessName : null,
+      resourceId,
     };
     const ok = this.editing
       ? await this.store.updateUnit(this.editing.id, new UpdateCommercialUnitCommand(data))

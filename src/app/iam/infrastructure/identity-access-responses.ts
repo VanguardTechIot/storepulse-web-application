@@ -1,60 +1,44 @@
-import { BaseResource } from '../../shared/infrastructure/base-response';
-
 /** Public representation of a user account exposed by the REST API. */
-export interface UserAccountResource extends BaseResource {
-  /** Account email address. */
+export interface UserAccountResource {
+  id: number;
   email: string;
-  /** Account role. */
   role: string;
-  /** Account status. */
   status: string;
 }
 
-/**
- * User record stored by the local JSON API. It also keeps the password hash because json-server
- * has no server-side logic; the real REST API never returns it.
- */
-export interface UserResource extends UserAccountResource {
-  /** Hashed password used by the local JSON API. */
-  passwordHash: string;
+/** Answer of sign-in and sign-up: the account and the JWT that authorizes its requests. */
+export interface AuthenticatedUserResource {
+  user: UserAccountResource;
+  accessToken: string;
 }
 
-/** Request body for registering a user; the API assigns the identifier. */
-export type SignUpRequest = Omit<UserResource, 'id'>;
-
-/**
- * Profile created together with the account. Only the local JSON API needs it: the REST API
- * creates it in Profiles and Preferences on its own. Its id is the user id, so
- * `/users/{userId}/profile` maps onto it.
- */
-export interface ProfileCreationRequest extends BaseResource {
-  /** Identifier of the user associated with this profile. */
-  userId: string;
-  /** User's first name. */
-  firstName: string;
-  /** User's last name. */
-  lastName: string;
-  /** User's email address. */
+/** Request body for signing in. */
+export interface SignInResource {
   email: string;
-  /** User's phone number, if provided. */
-  phoneNumber: string | null;
-  /** URL of the user's profile photo, if available. */
-  photoUrl: string | null;
+  password: string;
 }
 
-/** Password recovery data returned by the API. */
-export interface PasswordRecoveryResource extends BaseResource {
-  /** Identifier of the user requesting recovery. */
-  userId: string;
-  /** Six-digit password reset code. */
-  code: string;
-  /** ISO 8601 timestamp when recovery was requested. */
-  requestedAt: string;
-  /** ISO 8601 timestamp when the reset code expires. */
+/** Request body for registering an account; the REST API also creates its profile. */
+export interface SignUpResource {
+  fullName: string;
+  email: string;
+  password: string;
+  role: string;
+}
+
+/** Request body for asking a reset code, which the REST API sends by email. */
+export interface RequestPasswordResetResource {
+  email: string;
+}
+
+/** Answer of a reset request: when the code expires. */
+export interface PasswordResetRequestedResource {
   expiresAt: string;
-  /** Whether the reset code has been used. */
-  used: boolean;
 }
 
-/** Request body for creating password recovery data; the API assigns the identifier. */
-export type PasswordRecoveryRequest = Omit<PasswordRecoveryResource, 'id'>;
+/** Request body for setting a new password with the code received. */
+export interface ResetPasswordResource {
+  email: string;
+  code: string;
+  newPassword: string;
+}

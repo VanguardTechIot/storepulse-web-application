@@ -19,8 +19,8 @@ export interface SubscriptionPlanResource {
 
 export interface SubscriptionResource {
   id: number;
-  galleryId: string | number;
-  galleryAdministratorId: string | number;
+  galleryId: number;
+  galleryAdministratorId: number;
   planId: number;
   status: SubscriptionStatus;
   billingCycle: BillingCycle;
@@ -33,9 +33,9 @@ export interface SubscriptionResource {
 
 /** Body of `POST /subscriptions`: the card goes to the gateway and is never stored. */
 export interface RequestSubscriptionResource {
-  galleryId: string;
+  galleryId: number;
   monitoredUnitCount: number;
-  planId: string;
+  planId: number;
   billingCycle: BillingCycle;
   paymentMethod: PaymentMethod;
   cardNumber: string;

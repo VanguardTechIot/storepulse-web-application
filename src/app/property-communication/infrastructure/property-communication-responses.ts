@@ -1,15 +1,20 @@
-import { BaseResource } from '../../shared/infrastructure/base-response';
-
 /** Conversation, as `GET /conversations/{id}` returns it. Dates are ISO-8601. */
-export interface ConversationResource extends BaseResource {
-  tenantId: string;
-  commercialUnitId: string | null;
-  galleryAdministratorId: string;
+export interface ConversationResource {
+  id: number;
+  tenantId: number;
+  commercialUnitId: number | null;
+  galleryAdministratorId: number;
   subject: string;
   status: 'OPEN' | 'RESOLVED';
   startedAt: string;
   lastMessageAt: string;
   resolvedAt: string | null;
+}
+
+/** Body of `POST /conversations`: the platform links the unit of the tenant's assignment. */
+export interface StartConversationResource {
+  tenantId: number;
+  subject: string;
 }
 
 export interface AttachmentResource {
@@ -20,19 +25,27 @@ export interface AttachmentResource {
 }
 
 /** Message, as `GET /conversations/{id}/messages` returns it. */
-export interface MessageResource extends BaseResource {
-  conversationId: string;
-  senderId: string;
+export interface MessageResource {
+  id: number;
+  conversationId: number;
+  senderId: number;
   senderRole: 'TENANT' | 'GALLERY_ADMINISTRATOR';
   content: string;
   attachments: AttachmentResource[];
   sentAt: string;
 }
 
-export interface TenantNotificationResource extends BaseResource {
-  tenantId: string;
-  commercialUnitId: string | null;
-  galleryAdministratorId: string;
+/** Body of `POST /conversations/{id}/messages`; the sender is the signed-in user. */
+export interface SendMessageResource {
+  content: string;
+  attachments: AttachmentResource[];
+}
+
+export interface TenantNotificationResource {
+  id: number;
+  tenantId: number;
+  commercialUnitId: number | null;
+  galleryAdministratorId: number;
   type: string;
   title: string;
   body: string;
@@ -40,25 +53,54 @@ export interface TenantNotificationResource extends BaseResource {
   status: 'PENDING' | 'SENT' | 'FAILED';
   read: boolean;
   createdAt: string;
-  referenceId: string | null;
+  referenceId: number | null;
 }
 
-export interface CommunicationLogResource extends BaseResource {
-  referenceId: string;
+/** Body of `POST /tenant-notifications`: the platform delivers it and logs the delivery. */
+export interface NotifyTenantResource {
+  tenantId: number;
+  commercialUnitId: number | null;
+  type: string;
+  title: string;
+  body: string;
+  channel: string;
+  referenceId: number | null;
+}
+
+/** Body of `POST /tenant-notifications/announcements`: one notification per assigned tenant. */
+export interface PublishAnnouncementResource {
+  type: string;
+  unitIds: number[];
+  wholeGallery: boolean;
+  title: string;
+  body: string;
+  channel: string;
+}
+
+export interface CommunicationLogResource {
+  id: number;
+  referenceId: number;
   referenceType: 'NOTIFICATION' | 'CONVERSATION';
   action: string;
-  tenantId: string;
-  galleryAdministratorId: string;
+  tenantId: number;
+  galleryAdministratorId: number;
   channel: 'IN_APP' | 'EMAIL' | 'PUSH';
   detail: string;
   loggedAt: string;
 }
 
-export interface TenantAssignmentResource extends BaseResource {
-  tenantId: string;
-  commercialUnitId: string;
-  galleryAdministratorId: string;
+export interface TenantAssignmentResource {
+  id: number;
+  tenantId: number;
+  commercialUnitId: number;
+  galleryAdministratorId: number;
   status: 'ACTIVE' | 'TERMINATED';
   assignedAt: string;
   terminatedAt: string | null;
+}
+
+/** Body of `POST /tenant-assignments`: the platform occupies the store and notifies the tenant. */
+export interface AssignTenantResource {
+  tenantId: number;
+  commercialUnitId: number;
 }

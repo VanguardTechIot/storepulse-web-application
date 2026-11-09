@@ -79,7 +79,7 @@ describe('SubscriptionsStore', () => {
         { provide: IamContextFacade, useValue: { currentAdministratorId: signal('usr-001') } },
         {
           provide: PropertyContextFacade,
-          useValue: { galleryRegistrationRoute: [], getGalleryOf: vi.fn(async () => gallery) },
+          useValue: { galleryRegistrationRoute: [], getGallery: vi.fn(async () => gallery) },
         },
       ],
     });

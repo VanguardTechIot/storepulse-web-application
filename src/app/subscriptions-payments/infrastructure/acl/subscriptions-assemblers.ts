@@ -51,9 +51,9 @@ export class SubscriptionAssembler {
     command: RequestSubscriptionCommand,
   ): RequestSubscriptionResource {
     return {
-      galleryId: gallery.galleryId,
+      galleryId: Number(gallery.galleryId),
       monitoredUnitCount: gallery.monitoredUnitCount,
-      planId: command.planId,
+      planId: Number(command.planId),
       billingCycle: command.billingCycle,
       paymentMethod: command.paymentMethod,
       cardNumber: command.cardNumber.replace(/\s+/g, ''),

@@ -1,54 +1,43 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { InvitationStatus } from '../../../property-management/domain/model/invitation-status.enum';
+import { PROPERTY_MANAGEMENT_REPOSITORY } from '../../../property-management/infrastructure/property-management.token';
 import { Tenant } from '../../domain/model/tenant';
-
-interface TenantAccountResource {
-  id: string;
-  email: string;
-  role: string;
-  status: string;
-}
-
-interface TenantProfileResource {
-  id: string;
-  userId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-const apiUrl = environment.platformProviderApiBaseUrl;
-const usersUrl = `${apiUrl}${environment.platformProviderUsersEndpointPath}`;
-const profilesUrl = `${apiUrl}${environment.platformProviderProfilesEndpointPath}`;
+import { TenantAssignment } from '../../domain/model/tenant-assignment.entity';
 
 /**
- * Anti-corruption layer towards Identity and Access Management and Profiles and Preferences: the
- * registered tenants (accounts with the TENANT role) with the name of their profile.
+ * Anti-corruption layer towards Property Management: the tenants of the gallery, known by the
+ * invitation they accepted.
  *
- * The local JSON API has no tenants endpoint, so they are read from the users and profiles
- * collections. When the REST API exposes them, only this class changes.
+ * Accepting an invitation assigns the tenant to its store, so each assignment is matched with the
+ * accepted invitation of the same store sent before it, which gives the tenant's email. The REST
+ * API does not let an administrator read the profile of a tenant, so the email is also the name
+ * shown.
  */
 @Injectable({ providedIn: 'root' })
 export class TenantDirectoryFacade {
-  private readonly http = inject(HttpClient);
+  private readonly propertyRepository = inject(PROPERTY_MANAGEMENT_REPOSITORY);
 
-  async listTenants(): Promise<Tenant[]> {
-    const [accounts, profiles] = await Promise.all([
-      firstValueFrom(
-        this.http.get<TenantAccountResource[]>(usersUrl, { params: { role: 'TENANT' } }),
-      ),
-      firstValueFrom(this.http.get<TenantProfileResource[]>(profilesUrl)),
-    ]);
-    const profileByUser = new Map(profiles.map((profile) => [profile.userId, profile]));
-    return accounts
-      .filter((account) => account.status === 'ACTIVE')
-      .map((account) => {
-        const profile = profileByUser.get(account.id);
-        const fullName = profile ? `${profile.firstName} ${profile.lastName}`.trim() : '';
-        return { id: account.id, fullName: fullName || account.email, email: account.email };
-      })
-      .sort((a, b) => a.fullName.localeCompare(b.fullName));
+  async listTenants(assignments: readonly TenantAssignment[]): Promise<Tenant[]> {
+    const accepted = (await this.propertyRepository.listInvitations())
+      .filter((invitation) => invitation.storedStatus === InvitationStatus.Accepted)
+      .sort((a, b) => b.sentAt.getTime() - a.sentAt.getTime());
+    const tenants = new Map<string, Tenant>();
+    for (const assignment of [...assignments].sort(
+      (a, b) => b.assignedAt.getTime() - a.assignedAt.getTime(),
+    )) {
+      if (tenants.has(assignment.tenantId)) continue;
+      const invitation = accepted.find(
+        (candidate) =>
+          candidate.unitId === assignment.commercialUnitId &&
+          candidate.sentAt <= assignment.assignedAt,
+      );
+      const email = invitation?.email ?? '';
+      tenants.set(assignment.tenantId, {
+        id: assignment.tenantId,
+        fullName: email || assignment.tenantId,
+        email,
+      });
+    }
+    return [...tenants.values()].sort((a, b) => a.fullName.localeCompare(b.fullName));
   }
 }

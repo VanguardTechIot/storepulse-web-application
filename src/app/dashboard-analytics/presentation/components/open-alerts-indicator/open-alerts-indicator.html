@@ -9,11 +9,8 @@
   matIconButton
   [routerLink]="alertsRoute"
   [attr.aria-label]="'toolbar.notifications' | translate"
+  [matBadge]="count()"
+  [matBadgeHidden]="count() === 0"
 >
-  <mat-icon
-    aria-hidden="true"
-    [matBadge]="count()"
-    [matBadgeHidden]="count() === 0"
-  >notifications</mat-icon
-  >
+  <mat-icon aria-hidden="true">notifications</mat-icon>
 </a>

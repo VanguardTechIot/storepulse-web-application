@@ -59,11 +59,10 @@ export class SubscriptionsStore {
   /** Gallery, plan catalog, subscription and payment history. */
   load(): Promise<boolean> {
     return this.execute(this.loading, async () => {
-      const administratorId = this.iamContext.currentAdministratorId();
-      if (!administratorId)
+      if (!this.iamContext.currentAdministratorId())
         throw new SubscriptionsError(SubscriptionsErrorCode.GalleryNotRegistered);
       const [gallery, plans] = await Promise.all([
-        this.propertyContext.getGalleryOf(administratorId),
+        this.propertyContext.getGallery(),
         this.repository.listPlans(),
       ]);
       this.plansState.set(plans);

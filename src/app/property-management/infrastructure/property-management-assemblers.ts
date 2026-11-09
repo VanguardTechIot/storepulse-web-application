@@ -1,4 +1,3 @@
-import { BaseAssembler } from '../../shared/infrastructure/base-assembler';
 import { CommercialGallery } from '../domain/model/commercial-gallery.entity';
 import { CommercialUnit } from '../domain/model/commercial-unit.entity';
 import { InvitationStatus } from '../domain/model/invitation-status.enum';
@@ -8,17 +7,17 @@ import { UnitType } from '../domain/model/unit-type.enum';
 import {
   CommercialGalleryResource,
   CommercialUnitResource,
+  RegisterCommercialUnitResource,
+  SaveCommercialGalleryResource,
   TenantInvitationResource,
+  UpdateCommercialUnitResource,
 } from './property-management-responses';
 
-export class CommercialGalleryAssembler implements BaseAssembler<
-  CommercialGallery,
-  CommercialGalleryResource
-> {
+export class CommercialGalleryAssembler {
   toEntityFromResource(r: CommercialGalleryResource): CommercialGallery {
     return new CommercialGallery({
-      id: r.id,
-      administratorId: r.administratorId,
+      id: String(r.id),
+      administratorId: String(r.administratorId),
       name: r.name,
       address: r.address,
       totalUnits: r.totalUnits,
@@ -26,80 +25,62 @@ export class CommercialGalleryAssembler implements BaseAssembler<
     });
   }
 
-  toResourceFromEntity(e: CommercialGallery): CommercialGalleryResource {
-    return {
-      id: e.id,
-      administratorId: e.administratorId,
-      name: e.name,
-      address: e.address,
-      totalUnits: e.totalUnits,
-      registeredAt: e.registeredAt.toISOString(),
-    };
+  toRequestFromEntity(e: CommercialGallery): SaveCommercialGalleryResource {
+    return { name: e.name, address: e.address, totalUnits: e.totalUnits };
   }
 }
 
-export class CommercialUnitAssembler implements BaseAssembler<
-  CommercialUnit,
-  CommercialUnitResource
-> {
+export class CommercialUnitAssembler {
   toEntityFromResource(r: CommercialUnitResource): CommercialUnit {
     return new CommercialUnit({
-      id: r.id,
-      galleryId: r.galleryId,
+      id: String(r.id),
+      galleryId: String(r.galleryId),
       type: r.type as UnitType,
       code: r.code,
       floor: r.floor,
       areaSquareMeters: r.areaSquareMeters,
       businessName: r.businessName,
+      resourceId: r.resourceId === null ? null : String(r.resourceId),
       status: r.status as UnitStatus,
       active: r.active,
       createdAt: new Date(r.createdAt),
     });
   }
 
-  toResourceFromEntity(e: CommercialUnit): CommercialUnitResource {
+  toRegisterRequestFromEntity(e: CommercialUnit): RegisterCommercialUnitResource {
     return {
-      id: e.id,
-      galleryId: e.galleryId,
       type: e.type,
       code: e.code,
       floor: e.floor,
       areaSquareMeters: e.areaSquareMeters,
       businessName: e.businessName,
+      resourceId: e.resourceId === null ? null : Number(e.resourceId),
+    };
+  }
+
+  toUpdateRequestFromEntity(e: CommercialUnit): UpdateCommercialUnitResource {
+    return {
+      code: e.code,
+      floor: e.floor,
+      areaSquareMeters: e.areaSquareMeters,
+      businessName: e.businessName,
+      resourceId: e.resourceId === null ? null : Number(e.resourceId),
       status: e.status,
-      active: e.active,
-      createdAt: e.createdAt.toISOString(),
     };
   }
 }
 
-export class TenantInvitationAssembler implements BaseAssembler<
-  TenantInvitation,
-  TenantInvitationResource
-> {
+export class TenantInvitationAssembler {
   toEntityFromResource(r: TenantInvitationResource): TenantInvitation {
     return new TenantInvitation({
-      id: r.id,
-      unitId: r.unitId,
-      galleryId: r.galleryId,
+      id: String(r.id),
+      unitId: String(r.unitId),
+      galleryId: String(r.galleryId),
       email: r.email,
       token: r.token,
       status: r.status as InvitationStatus,
       sentAt: new Date(r.sentAt),
       expiresAt: new Date(r.expiresAt),
     });
-  }
-
-  toResourceFromEntity(e: TenantInvitation): TenantInvitationResource {
-    return {
-      id: e.id,
-      unitId: e.unitId,
-      galleryId: e.galleryId,
-      email: e.email,
-      token: e.token,
-      status: e.storedStatus as TenantInvitationResource['status'],
-      sentAt: e.sentAt.toISOString(),
-      expiresAt: e.expiresAt.toISOString(),
-    };
   }
 }
