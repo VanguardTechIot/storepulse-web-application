@@ -1,20 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Marca y acciones */
+  /* Brand and actions */
   --sp-primary: #2563eb;
   --sp-primary-soft: #eef4ff;
 
-  /* Texto */
+  /* Text */
   --sp-text: #1f2937;
   --sp-text-muted: #6b7280;
 
-  /* Superficies */
+  /* Surfaces */
   --sp-bg: #f5f6fa;
   --sp-surface: #ffffff;
   --sp-border: #e5e7eb;
 
-  /* Estados */
+  /* Status */
   --sp-success: #16a34a;
   --sp-success-soft: #ecfdf3;
   --sp-warning: #d97706;
@@ -54,7 +54,7 @@ button {
   cursor: pointer;
 }
 
-/* Badges de estado reutilizables en todo el proyecto */
+/* Status badges reused across the project */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -72,18 +72,18 @@ button {
 .badge--violet { color: var(--sp-violet); background: var(--sp-violet-soft); }
 .badge--neutral { color: var(--sp-text-muted); background: #f3f4f6; }
 
-/* Separación entre los botones de las acciones de una tarjeta de Material */
+/* Gap between the action buttons of a Material card */
 .mat-mdc-card-actions {
   gap: 8px;
 }
 
-/* Foco visible para navegación con teclado (a11y) */
+/* Visible focus for keyboard navigation */
 :focus-visible {
   outline: 2px solid var(--sp-primary);
   outline-offset: 2px;
 }
 
-/* Texto solo para lectores de pantalla (a11y) */
+/* Text only for screen readers */
 .sr-only {
   position: absolute;
   width: 1px;

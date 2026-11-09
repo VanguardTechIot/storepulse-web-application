@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -13,6 +13,7 @@ export type CalloutType = 'info' | 'ok' | 'warn' | 'danger';
   imports: [MatCardModule, MatIconModule],
   templateUrl: './callout.html',
   styleUrl: './callout.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Callout {
   readonly type = input<CalloutType>('info');

@@ -3,7 +3,7 @@ export const environment = {
   // Local JSON API (json-server). Start it with `npm run mock:api`.
   platformProviderApiBaseUrl: 'http://localhost:3000/api/v1',
 
-  // Profiles and Preferences: the profile is read and updated at /users/{userId}/profile (TS-04).
+  // Profiles and Preferences: the profile is read and updated at /users/{userId}/profile.
   platformProviderUserProfileEndpointPath: '/users/{userId}/profile',
   // Local JSON API only: sign-up creates the profile here; the REST API does it on its own.
   platformProviderProfilesEndpointPath: '/profiles',
