@@ -2,6 +2,5 @@
 export interface UnitReference {
   readonly id: string;
   readonly code: string;
-  readonly name: string;
-  readonly tenantName: string;
+  readonly businessName: string | null;
 }

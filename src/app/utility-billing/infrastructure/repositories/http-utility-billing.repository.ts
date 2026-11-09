@@ -33,10 +33,7 @@ const failed = (error: ApiError) => {
   );
 };
 
-/**
- * HTTP implementation of the repository over the platform API (json-server locally, with the
- * same contract as the REST API).
- */
+/** HTTP implementation of the repository over the StorePulse REST API. */
 export class HttpUtilityBillingRepository implements UtilityBillingRepository {
   private readonly http = inject(HttpClient);
   private readonly billAssembler = new UtilityBillAssembler();

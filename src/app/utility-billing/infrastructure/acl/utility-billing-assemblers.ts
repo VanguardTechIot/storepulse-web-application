@@ -44,16 +44,8 @@ export class UtilityBillAssembler {
     });
   }
 
-  /** The REST API expects a numeric unit; the local data server keeps its text identifiers. */
   toResourceFromCommand(command: GenerateUtilityBillCommand): GenerateUtilityBillResource {
-    const { unit, period } = command;
-    return {
-      unitId: /^\d+$/.test(unit.id) ? Number(unit.id) : unit.id,
-      unitCode: unit.code,
-      unitName: unit.name,
-      tenantName: unit.tenantName,
-      period: period.value,
-    };
+    return { unitId: Number(command.unit.id), period: command.period.value };
   }
 }
 

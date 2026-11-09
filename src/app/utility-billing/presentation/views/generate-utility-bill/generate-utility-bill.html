@@ -38,7 +38,9 @@
           <mat-label>{{ 'billing.generate.unit' | translate }}</mat-label>
           <mat-select id="unit-select" formControlName="unitId">
             @for (unit of store.units(); track unit.id) {
-              <mat-option [value]="unit.id">{{ unit.code }} · {{ unit.tenantName }}</mat-option>
+              <mat-option [value]="unit.id"
+              >{{ unit.code }}{{ unit.businessName ? ' · ' + unit.businessName : '' }}</mat-option
+              >
             }
           </mat-select>
           @if (form.controls.unitId.hasError('required')) {

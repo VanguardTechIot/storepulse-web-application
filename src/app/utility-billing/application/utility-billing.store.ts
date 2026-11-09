@@ -6,7 +6,7 @@ import { BillingError, BillingErrorCode } from '../domain/model/billing-error';
 import { UnitReference } from '../domain/model/unit-reference';
 import { UtilityBill } from '../domain/model/utility-bill.entity';
 import { BillingMonth } from '../domain/value-objects/billing-month.value-object';
-import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
+import { PropertyContextFacade } from '../infrastructure/acl/property-context-facade';
 import { UTILITY_BILLING_REPOSITORY } from '../infrastructure/repositories/utility-billing.token';
 
 type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
@@ -21,7 +21,7 @@ type LoadStatus = 'idle' | 'loading' | 'loaded' | 'error';
 @Injectable({ providedIn: 'root' })
 export class UtilityBillingStore {
   private readonly repository = inject(UTILITY_BILLING_REPOSITORY);
-  private readonly resourceAssetContext = inject(ResourceAssetContextFacade);
+  private readonly propertyContext = inject(PropertyContextFacade);
 
   private readonly status = signal<LoadStatus>('idle');
   /** True once the data has been loaded at least once; later refreshes keep showing it. */
@@ -84,7 +84,7 @@ export class UtilityBillingStore {
       const [bills, disputes, units] = await Promise.all([
         this.repository.listBills(),
         this.repository.listDisputes(),
-        this.resourceAssetContext.listUnits(),
+        this.propertyContext.listUnits(),
       ]);
       this.billsState.set(bills);
       this.disputesState.set(disputes);

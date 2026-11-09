@@ -5,6 +5,7 @@
 export enum BillingErrorCode {
   NotFound = 'not_found',
   UnitNotFound = 'unit_not_found',
+  UnitNotMonitored = 'unit_not_monitored',
   Duplicate = 'duplicate',
   InvalidTransition = 'invalid_transition',
   IncompleteDataNotAccepted = 'incomplete_data_not_accepted',
