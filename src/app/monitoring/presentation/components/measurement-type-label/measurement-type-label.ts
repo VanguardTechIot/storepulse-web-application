@@ -12,7 +12,6 @@ export const MEASUREMENT_TYPE_ICONS: Record<MeasurementType, { icon: string; ton
   SMOKE: { icon: 'detector_smoke', tone: 'neutral' },
 };
 
-/** Icon of a measurement type, optionally followed by its name. */
 @Component({
   selector: 'app-measurement-type-label',
   imports: [ToneIcon, TranslatePipe],

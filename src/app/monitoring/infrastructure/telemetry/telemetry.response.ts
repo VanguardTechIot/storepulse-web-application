@@ -8,7 +8,6 @@ export interface MeasurementResource {
   recordedAt: string;
 }
 
-/** Telemetry as `GET /telemetry` returns it, with its measurements embedded. */
 export interface TelemetryResource {
   id: number;
   deviceId: number;

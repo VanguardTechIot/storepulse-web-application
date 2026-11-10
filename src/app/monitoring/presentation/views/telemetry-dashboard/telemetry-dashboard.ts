@@ -27,7 +27,6 @@ const STATE_TONES: Record<ResourceMonitoringState, Tone> = {
   NO_MONITORING: 'violet',
 };
 
-/** Monitoring status of each location and the latest measurements received. */
 @Component({
   selector: 'app-telemetry-dashboard',
   imports: [

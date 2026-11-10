@@ -45,7 +45,6 @@ const ROW_STATUS_TONES: Record<RowStatus, Tone> = {
 
 const HISTORY_PERIODS = 12;
 
-/** Consolidated consumption of the period and history of each location against its baseline. */
 @Component({
   selector: 'app-consumption',
   imports: [

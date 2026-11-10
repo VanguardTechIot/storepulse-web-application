@@ -1,4 +1,3 @@
-/* Layout specific to the Monitoring views. */
 .kpis {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
