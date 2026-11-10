@@ -1,14 +1,12 @@
-﻿import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  output,
-  signal,
-} from '@angular/core';
-import { ConfirmDialog } from '../../../../shared/presentation/components/confirm-dialog/confirm-dialog';
-import { Icon } from '../../../../shared/presentation/components/icon/icon';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { Callout } from '../../../../shared/presentation/components/callout/callout';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { ResourceAssetStore } from '../../../application/resource-asset.store';
 import { IoTDeviceType } from '../../../domain/model/iot-device.entity';
@@ -21,69 +19,59 @@ const DEVICE_TYPES: IoTDeviceType[] = [
   'COMMON_AREA_NODE',
 ];
 
-/**
- * Form to register an IoT device and link it to a stand or common area (US-14).
- */
+/** Registers an IoT device and links it to a stand or common area. */
 @Component({
   selector: 'app-register-device-dialog',
-  imports: [ConfirmDialog, Icon, TranslatePipe],
+  imports: [
+    Callout,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    TranslatePipe,
+  ],
   templateUrl: './register-device-dialog.html',
+  styleUrl: '../device-dialog.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterDeviceDialog {
   protected readonly store = inject(ResourceAssetStore);
-
-  readonly open = input(false);
-  readonly closed = output<void>();
+  private readonly dialogRef = inject(MatDialogRef<RegisterDeviceDialog, boolean>);
 
   protected readonly types = DEVICE_TYPES;
-  protected readonly serialNumber = signal('');
-  protected readonly type = signal<IoTDeviceType>('INTRUSION_NODE');
-  protected readonly resourceId = signal('');
-  protected readonly submitted = signal(false);
-  protected readonly duplicated = signal(false);
   protected readonly busy = signal(false);
+  /** Serial number already registered, shown until the field changes. */
+  protected readonly duplicated = signal<string | null>(null);
+  /** The chosen resource is not linked to a unit of the gallery yet. */
+  protected readonly unlinked = signal(false);
+  protected readonly form = new FormGroup({
+    serialNumber: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    type: new FormControl<IoTDeviceType>('INTRUSION_NODE', { nonNullable: true }),
+    resourceId: new FormControl('', { nonNullable: true, validators: Validators.required }),
+  });
 
-  protected readonly serialMissing = computed(
-    () => this.submitted() && !this.serialNumber().trim(),
-  );
-  protected readonly resourceMissing = computed(() => this.submitted() && !this.resourceId());
-
-  protected setSerialNumber(value: string): void {
-    this.duplicated.set(false);
-    this.serialNumber.set(value);
-  }
-
-  protected setType(value: string): void {
-    this.type.set(value as IoTDeviceType);
+  constructor() {
+    this.form.controls.serialNumber.valueChanges.subscribe(() => this.duplicated.set(null));
+    this.form.controls.resourceId.valueChanges.subscribe(() => this.unlinked.set(false));
   }
 
   protected async register(): Promise<void> {
-    this.submitted.set(true);
-    if (!this.serialNumber().trim() || !this.resourceId()) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const { serialNumber, type, resourceId } = this.form.getRawValue();
     this.busy.set(true);
     try {
-      const outcome = await this.store.registerDevice(
-        this.serialNumber(),
-        this.type(),
-        this.resourceId(),
-      );
-      if (outcome === 'duplicated') {
-        this.duplicated.set(true);
-        return;
-      }
-      this.close();
+      const outcome = await this.store.registerDevice(serialNumber, type, resourceId);
+      if (outcome === 'duplicated') this.duplicated.set(serialNumber.trim().toUpperCase());
+      else if (outcome === 'unlinked') this.unlinked.set(true);
+      else this.dialogRef.close(true);
     } finally {
       this.busy.set(false);
     }
-  }
-
-  protected close(): void {
-    this.serialNumber.set('');
-    this.type.set('INTRUSION_NODE');
-    this.resourceId.set('');
-    this.submitted.set(false);
-    this.duplicated.set(false);
-    this.closed.emit();
   }
 }

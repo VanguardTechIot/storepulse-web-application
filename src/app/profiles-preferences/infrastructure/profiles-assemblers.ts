@@ -1,12 +1,12 @@
-import { BaseAssembler } from '../../shared/infrastructure/base-assembler';
 import { Profile } from '../domain/model/profile.entity';
-import { ProfileResource } from './profiles-responses';
+import { ProfileResource, UpdateProfileResource } from './profiles-responses';
 
-export class ProfileAssembler implements BaseAssembler<Profile, ProfileResource> {
+/** Converts between profile domain entities and API resources. */
+export class ProfileAssembler {
   toEntityFromResource(r: ProfileResource): Profile {
     return new Profile({
-      id: r.id,
-      userId: r.userId,
+      id: String(r.id),
+      userId: String(r.userId),
       firstName: r.firstName,
       lastName: r.lastName,
       email: r.email,
@@ -15,10 +15,8 @@ export class ProfileAssembler implements BaseAssembler<Profile, ProfileResource>
     });
   }
 
-  toResourceFromEntity(e: Profile): ProfileResource {
+  toRequestFromEntity(e: Profile): UpdateProfileResource {
     return {
-      id: e.id,
-      userId: e.userId,
       firstName: e.firstName,
       lastName: e.lastName,
       email: e.email,

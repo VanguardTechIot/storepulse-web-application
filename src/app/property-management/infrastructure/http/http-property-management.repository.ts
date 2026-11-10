@@ -1,13 +1,12 @@
-import { HttpClient, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-import { retryOnDroppedConnection } from '../../../shared/infrastructure/retry-on-dropped-connection';
 import { environment } from '../../../../environments/environment';
+import { ApiError } from '../../../shared/domain/model/api-error';
+import { sendRequest } from '../../../shared/infrastructure/send-request';
 import { CommercialGallery } from '../../domain/model/commercial-gallery.entity';
 import { CommercialUnit } from '../../domain/model/commercial-unit.entity';
 import { PropertyError, PropertyErrorCode } from '../../domain/model/property-error';
 import { TenantInvitation } from '../../domain/model/tenant-invitation.entity';
-import { UnitType } from '../../domain/model/unit-type.enum';
 import { PropertyManagementRepository } from '../../domain/repository/property-management.repository';
 import {
   CommercialGalleryAssembler,
@@ -17,6 +16,7 @@ import {
 import {
   CommercialGalleryResource,
   CommercialUnitResource,
+  InviteTenantResource,
   TenantInvitationResource,
 } from '../property-management-responses';
 
@@ -24,6 +24,14 @@ const apiUrl = environment.platformProviderApiBaseUrl;
 const galleriesUrl = `${apiUrl}${environment.platformProviderGalleriesEndpointPath}`;
 const unitsUrl = `${apiUrl}${environment.platformProviderUnitsEndpointPath}`;
 const invitationsUrl = `${apiUrl}${environment.platformProviderTenantInvitationsEndpointPath}`;
+
+const codes = new Set<string>(Object.values(PropertyErrorCode));
+
+/** The REST API answers the business code in `message`; anything else stays unexpected. */
+const failed = (error: ApiError) =>
+  new PropertyError(
+    codes.has(error.message) ? (error.message as PropertyErrorCode) : PropertyErrorCode.Unexpected,
+  );
 
 function galleryUnitsUrl(galleryId: string): string {
   const path = environment.platformProviderGalleryUnitsEndpointPath;
@@ -35,18 +43,9 @@ function unitInviteUrl(unitId: string): string {
   return `${apiUrl}${path.replace('{unitId}', encodeURIComponent(unitId))}`;
 }
 
-/** New resources are sent without id: the server assigns it. */
-function withoutId<T extends { id: string }>(resource: T): Omit<T, 'id'> {
-  const { id: _id, ...rest } = resource;
-  return rest;
-}
-
 /**
- * HTTP implementation of the repository over the local data server (json-server).
- *
- * json-server only stores data, so the duplicated unit check (409, TS-07 and TS-08) is done by the
- * domain before saving, and the logical removal is sent as a `PATCH` (a `DELETE` would erase the
- * row). When the REST API exists, only this class changes.
+ * HTTP implementation of the repository over the StorePulse REST API. The API answers only the
+ * gallery, units and invitations of the signed-in administrator.
  */
 export class HttpPropertyManagementRepository implements PropertyManagementRepository {
   private readonly http = inject(HttpClient);
@@ -54,182 +53,106 @@ export class HttpPropertyManagementRepository implements PropertyManagementRepos
   private readonly unitAssembler = new CommercialUnitAssembler();
   private readonly invitationAssembler = new TenantInvitationAssembler();
 
-  async findGalleryByAdministrator(administratorId: string): Promise<CommercialGallery | null> {
-    try {
-      const galleries = await firstValueFrom(
-        this.http
-          .get<CommercialGalleryResource[]>(galleriesUrl, { params: { administratorId } })
-          .pipe(retryOnDroppedConnection()),
-      );
-      return galleries.length > 0 ? this.galleryAssembler.toEntityFromResource(galleries[0]) : null;
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.GalleryNotFound);
-    }
+  async findGallery(): Promise<CommercialGallery | null> {
+    const galleries = await sendRequest(
+      this.http.get<CommercialGalleryResource[]>(galleriesUrl),
+      failed,
+    );
+    return galleries.length > 0 ? this.galleryAssembler.toEntityFromResource(galleries[0]) : null;
   }
 
   async registerGallery(gallery: CommercialGallery): Promise<CommercialGallery> {
-    try {
-      const saved = await firstValueFrom(
-        this.http
-          .post<CommercialGalleryResource>(
-            galleriesUrl,
-            withoutId(this.galleryAssembler.toResourceFromEntity(gallery)),
-          )
-          .pipe(retryOnDroppedConnection()),
-      );
-      return this.galleryAssembler.toEntityFromResource(saved);
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.GalleryNotFound);
-    }
+    const resource = await sendRequest(
+      this.http.post<CommercialGalleryResource>(
+        galleriesUrl,
+        this.galleryAssembler.toRequestFromEntity(gallery),
+      ),
+      failed,
+    );
+    return this.galleryAssembler.toEntityFromResource(resource);
   }
 
   async updateGallery(gallery: CommercialGallery): Promise<CommercialGallery> {
-    try {
-      const saved = await firstValueFrom(
-        this.http
-          .put<CommercialGalleryResource>(
-            `${galleriesUrl}/${encodeURIComponent(gallery.id)}`,
-            this.galleryAssembler.toResourceFromEntity(gallery),
-          )
-          .pipe(retryOnDroppedConnection()),
-      );
-      return this.galleryAssembler.toEntityFromResource(saved);
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.GalleryNotFound);
-    }
+    const resource = await sendRequest(
+      this.http.put<CommercialGalleryResource>(
+        `${galleriesUrl}/${encodeURIComponent(gallery.id)}`,
+        this.galleryAssembler.toRequestFromEntity(gallery),
+      ),
+      failed,
+    );
+    return this.galleryAssembler.toEntityFromResource(resource);
   }
 
   async listUnits(galleryId: string): Promise<CommercialUnit[]> {
-    try {
-      const units = await firstValueFrom(
-        this.http
-          .get<CommercialUnitResource[]>(galleryUnitsUrl(galleryId))
-          .pipe(retryOnDroppedConnection()),
-      );
-      return units.map((unit) => this.unitAssembler.toEntityFromResource(unit));
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.GalleryNotFound);
-    }
+    const resources = await sendRequest(
+      this.http.get<CommercialUnitResource[]>(galleryUnitsUrl(galleryId)),
+      failed,
+    );
+    return resources.map((r) => this.unitAssembler.toEntityFromResource(r));
   }
 
   async getUnit(unitId: string): Promise<CommercialUnit> {
-    try {
-      const unit = await firstValueFrom(
-        this.http
-          .get<CommercialUnitResource>(`${unitsUrl}/${encodeURIComponent(unitId)}`)
-          .pipe(retryOnDroppedConnection()),
-      );
-      return this.unitAssembler.toEntityFromResource(unit);
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.UnitNotFound);
-    }
+    const resource = await sendRequest(
+      this.http.get<CommercialUnitResource>(`${unitsUrl}/${encodeURIComponent(unitId)}`),
+      failed,
+    );
+    return this.unitAssembler.toEntityFromResource(resource);
   }
 
   async registerUnit(unit: CommercialUnit): Promise<CommercialUnit> {
-    try {
-      const saved = await firstValueFrom(
-        this.http
-          .post<CommercialUnitResource>(
-            galleryUnitsUrl(unit.galleryId),
-            withoutId(this.unitAssembler.toResourceFromEntity(unit)),
-          )
-          .pipe(retryOnDroppedConnection()),
-      );
-      return this.unitAssembler.toEntityFromResource(saved);
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.GalleryNotFound, unit.type);
-    }
+    const resource = await sendRequest(
+      this.http.post<CommercialUnitResource>(
+        galleryUnitsUrl(unit.galleryId),
+        this.unitAssembler.toRegisterRequestFromEntity(unit),
+      ),
+      failed,
+    );
+    return this.unitAssembler.toEntityFromResource(resource);
   }
 
   async updateUnit(unit: CommercialUnit): Promise<CommercialUnit> {
-    try {
-      const saved = await firstValueFrom(
-        this.http
-          .patch<CommercialUnitResource>(
-            `${unitsUrl}/${encodeURIComponent(unit.id)}`,
-            this.unitAssembler.toResourceFromEntity(unit),
-          )
-          .pipe(retryOnDroppedConnection()),
-      );
-      return this.unitAssembler.toEntityFromResource(saved);
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.UnitNotFound, unit.type);
-    }
+    const resource = await sendRequest(
+      this.http.patch<CommercialUnitResource>(
+        `${unitsUrl}/${encodeURIComponent(unit.id)}`,
+        this.unitAssembler.toUpdateRequestFromEntity(unit),
+      ),
+      failed,
+    );
+    return this.unitAssembler.toEntityFromResource(resource);
   }
 
   async removeUnit(unit: CommercialUnit): Promise<void> {
-    try {
-      await firstValueFrom(
-        this.http
-          .patch(`${unitsUrl}/${encodeURIComponent(unit.id)}`, { active: false })
-          .pipe(retryOnDroppedConnection()),
-      );
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.UnitNotFound);
-    }
+    await sendRequest(
+      this.http.patch(`${unitsUrl}/${encodeURIComponent(unit.id)}`, { active: false }),
+      failed,
+    );
   }
 
-  async listInvitations(galleryId: string): Promise<TenantInvitation[]> {
-    try {
-      const invitations = await firstValueFrom(
-        this.http
-          .get<TenantInvitationResource[]>(invitationsUrl, { params: { galleryId } })
-          .pipe(retryOnDroppedConnection()),
-      );
-      return invitations.map((invitation) =>
-        this.invitationAssembler.toEntityFromResource(invitation),
-      );
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.GalleryNotFound);
-    }
+  async listInvitations(): Promise<TenantInvitation[]> {
+    const resources = await sendRequest(
+      this.http.get<TenantInvitationResource[]>(invitationsUrl),
+      failed,
+    );
+    return resources.map((r) => this.invitationAssembler.toEntityFromResource(r));
   }
 
   async sendInvitation(invitation: TenantInvitation): Promise<TenantInvitation> {
-    try {
-      const saved = await firstValueFrom(
-        this.http
-          .post<TenantInvitationResource>(
-            unitInviteUrl(invitation.unitId),
-            withoutId(this.invitationAssembler.toResourceFromEntity(invitation)),
-          )
-          .pipe(retryOnDroppedConnection()),
-      );
-      return this.invitationAssembler.toEntityFromResource(saved);
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.UnitNotFound);
-    }
+    const body: InviteTenantResource = { email: invitation.email };
+    const resource = await sendRequest(
+      this.http.post<TenantInvitationResource>(unitInviteUrl(invitation.unitId), body),
+      failed,
+    );
+    return this.invitationAssembler.toEntityFromResource(resource);
   }
 
-  async updateInvitation(invitation: TenantInvitation): Promise<TenantInvitation> {
-    try {
-      const saved = await firstValueFrom(
-        this.http
-          .patch<TenantInvitationResource>(
-            `${invitationsUrl}/${encodeURIComponent(invitation.id)}`,
-            this.invitationAssembler.toResourceFromEntity(invitation),
-          )
-          .pipe(retryOnDroppedConnection()),
-      );
-      return this.invitationAssembler.toEntityFromResource(saved);
-    } catch (error) {
-      throw this.translate(error, PropertyErrorCode.UnitNotFound);
-    }
-  }
-
-  /** Maps the TS-05 to TS-10 status codes to business errors; anything else stays unexpected. */
-  private translate(error: unknown, notFound: PropertyErrorCode, type?: UnitType): unknown {
-    if (!(error instanceof HttpErrorResponse)) return error;
-    switch (error.status) {
-      case HttpStatusCode.NotFound:
-        return new PropertyError(notFound);
-      case HttpStatusCode.Conflict:
-        return new PropertyError(
-          type === UnitType.CommonArea
-            ? PropertyErrorCode.DuplicatedCommonAreaName
-            : PropertyErrorCode.DuplicatedUnitCode,
-        );
-      default:
-        return error;
-    }
+  async revokeInvitation(invitationId: string): Promise<TenantInvitation> {
+    const resource = await sendRequest(
+      this.http.patch<TenantInvitationResource>(
+        `${invitationsUrl}/${encodeURIComponent(invitationId)}/revoke`,
+        null,
+      ),
+      failed,
+    );
+    return this.invitationAssembler.toEntityFromResource(resource);
   }
 }

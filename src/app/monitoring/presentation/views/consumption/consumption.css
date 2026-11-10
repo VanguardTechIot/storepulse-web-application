@@ -1,0 +1,66 @@
+.period {
+  width: 200px;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--sp-text-muted);
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.legend-bar {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--sp-primary);
+}
+
+.legend-line {
+  display: inline-block;
+  width: 14px;
+  border-top: 2px dashed var(--sp-text-muted);
+}
+
+.comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comparison span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  color: var(--sp-text-muted);
+}
+
+.comparison b {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+tr.selectable {
+  cursor: pointer;
+}
+
+tr.selectable:hover td {
+  background: var(--sp-hover);
+}
+
+tr.selected td {
+  background: var(--sp-primary-soft);
+}
+
+tr.selected td:first-child {
+  box-shadow: inset 3px 0 0 var(--sp-primary);
+}

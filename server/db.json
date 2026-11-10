@@ -4,352 +4,178 @@
       "id": "res-a03",
       "name": "Local A-03",
       "description": "Calzados Roma",
-      "location": {
-        "address": "Jr. de la Unión 845, Cercado de Lima",
-        "floor": "1",
-        "reference": "Pasillo A"
-      },
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "floor": "1",
+      "reference": "Pasillo A",
       "status": "ACTIVE"
     },
     {
       "id": "res-a07",
       "name": "Local A-07",
       "description": "Perfumería Aroma",
-      "location": {
-        "address": "Jr. de la Unión 845, Cercado de Lima",
-        "floor": "1",
-        "reference": "Pasillo A"
-      },
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "floor": "1",
+      "reference": "Pasillo A",
       "status": "ACTIVE"
     },
     {
       "id": "res-b09",
       "name": "Local B-09",
       "description": "Joyería Inca Gold",
-      "location": {
-        "address": "Jr. de la Unión 845, Cercado de Lima",
-        "floor": "2",
-        "reference": "Pasillo B"
-      },
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "floor": "2",
+      "reference": "Pasillo B",
       "status": "ACTIVE"
     },
     {
       "id": "res-b12",
       "name": "Local B-12",
       "description": "Ópticas Visión",
-      "location": {
-        "address": "Jr. de la Unión 845, Cercado de Lima",
-        "floor": "2",
-        "reference": "Pasillo B"
-      },
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "floor": "2",
+      "reference": "Pasillo B",
       "status": "ACTIVE"
     },
     {
       "id": "res-c03",
       "name": "Local C-03",
       "description": "Comida Rápida Max",
-      "location": {
-        "address": "Jr. de la Unión 845, Cercado de Lima",
-        "floor": "3",
-        "reference": "Patio de comidas"
-      },
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "floor": "3",
+      "reference": "Patio de comidas",
       "status": "ACTIVE"
     },
     {
       "id": "res-c07",
       "name": "Local C-07",
       "description": "Librería El Saber",
-      "location": {
-        "address": "Jr. de la Unión 845, Cercado de Lima",
-        "floor": "3",
-        "reference": "Pasillo C"
-      },
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "floor": "3",
+      "reference": "Pasillo C",
       "status": "MAINTENANCE"
     },
     {
       "id": "res-cn01",
       "name": "Pasillo norte",
       "description": "Área común",
-      "location": {
-        "address": "Jr. de la Unión 845, Cercado de Lima",
-        "floor": "1",
-        "reference": "Ingreso norte"
-      },
+      "address": "Jr. de la Unión 845, Cercado de Lima",
+      "floor": "1",
+      "reference": "Ingreso norte",
       "status": "ACTIVE"
-    }
-  ],
-  "assets": [
-    {
-      "id": "ast-001",
-      "name": "Nodo IoT Local A-03",
-      "type": "IOT_DEVICE",
-      "status": "ACTIVE",
-      "resourceId": "res-a03"
-    },
-    {
-      "id": "ast-002",
-      "name": "Nodo IoT Local A-07",
-      "type": "IOT_DEVICE",
-      "status": "ACTIVE",
-      "resourceId": "res-a07"
-    },
-    {
-      "id": "ast-003",
-      "name": "Nodo IoT Local B-09",
-      "type": "IOT_DEVICE",
-      "status": "ACTIVE",
-      "resourceId": "res-b09"
-    },
-    {
-      "id": "ast-004",
-      "name": "Nodo IoT Local B-12",
-      "type": "IOT_DEVICE",
-      "status": "ACTIVE",
-      "resourceId": "res-b12"
-    },
-    {
-      "id": "ast-005",
-      "name": "Nodo IoT Local C-03",
-      "type": "IOT_DEVICE",
-      "status": "ACTIVE",
-      "resourceId": "res-c03"
-    },
-    {
-      "id": "ast-006",
-      "name": "Nodo IoT Local C-07",
-      "type": "IOT_DEVICE",
-      "status": "MAINTENANCE",
-      "resourceId": "res-c07"
-    },
-    {
-      "id": "ast-007",
-      "name": "Nodo IoT Pasillo norte",
-      "type": "IOT_DEVICE",
-      "status": "ACTIVE",
-      "resourceId": "res-cn01"
     }
   ],
   "iotDevices": [
     {
       "id": "dev-001",
       "assetId": "ast-001",
+      "resourceId": "res-a03",
       "serialNumber": "SP-ESP32-0431",
       "manufacturer": "Espressif Systems",
       "firmwareVersion": "1.4.2",
-      "status": "ACTIVE"
+      "type": "CONSUMPTION_NODE",
+      "status": "ACTIVE",
+      "connectivity": "CONNECTED",
+      "lastReportAt": "2026-10-08T22:41:00-05:00",
+      "supplyVoltage": 5.01,
+      "bufferedEvents": 0,
+      "deactivationReason": null,
+      "actuators": []
     },
     {
       "id": "dev-002",
       "assetId": "ast-002",
+      "resourceId": "res-a07",
       "serialNumber": "SP-ESP32-0438",
       "manufacturer": "Espressif Systems",
       "firmwareVersion": "1.4.2",
-      "status": "ACTIVE"
+      "type": "INTRUSION_NODE",
+      "status": "ACTIVE",
+      "connectivity": "CONNECTED",
+      "lastReportAt": "2026-10-08T22:41:00-05:00",
+      "supplyVoltage": 5.02,
+      "bufferedEvents": 0,
+      "deactivationReason": null,
+      "actuators": []
     },
     {
       "id": "dev-003",
       "assetId": "ast-003",
+      "resourceId": "res-b09",
       "serialNumber": "SP-ESP32-0447",
       "manufacturer": "Espressif Systems",
       "firmwareVersion": "1.4.2",
-      "status": "ACTIVE"
+      "type": "CONSUMPTION_NODE",
+      "status": "ACTIVE",
+      "connectivity": "CONNECTED",
+      "lastReportAt": "2026-10-08T22:41:00-05:00",
+      "supplyVoltage": 4.98,
+      "bufferedEvents": 0,
+      "deactivationReason": null,
+      "actuators": []
     },
     {
       "id": "dev-004",
       "assetId": "ast-004",
+      "resourceId": "res-b12",
       "serialNumber": "SP-ESP32-0452",
       "manufacturer": "Espressif Systems",
       "firmwareVersion": "1.4.2",
-      "status": "ACTIVE"
+      "type": "INTRUSION_NODE",
+      "status": "ACTIVE",
+      "connectivity": "DISCONNECTED",
+      "lastReportAt": "2026-10-08T21:58:00-05:00",
+      "supplyVoltage": null,
+      "bufferedEvents": 37,
+      "deactivationReason": null,
+      "actuators": []
     },
     {
       "id": "dev-005",
       "assetId": "ast-005",
+      "resourceId": "res-c03",
       "serialNumber": "SP-ESP32-0463",
       "manufacturer": "Espressif Systems",
       "firmwareVersion": "1.4.2",
-      "status": "ACTIVE"
+      "type": "SMOKE_NODE",
+      "status": "ACTIVE",
+      "connectivity": "CONNECTED",
+      "lastReportAt": "2026-10-08T22:41:00-05:00",
+      "supplyVoltage": 4.31,
+      "bufferedEvents": 0,
+      "deactivationReason": null,
+      "actuators": []
     },
     {
       "id": "dev-006",
       "assetId": "ast-006",
+      "resourceId": "res-c07",
       "serialNumber": "SP-ESP32-0467",
       "manufacturer": "Espressif Systems",
       "firmwareVersion": "1.4.2",
-      "status": "INACTIVE"
+      "type": "INTRUSION_NODE",
+      "status": "INACTIVE",
+      "connectivity": "DISCONNECTED",
+      "lastReportAt": "2026-10-01T09:14:00-05:00",
+      "supplyVoltage": null,
+      "bufferedEvents": 0,
+      "deactivationReason": "Reemplazo por mantenimiento",
+      "actuators": []
     },
     {
       "id": "dev-007",
       "assetId": "ast-007",
+      "resourceId": "res-cn01",
       "serialNumber": "SP-ESP32-0401",
       "manufacturer": "Espressif Systems",
       "firmwareVersion": "1.4.2",
-      "status": "ACTIVE"
-    }
-  ],
-  "sensors": [
-    {
-      "id": "sen-001-t",
-      "iotDeviceId": "dev-001",
-      "type": "TEMPERATURE",
-      "unit": "°C",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-001-h",
-      "iotDeviceId": "dev-001",
-      "type": "HUMIDITY",
-      "unit": "%",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-002-t",
-      "iotDeviceId": "dev-002",
-      "type": "TEMPERATURE",
-      "unit": "°C",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-002-h",
-      "iotDeviceId": "dev-002",
-      "type": "HUMIDITY",
-      "unit": "%",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-003-t",
-      "iotDeviceId": "dev-003",
-      "type": "TEMPERATURE",
-      "unit": "°C",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-003-h",
-      "iotDeviceId": "dev-003",
-      "type": "HUMIDITY",
-      "unit": "%",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-004-t",
-      "iotDeviceId": "dev-004",
-      "type": "TEMPERATURE",
-      "unit": "°C",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-004-h",
-      "iotDeviceId": "dev-004",
-      "type": "HUMIDITY",
-      "unit": "%",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-005-t",
-      "iotDeviceId": "dev-005",
-      "type": "TEMPERATURE",
-      "unit": "°C",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-005-h",
-      "iotDeviceId": "dev-005",
-      "type": "HUMIDITY",
-      "unit": "%",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-006-t",
-      "iotDeviceId": "dev-006",
-      "type": "TEMPERATURE",
-      "unit": "°C",
-      "status": "INACTIVE"
-    },
-    {
-      "id": "sen-006-h",
-      "iotDeviceId": "dev-006",
-      "type": "HUMIDITY",
-      "unit": "%",
-      "status": "INACTIVE"
-    },
-    {
-      "id": "sen-007-t",
-      "iotDeviceId": "dev-007",
-      "type": "TEMPERATURE",
-      "unit": "°C",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "sen-007-h",
-      "iotDeviceId": "dev-007",
-      "type": "HUMIDITY",
-      "unit": "%",
-      "status": "ACTIVE"
-    }
-  ],
-  "meters": [
-    {
-      "id": "mtr-001-e",
-      "iotDeviceId": "dev-001",
-      "type": "ELECTRICITY",
-      "unit": "kWh",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-002-e",
-      "iotDeviceId": "dev-002",
-      "type": "ELECTRICITY",
-      "unit": "kWh",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-003-e",
-      "iotDeviceId": "dev-003",
-      "type": "ELECTRICITY",
-      "unit": "kWh",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-003-w",
-      "iotDeviceId": "dev-003",
-      "type": "WATER",
-      "unit": "m³",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-004-e",
-      "iotDeviceId": "dev-004",
-      "type": "ELECTRICITY",
-      "unit": "kWh",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-004-w",
-      "iotDeviceId": "dev-004",
-      "type": "WATER",
-      "unit": "m³",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-005-e",
-      "iotDeviceId": "dev-005",
-      "type": "ELECTRICITY",
-      "unit": "kWh",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-005-w",
-      "iotDeviceId": "dev-005",
-      "type": "WATER",
-      "unit": "m³",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "mtr-006-e",
-      "iotDeviceId": "dev-006",
-      "type": "ELECTRICITY",
-      "unit": "kWh",
-      "status": "INACTIVE"
+      "type": "COMMON_AREA_NODE",
+      "status": "ACTIVE",
+      "connectivity": "CONNECTED",
+      "lastReportAt": "2026-10-08T22:41:00-05:00",
+      "supplyVoltage": 5.04,
+      "bufferedEvents": 0,
+      "deactivationReason": null,
+      "actuators": []
     }
   ],
   "telemetry": [
@@ -2209,6 +2035,478 @@
       "value": 0.181,
       "unit": "m³",
       "recordedAt": "2026-09-29T18:00:00Z"
+    },
+    {
+      "id": "msr-00196",
+      "telemetryId": "tel-00001",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00197",
+      "telemetryId": "tel-00002",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00198",
+      "telemetryId": "tel-00003",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00199",
+      "telemetryId": "tel-00004",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00200",
+      "telemetryId": "tel-00005",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00201",
+      "telemetryId": "tel-00006",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00202",
+      "telemetryId": "tel-00007",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00203",
+      "telemetryId": "tel-00008",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00204",
+      "telemetryId": "tel-00009",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00205",
+      "telemetryId": "tel-00010",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00206",
+      "telemetryId": "tel-00011",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00207",
+      "telemetryId": "tel-00012",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00208",
+      "telemetryId": "tel-00013",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00209",
+      "telemetryId": "tel-00014",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00210",
+      "telemetryId": "tel-00015",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00211",
+      "telemetryId": "tel-00016",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00212",
+      "telemetryId": "tel-00017",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00213",
+      "telemetryId": "tel-00018",
+      "type": "MOTION",
+      "value": 1,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00214",
+      "telemetryId": "tel-00019",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00215",
+      "telemetryId": "tel-00020",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00216",
+      "telemetryId": "tel-00021",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00217",
+      "telemetryId": "tel-00022",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00218",
+      "telemetryId": "tel-00023",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00219",
+      "telemetryId": "tel-00024",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00220",
+      "telemetryId": "tel-00025",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00221",
+      "telemetryId": "tel-00026",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00222",
+      "telemetryId": "tel-00027",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00223",
+      "telemetryId": "tel-00028",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00224",
+      "telemetryId": "tel-00029",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00225",
+      "telemetryId": "tel-00030",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00226",
+      "telemetryId": "tel-00031",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00227",
+      "telemetryId": "tel-00032",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00228",
+      "telemetryId": "tel-00033",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00229",
+      "telemetryId": "tel-00034",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00230",
+      "telemetryId": "tel-00035",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00231",
+      "telemetryId": "tel-00036",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00232",
+      "telemetryId": "tel-00037",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00233",
+      "telemetryId": "tel-00038",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00234",
+      "telemetryId": "tel-00039",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00235",
+      "telemetryId": "tel-00040",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00236",
+      "telemetryId": "tel-00041",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00237",
+      "telemetryId": "tel-00042",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00238",
+      "telemetryId": "tel-00043",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00239",
+      "telemetryId": "tel-00044",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00240",
+      "telemetryId": "tel-00045",
+      "type": "MOTION",
+      "value": 1,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00241",
+      "telemetryId": "tel-00046",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T05:00:00Z"
+    },
+    {
+      "id": "msr-00242",
+      "telemetryId": "tel-00047",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T09:00:00Z"
+    },
+    {
+      "id": "msr-00243",
+      "telemetryId": "tel-00048",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T13:00:00Z"
+    },
+    {
+      "id": "msr-00244",
+      "telemetryId": "tel-00049",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T17:00:00Z"
+    },
+    {
+      "id": "msr-00245",
+      "telemetryId": "tel-00050",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-07T21:00:00Z"
+    },
+    {
+      "id": "msr-00246",
+      "telemetryId": "tel-00051",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T01:00:00Z"
+    },
+    {
+      "id": "msr-00247",
+      "telemetryId": "tel-00052",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T05:00:00Z"
+    },
+    {
+      "id": "msr-00248",
+      "telemetryId": "tel-00053",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T09:00:00Z"
+    },
+    {
+      "id": "msr-00249",
+      "telemetryId": "tel-00054",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-08T13:00:00Z"
+    },
+    {
+      "id": "msr-00250",
+      "telemetryId": "tel-00055",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-09-28T17:00:00Z"
+    },
+    {
+      "id": "msr-00251",
+      "telemetryId": "tel-00056",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-09-28T21:00:00Z"
+    },
+    {
+      "id": "msr-00252",
+      "telemetryId": "tel-00057",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-03T11:00:00Z"
+    },
+    {
+      "id": "msr-00253",
+      "telemetryId": "tel-00058",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-10-02T05:00:00Z"
+    },
+    {
+      "id": "msr-00254",
+      "telemetryId": "tel-00059",
+      "type": "MOTION",
+      "value": 0,
+      "unit": "",
+      "recordedAt": "2026-09-29T18:00:00Z"
     }
   ],
   "monitoringRules": [
@@ -2270,71 +2568,92 @@
   ],
   "alerts": [
     {
-      "id": "alr-0418",
-      "ruleId": "rul-002",
-      "measurementId": "msr-00120",
+      "id": 7,
+      "safetyRuleId": 2,
+      "deviceId": 4,
+      "measurementId": 120,
+      "sensorType": "HUMIDITY",
+      "measuredValue": 87.4,
       "status": "ACKNOWLEDGED",
-      "createdAt": "2026-10-08T09:00:09Z",
+      "detectedAt": "2026-10-08T09:00:09Z",
       "acknowledgedAt": "2026-10-08T17:46:37.778Z",
       "resolvedAt": null,
       "resolutionNote": null
     },
     {
-      "id": "alr-0417",
-      "ruleId": "rul-004",
-      "measurementId": "msr-00021",
+      "id": 6,
+      "safetyRuleId": 4,
+      "deviceId": 1,
+      "measurementId": 21,
+      "sensorType": "ELECTRICITY",
+      "measuredValue": 3.12,
       "status": "ACTIVE",
-      "createdAt": "2026-10-08T05:00:08Z",
+      "detectedAt": "2026-10-08T05:00:08Z",
       "acknowledgedAt": null,
       "resolvedAt": null,
       "resolutionNote": null
     },
     {
-      "id": "alr-0416",
-      "ruleId": "rul-005",
-      "measurementId": "msr-00078",
+      "id": 5,
+      "safetyRuleId": 5,
+      "deviceId": 3,
+      "measurementId": 78,
+      "sensorType": "WATER",
+      "measuredValue": 0.74,
       "status": "ACKNOWLEDGED",
-      "createdAt": "2026-10-08T01:00:07Z",
+      "detectedAt": "2026-10-08T01:00:07Z",
       "acknowledgedAt": "2026-10-08T01:06:41Z",
       "resolvedAt": null,
       "resolutionNote": null
     },
     {
-      "id": "alr-0415",
-      "ruleId": "rul-001",
-      "measurementId": "msr-00139",
+      "id": 4,
+      "safetyRuleId": 1,
+      "deviceId": 5,
+      "measurementId": 139,
+      "sensorType": "TEMPERATURE",
+      "measuredValue": 48.6,
       "status": "RESOLVED",
-      "createdAt": "2026-10-07T17:00:06Z",
+      "detectedAt": "2026-10-07T17:00:06Z",
       "acknowledgedAt": "2026-10-07T17:02:14Z",
       "resolvedAt": "2026-10-07T17:24:50Z",
       "resolutionNote": "Freidora encendida cerca del sensor durante la limpieza de cocina. Se verificó con el inquilino y la temperatura volvió a 26 °C."
     },
     {
-      "id": "alr-0414",
-      "ruleId": "rul-002",
-      "measurementId": "msr-00188",
+      "id": 3,
+      "safetyRuleId": 2,
+      "deviceId": 7,
+      "measurementId": 188,
+      "sensorType": "HUMIDITY",
+      "measuredValue": 89.1,
       "status": "RESOLVED",
-      "createdAt": "2026-10-03T11:00:05Z",
+      "detectedAt": "2026-10-03T11:00:05Z",
       "acknowledgedAt": "2026-10-03T11:11:02Z",
       "resolvedAt": "2026-10-03T11:58:30Z",
       "resolutionNote": "Filtración en la cubierta del pasillo por lluvia. Se coordinó la reparación con mantenimiento."
     },
     {
-      "id": "alr-0413",
-      "ruleId": "rul-004",
-      "measurementId": "msr-00191",
+      "id": 2,
+      "safetyRuleId": 4,
+      "deviceId": 1,
+      "measurementId": 191,
+      "sensorType": "ELECTRICITY",
+      "measuredValue": 2.94,
       "status": "RESOLVED",
-      "createdAt": "2026-10-02T05:00:08Z",
+      "detectedAt": "2026-10-02T05:00:08Z",
       "acknowledgedAt": "2026-10-02T05:04:20Z",
       "resolvedAt": "2026-10-02T14:30:00Z",
       "resolutionNote": "Vitrina refrigerada dejada encendida fuera del horario de atención. El inquilino la apagó."
     },
     {
-      "id": "alr-0412",
-      "ruleId": "rul-001",
-      "measurementId": "msr-00192",
+      "id": 1,
+      "safetyRuleId": 1,
+      "deviceId": 5,
+      "measurementId": 192,
+      "sensorType": "TEMPERATURE",
+      "measuredValue": 46.2,
       "status": "RESOLVED",
-      "createdAt": "2026-09-29T18:00:06Z",
+      "detectedAt": "2026-09-29T18:00:06Z",
       "acknowledgedAt": "2026-09-29T18:01:52Z",
       "resolvedAt": "2026-09-29T18:19:00Z",
       "resolutionNote": "Horno industrial en uso con la campana extractora apagada. Se encendió la extracción."
@@ -3556,6 +3875,326 @@
       "channel": "PUSH",
       "detail": "Incidente en su local",
       "loggedAt": "2026-10-08T13:22:01Z"
+    }
+  ],
+  "subscriptionPlans": [
+    {
+      "id": 1,
+      "code": "BASIC",
+      "monitoredUnitLimit": 30,
+      "monthlyPrice": 290,
+      "annualPrice": 2900,
+      "currency": "PEN",
+      "features": ["security_incidents", "energy_submetering", "notification_center"],
+      "published": true
+    },
+    {
+      "id": 2,
+      "code": "COMMERCIAL",
+      "monitoredUnitLimit": 100,
+      "monthlyPrice": 690,
+      "annualPrice": 6900,
+      "currency": "PEN",
+      "features": [
+        "everything_basic",
+        "water_telemetry",
+        "billing_per_unit",
+        "tenant_communication"
+      ],
+      "published": true
+    },
+    {
+      "id": 3,
+      "code": "CORPORATE",
+      "monitoredUnitLimit": null,
+      "monthlyPrice": 1490,
+      "annualPrice": 14900,
+      "currency": "PEN",
+      "features": ["everything_commercial", "multiple_galleries", "advanced_reports"],
+      "published": true
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": 1,
+      "galleryId": "gal-001",
+      "galleryAdministratorId": "usr-001",
+      "planId": 1,
+      "status": "ACTIVE",
+      "billingCycle": "MONTHLY",
+      "startDate": "2026-11-07T02:19:09.615Z",
+      "endDate": "2026-12-07T02:19:09.615Z",
+      "monitoredUnitCount": 12,
+      "autoRenewal": true,
+      "paymentMethodLabel": "Mastercard •••• 4821"
+    }
+  ],
+  "payments": [
+    {
+      "id": 3,
+      "subscriptionId": 1,
+      "receiptNumber": "F001-000318",
+      "planId": 2,
+      "billingCycle": "MONTHLY",
+      "amount": 690,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Visa •••• 4821",
+      "status": "ACCEPTED",
+      "gatewayReference": "ch_3Q9x1aKZ0318",
+      "registeredAt": "2026-10-15T05:02:11Z"
+    },
+    {
+      "id": 2,
+      "subscriptionId": 1,
+      "receiptNumber": "F001-000291",
+      "planId": 2,
+      "billingCycle": "MONTHLY",
+      "amount": 690,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Visa •••• 4821",
+      "status": "ACCEPTED",
+      "gatewayReference": "ch_3Q2m7bKZ0291",
+      "registeredAt": "2026-09-15T05:01:47Z"
+    },
+    {
+      "id": 1,
+      "subscriptionId": 1,
+      "receiptNumber": null,
+      "planId": 2,
+      "billingCycle": "MONTHLY",
+      "amount": 690,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Visa •••• 0002",
+      "status": "REJECTED",
+      "gatewayReference": "ch_3Pz4cKZ0277",
+      "registeredAt": "2026-09-15T05:00:58Z"
+    },
+    {
+      "id": 4,
+      "subscriptionId": 1,
+      "receiptNumber": null,
+      "planId": 1,
+      "billingCycle": "MONTHLY",
+      "amount": 290,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Visa •••• 0002",
+      "status": "REJECTED",
+      "gatewayReference": "ch_sim_3f32dd5d-1cbd-4d86-a18f-d9e8cfd1294a",
+      "registeredAt": "2026-11-07T02:18:52.774Z"
+    },
+    {
+      "id": 5,
+      "subscriptionId": 1,
+      "receiptNumber": "F001-949615",
+      "planId": 1,
+      "billingCycle": "MONTHLY",
+      "amount": 290,
+      "currency": "PEN",
+      "method": "CREDIT_CARD",
+      "methodLabel": "Mastercard •••• 4821",
+      "status": "ACCEPTED",
+      "gatewayReference": "ch_sim_bfd19345-44c2-4340-b0a1-9db9d982afa3",
+      "registeredAt": "2026-11-07T02:19:09.615Z"
+    }
+  ],
+  "utilityTariffs": [
+    {
+      "id": 1,
+      "utilityType": "WATER",
+      "rate": 4.2,
+      "effectiveFrom": "1970-01-01"
+    },
+    {
+      "id": 2,
+      "utilityType": "ELECTRICITY",
+      "rate": 0.78,
+      "effectiveFrom": "1970-01-01"
+    }
+  ],
+  "utilityBills": [
+    {
+      "id": 1,
+      "code": "FAC-202609-B12",
+      "unitId": "res-b12",
+      "unitCode": "B-12",
+      "unitName": "Local B-12",
+      "tenantName": "Ópticas Visión",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "IN_DISPUTE",
+      "items": [
+        {
+          "utilityType": "WATER",
+          "consumption": 3.3,
+          "baseline": 3.233,
+          "unitOfMeasure": "m³",
+          "rate": 4.2,
+          "amount": 13.86
+        },
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 279.4,
+          "baseline": 279.6,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 217.93
+        }
+      ],
+      "totalAmount": 231.79,
+      "dataCompleteness": 100,
+      "dataWarningAccepted": false,
+      "issuedAt": "2026-10-01T13:00:00.000Z",
+      "dueDate": "2026-10-16"
+    },
+    {
+      "id": 2,
+      "code": "FAC-202609-C03",
+      "unitId": "res-c03",
+      "unitCode": "C-03",
+      "unitName": "Local C-03",
+      "tenantName": "Comida Rápida Max",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "DATA_VERIFIED",
+      "items": [
+        {
+          "utilityType": "WATER",
+          "consumption": 21.9,
+          "baseline": 22,
+          "unitOfMeasure": "m³",
+          "rate": 4.2,
+          "amount": 91.98
+        },
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 659.5,
+          "baseline": 655.033,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 514.41
+        }
+      ],
+      "totalAmount": 606.39,
+      "dataCompleteness": 100,
+      "dataWarningAccepted": false,
+      "issuedAt": null,
+      "dueDate": null
+    },
+    {
+      "id": 3,
+      "code": "FAC-202609-B09",
+      "unitId": "res-b09",
+      "unitCode": "B-09",
+      "unitName": "Local B-09",
+      "tenantName": "Joyería Inca Gold",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "RESOLVED",
+      "items": [
+        {
+          "utilityType": "WATER",
+          "consumption": 7.2,
+          "baseline": 7.067,
+          "unitOfMeasure": "m³",
+          "rate": 4.2,
+          "amount": 30.24
+        },
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 148.9,
+          "baseline": 151.267,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 116.14
+        }
+      ],
+      "totalAmount": 146.38,
+      "dataCompleteness": 100,
+      "dataWarningAccepted": false,
+      "issuedAt": "2026-10-01T13:00:00.000Z",
+      "dueDate": "2026-10-16"
+    },
+    {
+      "id": 4,
+      "code": "FAC-202609-A03",
+      "unitId": "res-a03",
+      "unitCode": "A-03",
+      "unitName": "Local A-03",
+      "tenantName": "Calzados Roma",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "status": "ISSUED",
+      "items": [
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 302.2,
+          "baseline": 290.8,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 235.72
+        }
+      ],
+      "totalAmount": 235.72,
+      "dataCompleteness": 50,
+      "dataWarningAccepted": true,
+      "issuedAt": "2026-10-01T13:00:00.000Z",
+      "dueDate": "2026-10-16"
+    },
+    {
+      "id": 5,
+      "code": "FAC-202610-A03",
+      "unitId": "res-a03",
+      "unitCode": "A-03",
+      "unitName": "Local A-03",
+      "tenantName": "Calzados Roma",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-31",
+      "status": "DRAFT",
+      "items": [
+        {
+          "utilityType": "ELECTRICITY",
+          "consumption": 82.6,
+          "baseline": 299.5,
+          "unitOfMeasure": "kWh",
+          "rate": 0.78,
+          "amount": 64.43
+        }
+      ],
+      "totalAmount": 64.43,
+      "dataCompleteness": 50,
+      "dataWarningAccepted": false,
+      "issuedAt": null,
+      "dueDate": null
+    }
+  ],
+  "billingDisputes": [
+    {
+      "id": 1,
+      "utilityBillId": 3,
+      "tenantId": "usr-002",
+      "reason": "METER_READING",
+      "description": "La lectura de agua reportada no coincide con la lectura física del medidor.",
+      "status": "RESOLVED",
+      "reviewNotes": "Lectura verificada con el técnico de mantenimiento.",
+      "resolution": "Se confirmó la lectura del medidor; el monto facturado se mantiene.",
+      "createdAt": "2026-10-03T15:10:00.000Z",
+      "resolvedAt": "2026-10-05T14:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "utilityBillId": 1,
+      "tenantId": "usr-002",
+      "reason": "CONSUMPTION_ABOVE_BASELINE",
+      "description": "El consumo de electricidad del periodo es mayor al habitual del local. Solicitamos revisar la lectura del medidor.",
+      "status": "OPEN",
+      "reviewNotes": null,
+      "resolution": null,
+      "createdAt": "2026-10-07T15:24:00.000Z",
+      "resolvedAt": null
     }
   ]
 }

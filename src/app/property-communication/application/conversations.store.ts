@@ -1,5 +1,4 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CommunicationAction } from '../domain/model/communication-action.enum';
 import { CommunicationError, CommunicationErrorCode } from '../domain/model/communication-error';
 import { Conversation } from '../domain/model/conversation.entity';
 import { Message } from '../domain/model/message.entity';
@@ -13,7 +12,6 @@ import { TenantNotification } from '../domain/model/tenant-notification.entity';
 import { PROPERTY_COMMUNICATION_REPOSITORY } from '../infrastructure/property-communication.token';
 import { CommunicationDirectory } from './communication-directory';
 import { runOperation } from './run-operation';
-import { TenantNotifier } from './tenant-notifier';
 
 /** What the administrator writes to open a conversation with a tenant. */
 export interface NewConversation {
@@ -36,7 +34,6 @@ function preview(content: string): string {
 @Injectable({ providedIn: 'root' })
 export class ConversationsStore {
   private readonly repository = inject(PROPERTY_COMMUNICATION_REPOSITORY);
-  private readonly notifier = inject(TenantNotifier);
   readonly directory = inject(CommunicationDirectory);
 
   private readonly conversationsState = signal<Conversation[]>([]);
@@ -63,8 +60,11 @@ export class ConversationsStore {
 
   load(): Promise<boolean> {
     return runOperation(this.loading, this.error, async () => {
-      const administratorId = await this.directory.load();
-      this.conversationsState.set(await this.repository.listConversations(administratorId));
+      const [, conversations] = await Promise.all([
+        this.directory.load(),
+        this.repository.listConversations(),
+      ]);
+      this.conversationsState.set(conversations);
     });
   }
 
@@ -78,7 +78,7 @@ export class ConversationsStore {
       const [conversation, messages] = await Promise.all([
         this.repository.getConversation(conversationId),
         this.repository.listMessages(conversationId),
-        this.directory.tenants().length === 0 ? this.directory.load() : Promise.resolve(''),
+        this.directory.tenants().length === 0 ? this.directory.load() : Promise.resolve([]),
       ]);
       this.currentState.set(conversation);
       this.messagesState.set(messages);
@@ -86,8 +86,9 @@ export class ConversationsStore {
   }
 
   /**
-   * StartConversationCommand followed by the first message. The tenant is notified and the
-   * conversation is logged. On success `current` holds the new conversation.
+   * StartConversationCommand followed by the first message, and the tenant is notified. The
+   * platform links the tenant's store and logs the start. On success `current` holds the new
+   * conversation.
    */
   start(input: NewConversation): Promise<boolean> {
     return runOperation(this.saving, this.error, async () => {
@@ -95,14 +96,10 @@ export class ConversationsStore {
       if (!this.directory.tenant(input.tenantId)) {
         throw new CommunicationError(CommunicationErrorCode.TenantNotFound);
       }
-      const assignments = await this.repository.listAssignments(administratorId);
-      const unitId =
-        assignments.find((a) => a.isActive && a.tenantId === input.tenantId)?.commercialUnitId ??
-        null;
       const draft = Conversation.start(
         new StartConversationCommand({
           tenantId: input.tenantId,
-          commercialUnitId: unitId,
+          commercialUnitId: null,
           galleryAdministratorId: administratorId,
           subject: input.subject,
         }),
@@ -117,8 +114,7 @@ export class ConversationsStore {
         this.messageCommand(conversation.id, administratorId, input.content, input.attachments),
       );
       const saved = await this.repository.sendMessage(message);
-      await this.notifier.logConversation(conversation, CommunicationAction.ConversationStarted);
-      await this.notifier.notify(
+      await this.repository.notifyTenant(
         new NotifyTenantCommand({
           tenantId: conversation.tenantId,
           commercialUnitId: conversation.commercialUnitId,
@@ -145,32 +141,29 @@ export class ConversationsStore {
         this.messageCommand(current.id, administratorId, content, attachments),
       );
       const saved = await this.repository.sendMessage(message);
-      const updated = await this.repository.updateConversation(conversation);
-      this.replace(updated);
+      this.replace(conversation);
       this.messagesState.update((messages) => [...messages, saved]);
-      await this.notifier.notify(
+      await this.repository.notifyTenant(
         new NotifyTenantCommand({
-          tenantId: updated.tenantId,
-          commercialUnitId: updated.commercialUnitId,
+          tenantId: conversation.tenantId,
+          commercialUnitId: conversation.commercialUnitId,
           galleryAdministratorId: administratorId,
           type: NotificationType.MessageReceived,
-          title: updated.subject,
+          title: conversation.subject,
           body: preview(saved.content),
           channel: NotificationChannel.Push,
-          referenceId: updated.id,
+          referenceId: conversation.id,
         }),
       );
     });
   }
 
-  /** MarkConversationResolvedCommand on the open conversation. */
+  /** MarkConversationResolvedCommand on the open conversation; the platform logs it. */
   resolve(): Promise<boolean> {
     return runOperation(this.saving, this.error, async () => {
-      const resolved = await this.repository.resolveConversation(
-        this.requireCurrent().markAsResolved(),
-      );
-      this.replace(resolved);
-      await this.notifier.logConversation(resolved, CommunicationAction.ConversationResolved);
+      const current = this.requireCurrent();
+      current.markAsResolved();
+      this.replace(await this.repository.resolveConversation(current.id));
     });
   }
 

@@ -1,0 +1,36 @@
+/* Shared by every IAM view: the layout has no encapsulation so the projected views use these classes. */
+.auth { display: flex; min-height: 100vh; background: var(--sp-surface); }
+
+/* Dark showcase: the Material cards and chips inside take their colors from these system tokens. */
+.auth-side {
+  --mat-sys-surface: #111c33;
+  --mat-sys-on-surface: #fff;
+  --mat-sys-on-surface-variant: #94a3b8;
+  --mat-sys-outline-variant: #334155;
+  width: 43%; max-width: 620px; padding: 48px 56px; background: var(--sp-text); color: #fff;
+  display: flex; flex-direction: column; gap: 32px;
+}
+.auth-brand { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 800; }
+.auth-side h2 { margin: 0; font-size: 36px; line-height: 1.15; }
+.auth-side p { margin: 0; color: var(--mat-sys-on-surface-variant); }
+.auth-side em { font-style: normal; color: var(--sp-primary); }
+.auth-unit { border-radius: 10px; background: #1a2744; font-family: ui-monospace, monospace; }
+.auth-unit.alert { background: var(--sp-danger); }
+.auth-features { margin-top: auto; }
+
+.auth-main { flex: 1; display: flex; flex-direction: column; gap: 24px; padding: 32px 56px; outline: none; }
+.auth-top { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 16px; }
+.auth-form, .auth-fields { display: flex; flex-direction: column; }
+.auth-form { width: 100%; max-width: 480px; margin: auto; gap: 20px; }
+.auth-form h1 { margin: 0; }
+.auth-subtitle { margin: -12px 0 0; color: var(--sp-text-muted); }
+.auth-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+.auth-note {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px;
+  margin: 0; color: var(--sp-text-muted); font-size: 12px;
+}
+
+@media (max-width: 959.98px) {
+  .auth-side { display: none; }
+  .auth-main { padding: 24px 16px; }
+}

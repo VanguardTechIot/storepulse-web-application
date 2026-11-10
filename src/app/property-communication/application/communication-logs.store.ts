@@ -23,8 +23,8 @@ export class CommunicationLogsStore {
 
   load(): Promise<boolean> {
     return runOperation(this.loading, this.error, async () => {
-      const administratorId = await this.directory.load();
-      this.logsState.set(await this.repository.listLogs(administratorId));
+      const [, logs] = await Promise.all([this.directory.load(), this.repository.listLogs()]);
+      this.logsState.set(logs);
     });
   }
 }

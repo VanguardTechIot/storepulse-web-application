@@ -11,7 +11,7 @@ interface TenantInvitationProps {
   unitId: string;
   galleryId: string;
   email: string;
-  /** Goes inside the sign-up link; the tenant registers with it (US-12, scenario 2). */
+  /** Goes inside the sign-up link; the platform issues it and the tenant registers with it. */
   token: string;
   status: InvitationStatus;
   sentAt: Date;
@@ -19,8 +19,8 @@ interface TenantInvitationProps {
 }
 
 /**
- * Invitation for a tenant to sign up linked to one store (US-12, TS-10). It is valid for 7 days;
- * sending it again revokes the previous link and issues a new one (US-12, scenario 3).
+ * Invitation for a tenant to sign up linked to one store. It is valid for 7 days;
+ * sending it again revokes the previous link and issues a new one.
  */
 export class TenantInvitation implements BaseEntity {
   static readonly validityDays = 7;
@@ -31,7 +31,7 @@ export class TenantInvitation implements BaseEntity {
     this.props = { ...invitation };
   }
 
-  /** Issues an invitation for a store without tenant; it gets its id when saved. */
+  /** Issues an invitation for a store without tenant; it gets its id and token when sent. */
   static issue(unit: CommercialUnit, email: string, now: Date = new Date()): TenantInvitation {
     if (unit.isCommonArea) throw new PropertyError(PropertyErrorCode.CommonAreaWithoutTenant);
     if (!unit.canReceiveTenant()) throw new PropertyError(PropertyErrorCode.UnitNotAvailable);
@@ -43,7 +43,7 @@ export class TenantInvitation implements BaseEntity {
       unitId: unit.id,
       galleryId: unit.galleryId,
       email: TenantInvitation.normalizeEmail(email),
-      token: TenantInvitation.newToken(),
+      token: '',
       status: InvitationStatus.Pending,
       sentAt: now,
       expiresAt: new Date(now.getTime() + TenantInvitation.validityDays * dayInMs),
@@ -109,11 +109,5 @@ export class TenantInvitation implements BaseEntity {
 
   static normalizeEmail(email: string): string {
     return email.trim().toLowerCase();
-  }
-
-  private static newToken(): string {
-    const bytes = new Uint8Array(8);
-    crypto.getRandomValues(bytes);
-    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
   }
 }

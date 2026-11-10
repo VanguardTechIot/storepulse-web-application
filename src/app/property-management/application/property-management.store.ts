@@ -1,13 +1,13 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { CommercialGallery } from '../domain/model/commercial-gallery.entity';
 import { CommercialUnit } from '../domain/model/commercial-unit.entity';
-import { InvitationStatus } from '../domain/model/invitation-status.enum';
 import { InviteTenantCommand } from '../domain/model/invite-tenant.command';
 import { PropertyError, PropertyErrorCode } from '../domain/model/property-error';
 import { RegisterCommercialGalleryCommand } from '../domain/model/register-commercial-gallery.command';
 import { RegisterCommercialUnitCommand } from '../domain/model/register-commercial-unit.command';
 import { TenantInvitation } from '../domain/model/tenant-invitation.entity';
 import { UnitStatus } from '../domain/model/unit-status.enum';
+import { UnitResource } from '../domain/model/unit-resource';
 import { UnitTenant } from '../domain/model/unit-tenant';
 import { UpdateCommercialGalleryInfoCommand } from '../domain/model/update-commercial-gallery-info.command';
 import { UpdateCommercialUnitCommand } from '../domain/model/update-commercial-unit.command';
@@ -16,7 +16,7 @@ import { IamContextFacade } from '../infrastructure/acl/iam-context-facade';
 import { ResourceAssetContextFacade } from '../infrastructure/acl/resource-asset-context-facade';
 import { PROPERTY_MANAGEMENT_REPOSITORY } from '../infrastructure/property-management.token';
 
-/** Counters of the gallery summary (US-13). */
+/** Counters of the gallery summary. */
 export interface GallerySummary {
   stores: number;
   commonAreas: number;
@@ -43,10 +43,13 @@ export class PropertyManagementStore {
   private readonly unitsState = signal<CommercialUnit[]>([]);
   private readonly invitationsState = signal<TenantInvitation[]>([]);
   private readonly tenantsState = signal<Map<string, UnitTenant>>(new Map());
+  private readonly resourcesState = signal<UnitResource[]>([]);
   private readonly loadedFor = signal<string | null>(null);
 
   readonly gallery = this.galleryState.asReadonly();
   readonly invitations = this.invitationsState.asReadonly();
+  /** Monitored resources that can be linked to a unit. */
+  readonly resources = this.resourcesState.asReadonly();
   readonly assignmentsRoute = this.communicationContext.assignmentsRoute;
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -95,6 +98,10 @@ export class PropertyManagementStore {
     return this.unitsState().find((unit) => unit.id === unitId) ?? null;
   }
 
+  resourceNameOf(unit: CommercialUnit): string | null {
+    return this.resourcesState().find((r) => r.resourceId === unit.resourceId)?.name ?? null;
+  }
+
   tenantOf(unitId: string): UnitTenant | null {
     return this.tenantsState().get(unitId) ?? null;
   }
@@ -112,14 +119,14 @@ export class PropertyManagementStore {
     return this.sortedInvitations().filter((invitation) => invitation.unitId === unitId);
   }
 
-  /** Gallery, units, invitations and tenants of the signed-in administrator (US-13). */
+  /** Gallery, units, invitations and tenants of the signed-in administrator. */
   load(): Promise<boolean> {
     return this.execute(this.loading, async () => {
       const administratorId = this.requireAdministrator();
       if (this.loadedFor() !== administratorId) this.reset();
-      const gallery = await this.repository.findGalleryByAdministrator(administratorId);
+      const gallery = await this.repository.findGallery();
       this.galleryState.set(gallery);
-      if (gallery) await this.loadGalleryContent(gallery, administratorId);
+      if (gallery) await this.loadGalleryContent(gallery);
       this.loadedFor.set(administratorId);
     });
   }
@@ -127,9 +134,6 @@ export class PropertyManagementStore {
   registerGallery(command: RegisterCommercialGalleryCommand): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const administratorId = this.requireAdministrator();
-      if (await this.repository.findGalleryByAdministrator(administratorId)) {
-        throw new PropertyError(PropertyErrorCode.GalleryAlreadyRegistered);
-      }
       const gallery = CommercialGallery.register(administratorId, command);
       this.galleryState.set(await this.repository.registerGallery(gallery));
       this.unitsState.set([]);
@@ -145,7 +149,7 @@ export class PropertyManagementStore {
     });
   }
 
-  /** Registers a store (US-09) or a common area (US-57). */
+  /** Registers a store or a common area. */
   registerUnit(command: RegisterCommercialUnitCommand): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const gallery = this.requireGallery();
@@ -176,7 +180,7 @@ export class PropertyManagementStore {
     });
   }
 
-  /** Logical removal, refused while devices are linked or a tenant occupies it (US-11). */
+  /** Logical removal, refused while devices are linked or a tenant occupies it. */
   removeUnit(unitId: string): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const current = this.requireUnit(unitId);
@@ -194,21 +198,21 @@ export class PropertyManagementStore {
   }
 
   /**
-   * Sends a sign-up link valid for 7 days to the tenant of a store without tenant (US-12). Any
-   * link still pending for the store is invalidated first (scenario 3).
+   * Sends a sign-up link valid for 7 days to the tenant of a store without tenant. The platform
+   * invalidates any link still pending for the store, so the invitations are read again.
    */
   inviteTenant(command: InviteTenantCommand): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const unit = this.requireUnit(command.unitId);
-      const invitation = TenantInvitation.issue(unit, command.email);
-      await this.revokePendingInvitations(unit.id);
-      const sent = await this.repository.sendInvitation(invitation);
-      this.invitationsState.update((invitations) => [...invitations, sent]);
+      const sent = await this.repository.sendInvitation(
+        TenantInvitation.issue(unit, command.email),
+      );
+      this.invitationsState.set(await this.repository.listInvitations());
       this.deliver(unit, sent);
     });
   }
 
-  /** Sends a new link to the same email and invalidates the previous one (US-12, scenario 3). */
+  /** Sends a new link to the same email and invalidates the previous one. */
   resendInvitation(invitationId: string): Promise<boolean> {
     const invitation = this.invitationsState().find((item) => item.id === invitationId);
     if (!invitation || !invitation.canBeResent()) {
@@ -224,8 +228,9 @@ export class PropertyManagementStore {
   revokeInvitation(invitationId: string): Promise<boolean> {
     return this.execute(this.saving, async () => {
       const invitation = this.invitationsState().find((item) => item.id === invitationId);
-      if (!invitation) throw new PropertyError(PropertyErrorCode.InvitationNotPending);
-      this.replaceInvitation(await this.repository.updateInvitation(invitation.revoke()));
+      if (!invitation) throw new PropertyError(PropertyErrorCode.InvitationNotFound);
+      invitation.revoke();
+      this.replaceInvitation(await this.repository.revokeInvitation(invitation.id));
     });
   }
 
@@ -234,32 +239,23 @@ export class PropertyManagementStore {
     this.errorDetails.set({});
   }
 
-  private async loadGalleryContent(gallery: CommercialGallery, administratorId: string) {
-    const [units, invitations, tenants] = await Promise.all([
+  private async loadGalleryContent(gallery: CommercialGallery) {
+    const [units, invitations, tenants, resources] = await Promise.all([
       this.repository.listUnits(gallery.id),
-      this.repository.listInvitations(gallery.id),
-      // The gallery is still usable when the tenants cannot be read.
-      this.communicationContext
-        .tenantsByUnit(administratorId)
-        .catch(() => new Map<string, UnitTenant>()),
+      this.repository.listInvitations(),
+      // The gallery is still usable when the tenants or the resources cannot be read.
+      this.communicationContext.tenantsByUnit().catch(() => new Map<string, UnitTenant>()),
+      this.resourceAssetContext.listResources().catch(() => []),
     ]);
     this.unitsState.set(units);
     this.invitationsState.set(invitations);
     this.tenantsState.set(tenants);
-  }
-
-  private async revokePendingInvitations(unitId: string): Promise<void> {
-    const pending = this.invitationsState().filter(
-      (invitation) => invitation.unitId === unitId && invitation.canBeResent(),
-    );
-    for (const invitation of pending) {
-      this.replaceInvitation(await this.repository.updateInvitation(invitation.revoke()));
-    }
+    this.resourcesState.set(resources);
   }
 
   /**
-   * There is no email service in local development: the sign-up link is printed in the console,
-   * like the password reset code of Identity and Access Management.
+   * The platform does not email the invitation yet: the sign-up link is printed in the console so
+   * it can be opened in the mobile application.
    */
   private deliver(unit: CommercialUnit, invitation: TenantInvitation): void {
     const link = `${location.origin}/iam/sign-up?invitation=${invitation.token}`;
@@ -284,6 +280,7 @@ export class PropertyManagementStore {
     this.unitsState.set([]);
     this.invitationsState.set([]);
     this.tenantsState.set(new Map());
+    this.resourcesState.set([]);
     this.loadedFor.set(null);
   }
 

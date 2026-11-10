@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.message {
+  margin: 0 0 16px;
+  color: var(--sp-text-muted);
+  line-height: 1.5;
+}
+
+mat-form-field {
+  width: 100%;
+}

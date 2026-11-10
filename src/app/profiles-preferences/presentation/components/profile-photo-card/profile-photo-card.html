@@ -6,18 +6,13 @@
       (loadFailed)="onPreviewFailed()"
     />
     @if (!profile().hasPhoto() && !editing()) {
-      <span class="muted">{{ 'profiles.photo.default' | translate }}</span>
+      <small>{{ 'profiles.photo.default' | translate }}</small>
     }
 
-    <div class="identity">
-      <span class="name">{{ profile().fullName }}</span>
-      <span class="muted">{{ profile().email }}</span>
-    </div>
+    <mat-card-title>{{ profile().fullName }}</mat-card-title>
+    <mat-card-subtitle>{{ profile().email }}</mat-card-subtitle>
     @if (role(); as role) {
-      <span class="badge role">
-        <mat-icon aria-hidden="true">verified_user</mat-icon>
-        {{ 'profiles.roles.' + role | translate }}
-      </span>
+      <app-status-chip [tone]="'primary'">{{ 'profiles.roles.' + role | translate }}</app-status-chip>
     }
 
     @if (editing()) {
@@ -35,15 +30,15 @@
             <mat-error>{{ 'profiles.photo.load_error' | translate }}</mat-error>
           }
         </mat-form-field>
-        <div class="actions">
+        <mat-card-actions align="end">
           <button matButton type="button" (click)="cancel()">{{ 'common.actions.cancel' | translate }}</button>
           <button matButton="filled" type="submit" [disabled]="store.saving()">
             {{ (store.saving() ? 'profiles.photo.saving' : 'profiles.photo.save') | translate }}
           </button>
-        </div>
+        </mat-card-actions>
       </form>
     } @else {
-      <div class="actions">
+      <mat-card-actions>
         <button matButton="outlined" type="button" (click)="startEditing()">
           <mat-icon aria-hidden="true">add_a_photo</mat-icon>
           {{ (profile().hasPhoto() ? 'profiles.photo.change' : 'profiles.photo.add') | translate }}
@@ -53,7 +48,7 @@
             {{ 'profiles.photo.remove' | translate }}
           </button>
         }
-      </div>
+      </mat-card-actions>
     }
   </mat-card-content>
 </mat-card>

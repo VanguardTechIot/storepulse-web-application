@@ -1,0 +1,46 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
+import { appNav } from '../../../../shared/routing/app-nav';
+import { IamStore } from '../../../application/iam.store';
+import { iamNav } from '../../iam.nav';
+
+/**
+ * Account menu of the top bar: who is signed in, the way to My profile and the
+ * Log Out action.
+ */
+@Component({
+  selector: 'app-authentication-section',
+  imports: [
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatListModule,
+    MatMenuModule,
+    RouterLink,
+    TranslatePipe,
+  ],
+  templateUrl: './authentication-section.html',
+  styleUrl: './authentication-section.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AuthenticationSection {
+  private readonly store = inject(IamStore);
+  private readonly router = inject(Router);
+
+  /** Navigation commands for the main application. */
+  protected readonly appNav = appNav;
+  /** Currently authenticated user. */
+  protected readonly user = this.store.currentUser;
+
+  /** Signs out the user and navigates to the sign-in page. */
+  protected signOut(): void {
+    this.store.signOut();
+    void this.router.navigate(iamNav.signIn());
+  }
+}

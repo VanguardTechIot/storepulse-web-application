@@ -1,0 +1,21 @@
+<div id="toast-stack" class="toast-stack" aria-live="polite" role="status">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div [id]="'toast-' + toast.id" class="toast" [attr.data-tone]="toast.tone">
+      <mat-icon class="tone" aria-hidden="true">{{ icons[toast.tone] }}</mat-icon>
+      <div class="toast-text">
+        <b>{{ toast.title }}</b>
+        @if (toast.message) {
+          <small>{{ toast.message }}</small>
+        }
+      </div>
+      <button
+        type="button"
+        class="close"
+        [attr.aria-label]="'common.actions.close' | translate"
+        (click)="toastService.dismiss(toast.id)"
+      >
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </div>
+  }
+</div>

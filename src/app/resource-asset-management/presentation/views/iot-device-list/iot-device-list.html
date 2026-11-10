@@ -1,167 +1,204 @@
-﻿<div class="page-head">
+﻿<header id="devices-header" class="page-head">
   <div>
     <div class="crumbs">{{ 'devices.crumb' | translate }}</div>
     <h1>{{ 'devices.title' | translate }}</h1>
     <p>{{ 'devices.subtitle' | translate }}</p>
   </div>
   <div class="actions">
-    <button type="button" class="btn btn-primary" (click)="registerOpen.set(true)">
-      {{ 'devices.actions.register' | translate }}
+    <button id="register-device-button" matButton="filled" type="button" (click)="register()">
+      <mat-icon aria-hidden="true">add</mat-icon>{{ 'devices.actions.register' | translate }}
     </button>
   </div>
-</div>
+</header>
 
 @if (store.hasError()) {
-  <div class="card">
-    <app-view-state state="error" (retry)="store.load()" />
-  </div>
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state id="page-state" status="error" (retry)="store.load()" />
+  </mat-card>
 } @else if (store.isLoading() && store.registeredCount() === 0) {
-  <div class="card">
-    <app-view-state state="loading" />
-  </div>
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state id="page-state" status="loading" />
+  </mat-card>
 } @else {
-  <div class="grid g-4">
-    <div class="card kpi">
-      <div class="top"><span class="ico ico-cyan"><app-icon name="chip" /></span>{{ 'devices.kpi.registered' | translate }}</div>
-      <div class="val">{{ store.registeredCount() }}</div>
-      <div class="delta muted">
-        {{ 'devices.kpi.registeredDetail' | translate: { active: store.activeCount(), inactive: store.inactiveCount() } }}
-      </div>
-    </div>
-    <div class="card kpi">
-      <div class="top"><span class="ico ico-amber"><app-icon name="wifioff" /></span>{{ 'devices.kpi.disconnected' | translate }}</div>
-      <div class="val">{{ store.disconnectedCount() }}</div>
-      <div class="delta warn">{{ 'devices.kpi.disconnectedDetail' | translate }}</div>
-    </div>
-    <div class="card kpi">
-      <div class="top"><span class="ico ico-violet"><app-icon name="alert" /></span>{{ 'devices.kpi.faulty' | translate }}</div>
-      <div class="val">{{ store.faultyCount() }}</div>
-      <div class="delta muted">{{ 'devices.kpi.faultyDetail' | translate }}</div>
-    </div>
-    <div class="card kpi">
-      <div class="top"><span class="ico ico-blue"><app-icon name="refresh" /></span>{{ 'devices.kpi.buffered' | translate }}</div>
-      <div class="val">{{ store.bufferedEventCount() }}</div>
-      <div class="delta muted">{{ 'devices.kpi.bufferedDetail' | translate }}</div>
-    </div>
+  <div id="kpis" class="kpis">
+    <app-kpi-card
+      id="registered-card"
+      icon="memory"
+      [label]="'devices.kpi.registered' | translate"
+      [value]="'' + store.registeredCount()"
+    >
+      {{
+        'devices.kpi.registeredDetail'
+          | translate: { active: store.activeCount(), inactive: store.inactiveCount() }
+      }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="disconnected-card"
+      icon="wifi_off"
+      tone="warning"
+      [label]="'devices.kpi.disconnected' | translate"
+      [value]="'' + store.disconnectedCount()"
+    >
+      {{ 'devices.kpi.disconnectedDetail' | translate }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="faulty-card"
+      icon="warning"
+      tone="violet"
+      [label]="'devices.kpi.faulty' | translate"
+      [value]="'' + store.faultyCount()"
+    >
+      {{ 'devices.kpi.faultyDetail' | translate }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="buffered-card"
+      icon="sync"
+      tone="info"
+      [label]="'devices.kpi.buffered' | translate"
+      [value]="'' + store.bufferedEventCount()"
+    >
+      {{ 'devices.kpi.bufferedDetail' | translate }}
+    </app-kpi-card>
   </div>
 
   @if (store.disconnectedCount() > 0) {
-    <div class="callout warn" role="status">
-      <app-icon name="wifioff" />
-      <span>{{ 'devices.offlineNotice' | translate: { count: store.disconnectedCount() } }}</span>
-    </div>
+    <app-callout id="offline-notice" type="warn" icon="wifi_off" role="status">
+      {{ 'devices.offlineNotice' | translate: { count: store.disconnectedCount() } }}
+    </app-callout>
   }
 
-  <section class="card" aria-labelledby="devices-title">
-    <h2 id="devices-title" class="sr-only">{{ 'devices.title' | translate }}</h2>
-    <div class="toolbar wrap">
-      <label class="search">
-        <app-icon name="search" [size]="16" />
-        <span class="sr-only">{{ 'devices.search' | translate }}</span>
-        <input type="search" [value]="store.searchTerm()" [placeholder]="'devices.search' | translate"
-               (input)="setSearch($any($event.target).value)" />
-      </label>
-      <div class="tabs" role="tablist">
-        @for (filter of filters; track filter) {
-          <button type="button" role="tab" [class.on]="store.filter() === filter"
-                  [attr.aria-selected]="store.filter() === filter" (click)="setFilter(filter)">
-            {{ 'devices.filters.' + filter | translate }}
-          </button>
-        }
+  <mat-card id="devices-card" appearance="outlined">
+    <div class="card-head">
+      <mat-form-field class="search" subscriptSizing="dynamic">
+        <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+        <input
+          id="device-search"
+          matInput
+          type="search"
+          [value]="store.searchTerm()"
+          [placeholder]="'devices.search' | translate"
+          [attr.aria-label]="'devices.search' | translate"
+          (input)="setSearch($any($event.target).value)"
+        />
+      </mat-form-field>
+      <div class="right">
+        <mat-button-toggle-group
+          id="status-toggle"
+          class="tabs"
+          [hideSingleSelectionIndicator]="true"
+          [value]="store.filter()"
+          (change)="setFilter($event.value)"
+          [attr.aria-label]="'devices.fields.status' | translate"
+        >
+          @for (filter of filters; track filter) {
+            <mat-button-toggle [value]="filter">
+              {{ 'devices.filters.' + filter | translate }}
+            </mat-button-toggle>
+          }
+        </mat-button-toggle-group>
       </div>
     </div>
 
     @if (store.filteredRows().length === 0) {
-      <app-view-state icon="search" [title]="'devices.emptyTitle' | translate"
-                      [message]="'devices.emptyMessage' | translate" />
+      <app-page-state
+        id="devices-empty"
+        icon="search_off"
+        [title]="'devices.emptyTitle' | translate"
+        [message]="'devices.emptyMessage' | translate"
+      />
     } @else {
       <div class="table-wrap">
-        <table>
-          <thead>
-          <tr>
-            <th>{{ 'devices.fields.device' | translate }}</th>
-            <th>{{ 'devices.fields.stand' | translate }}</th>
-            <th>{{ 'devices.fields.status' | translate }}</th>
-            <th>{{ 'devices.fields.connectivity' | translate }}</th>
-            <th>{{ 'devices.fields.voltage' | translate }}</th>
-            <th class="t-right">{{ 'devices.fields.action' | translate }}</th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (row of pagedRows(); track row.device.id) {
-              <tr>
-                <td>
-                  <b class="mono">{{ row.device.serialNumber }}</b>
-                  <span class="sub">{{ 'devices.types.' + row.device.type | translate }}</span>
-                  @if (row.device.bufferedEvents > 0) {
-                    <span class="sub warn">{{ 'devices.bufferedEvents' | translate: { count: row.device.bufferedEvents } }}</span>
-                  }
-                  @if (row.device.deactivationReason) {
-                    <span class="sub">{{ row.device.deactivationReason }}</span>
-                  }
-                </td>
-                <td>
-                  <b>{{ row.resource?.name ?? '—' }}</b>
-                  <span class="sub">{{ row.resource?.description }}</span>
-                </td>
-                <td>
-                  <span [class]="'badge ' + toneOf(row.device)">{{ 'devices.status.' + statusOf(row.device) | translate }}</span>
-                </td>
-                <td>
-                  @if (row.device.isActive) {
-                    <span class="badge" [class.badge--success]="!row.device.isDisconnected"
-                          [class.badge--warning]="row.device.isDisconnected">
-                      {{ 'devices.connectivity.' + row.device.connectivity | translate }}
-                    </span>
-                  } @else {
-                    —
-                  }
-                  <span class="sub mono">{{ row.device.lastReportAt | localizedDate: 'dateTime' }}</span>
-                </td>
-                <td class="mono">
-                  {{ row.device.supplyVoltage !== null ? row.device.supplyVoltage.toFixed(2) + ' V' : '—' }}
-                </td>
-                <td class="t-right">
-                  @if (row.device.isActive) {
-                    <button type="button" class="btn btn-soft btn-sm" (click)="openDeactivation(row)">
-                      {{ 'devices.actions.deactivate' | translate }}
-                    </button>
-                  } @else {
-                    <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="reactivate(row)">
-                      <app-icon name="refresh" [size]="14" />{{ 'devices.actions.reactivate' | translate }}
-                    </button>
-                  }
-                </td>
-              </tr>
-            }
-          </tbody>
+        <table id="devices-table" mat-table [dataSource]="pagedRows()">
+          <ng-container matColumnDef="device">
+            <th mat-header-cell *matHeaderCellDef>{{ 'devices.fields.device' | translate }}</th>
+            <td mat-cell *matCellDef="let row">
+              <strong class="mono">{{ row.device.serialNumber }}</strong>
+              <small>{{ 'devices.types.' + row.device.type | translate }}</small>
+              @if (row.device.bufferedEvents > 0) {
+                <small class="warn">{{
+                    'devices.bufferedEvents' | translate: { count: row.device.bufferedEvents }
+                  }}</small>
+              }
+              @if (row.device.deactivationReason) {
+                <small>{{ row.device.deactivationReason }}</small>
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="stand">
+            <th mat-header-cell *matHeaderCellDef>{{ 'devices.fields.stand' | translate }}</th>
+            <td mat-cell *matCellDef="let row">
+              <strong>{{ row.resource?.name ?? '—' }}</strong>
+              <small>{{ row.resource?.description }}</small>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'devices.fields.status' | translate }}</th>
+            <td mat-cell *matCellDef="let row">
+              <app-status-chip [tone]="statusTone(row.device)">
+                {{ 'devices.status.' + statusOf(row.device) | translate }}
+              </app-status-chip>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="connectivity">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'devices.fields.connectivity' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row">
+              @if (row.device.isActive) {
+                <app-status-chip [tone]="row.device.isDisconnected ? 'warning' : 'success'">
+                  {{ 'devices.connectivity.' + row.device.connectivity | translate }}
+                </app-status-chip>
+              } @else {
+                —
+              }
+              <small class="mono">{{ row.device.lastReportAt | localizedDate: 'dateTime' }}</small>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="voltage">
+            <th mat-header-cell *matHeaderCellDef>{{ 'devices.fields.voltage' | translate }}</th>
+            <td mat-cell *matCellDef="let row" class="mono">
+              @if (row.device.supplyVoltage !== null) {
+                {{ row.device.supplyVoltage | localizedNumber: 2 : false : 2 }} V
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="end">
+              {{ 'devices.fields.action' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row" class="end">
+              @if (row.device.isActive) {
+                <button matButton type="button" class="danger-button" (click)="deactivate(row)">
+                  {{ 'devices.actions.deactivate' | translate }}
+                </button>
+              } @else {
+                <button
+                  matButton="outlined"
+                  type="button"
+                  [disabled]="busy()"
+                  (click)="reactivate(row)"
+                >
+                  <mat-icon aria-hidden="true">refresh</mat-icon>
+                  {{ 'devices.actions.reactivate' | translate }}
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns" [id]="row.device.id"></tr>
         </table>
       </div>
-      <app-paginator [total]="store.filteredRows().length" [pageSize]="pageSize" [(page)]="page" />
+      <mat-paginator
+        id="devices-paginator"
+        [length]="store.filteredRows().length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex()"
+        [hidePageSize]="true"
+        (page)="pageIndex.set($event.pageIndex)"
+      />
     }
-  </section>
-
-  <app-confirm-dialog
-    [open]="rowToDeactivate() !== null"
-    [title]="'devices.deactivate.title' | translate: { id: rowToDeactivate()?.device?.serialNumber ?? '' }"
-    [message]="rowToDeactivate()?.resource?.name ?? ''"
-    [confirmLabel]="'devices.deactivate.confirm' | translate"
-    tone="danger"
-    icon="chip"
-    [busy]="busy()"
-    (confirmed)="confirmDeactivation()"
-    (cancelled)="closeDeactivation()"
-  >
-    <div class="callout warn">
-      <app-icon name="alert" />
-      <span>{{ 'devices.deactivate.warning' | translate: { stand: rowToDeactivate()?.resource?.name ?? '' } }}</span>
-    </div>
-    <label class="field">
-      <span>{{ 'devices.deactivate.reason' | translate }}</span>
-      <input class="input" type="text" [value]="deactivationReason()"
-             (input)="deactivationReason.set($any($event.target).value)" />
-    </label>
-  </app-confirm-dialog>
-
-  <app-register-device-dialog [open]="registerOpen()" (closed)="registerOpen.set(false)" />
+  </mat-card>
 }

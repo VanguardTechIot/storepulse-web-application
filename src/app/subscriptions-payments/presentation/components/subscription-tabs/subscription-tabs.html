@@ -1,0 +1,21 @@
+<nav
+  id="subscription-nav"
+  mat-tab-nav-bar
+  mat-stretch-tabs="false"
+  [tabPanel]="panel"
+  [attr.aria-label]="'subscriptions.tabs.label' | translate"
+>
+  @for (tab of tabs; track tab.path) {
+    <a
+      [id]="tab.id"
+      mat-tab-link
+      [routerLink]="tab.path"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [active]="rla.isActive"
+    >
+      {{ tab.label | translate }}
+    </a>
+  }
+</nav>
+<mat-tab-nav-panel id="subscription-panel" #panel />

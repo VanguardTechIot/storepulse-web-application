@@ -11,7 +11,7 @@
   </div>
 </header>
 
-<app-communication-tabs />
+<app-section-tabs [tabs]="tabs" label="communication.tabs.label" />
 
 @if (store.lastPublication(); as result) {
   @if (result.unitsWithoutTenant.length > 0) {
@@ -27,22 +27,22 @@
 <section class="kpis" [attr.aria-label]="'communication.notifications.summary' | translate">
   <mat-card appearance="outlined" class="kpi">
     <span class="label"
-      ><mat-icon class="tone-primary" aria-hidden="true">notifications</mat-icon
-      >{{ 'communication.notifications.total' | translate }}</span
+    ><mat-icon class="tone-primary" aria-hidden="true">notifications</mat-icon
+    >{{ 'communication.notifications.total' | translate }}</span
     >
     <span class="value">{{ store.notifications().length }}</span>
   </mat-card>
   <mat-card appearance="outlined" class="kpi">
     <span class="label"
-      ><mat-icon class="tone-warning" aria-hidden="true">mark_email_unread</mat-icon
-      >{{ 'communication.notifications.unread' | translate }}</span
+    ><mat-icon class="tone-warning" aria-hidden="true">mark_email_unread</mat-icon
+    >{{ 'communication.notifications.unread' | translate }}</span
     >
     <span class="value">{{ store.unreadCount() }}</span>
   </mat-card>
   <mat-card appearance="outlined" class="kpi">
     <span class="label"
-      ><mat-icon class="tone-danger" aria-hidden="true">error</mat-icon
-      >{{ 'communication.notifications.failed' | translate }}</span
+    ><mat-icon class="tone-danger" aria-hidden="true">error</mat-icon
+    >{{ 'communication.notifications.failed' | translate }}</span
     >
     <span class="value">{{ store.failedCount() }}</span>
   </mat-card>
@@ -70,79 +70,108 @@
 </div>
 
 @if (store.loading() && store.notifications().length === 0) {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state id="page-state" status="loading" />
 } @else {
-  <mat-card appearance="outlined" class="table-card">
+  <mat-card id="notifications-card" appearance="outlined">
     @if (filtered().length === 0) {
-      <div class="state">
-        <mat-icon class="state-icon" aria-hidden="true">notifications_off</mat-icon>
-        <b>{{ 'communication.notifications.empty' | translate }}</b>
-      </div>
+      <app-page-state
+        id="notifications-empty"
+        icon="notifications_off"
+        [title]="'communication.notifications.empty' | translate"
+      />
     } @else {
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">{{ 'communication.fields.date' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.tenant' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.type' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.notification' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.channel' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.status' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.read' | translate }}</th>
-            <th scope="col">
+      <div class="table-wrap">
+        <table id="notifications-table" mat-table [dataSource]="page()">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>{{ 'communication.fields.date' | translate }}</th>
+            <td mat-cell *matCellDef="let notification">
+              {{ notification.createdAt | localizedDate: 'dateTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tenant">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.tenant' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let notification">
+              {{ store.directory.tenantName(notification.tenantId) }}
+              <small>{{ store.directory.unitLabel(notification.commercialUnitId) }}</small>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>{{ 'communication.fields.type' | translate }}</th>
+            <td mat-cell *matCellDef="let notification">
+              {{ 'communication.types.' + notification.type | translate }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="notification">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.notification' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let notification" class="wrap">
+              <strong>{{ notification.title }}</strong>
+              <small class="clamp">{{ notification.body }}</small>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="channel">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.channel' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let notification">
+              {{ 'communication.channels.' + notification.channel | translate }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.status' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let notification">
+              <app-communication-status-badge [status]="notification.status" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="read">
+            <th mat-header-cell *matHeaderCellDef>{{ 'communication.fields.read' | translate }}</th>
+            <td mat-cell *matCellDef="let notification">
+              <mat-icon
+                [class]="notification.read ? 'tone-success' : 'muted'"
+                [attr.aria-label]="
+                  (notification.read
+                    ? 'communication.notifications.read_yes'
+                    : 'communication.notifications.read_no'
+                  ) | translate
+                "
+              >
+                {{ notification.read ? 'drafts' : 'mail' }}
+              </mat-icon>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>
               <span class="sr-only">{{ 'communication.fields.actions' | translate }}</span>
             </th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (notification of page(); track notification.id) {
-            <tr>
-              <td>{{ notification.createdAt | localizedDate: 'dateTime' }}</td>
-              <td>
-                {{ store.directory.tenantName(notification.tenantId) }}
-                <small>{{ store.directory.unitLabel(notification.commercialUnitId) }}</small>
-              </td>
-              <td>{{ 'communication.types.' + notification.type | translate }}</td>
-              <td>
-                <strong>{{ notification.title }}</strong>
-                <small class="clamp">{{ notification.body }}</small>
-              </td>
-              <td>{{ 'communication.channels.' + notification.channel | translate }}</td>
-              <td><app-communication-status-badge [status]="notification.status" /></td>
-              <td>
-                <mat-icon
-                  [class]="notification.read ? 'tone-success' : 'muted'"
-                  [attr.aria-label]="
-                    (notification.read
-                      ? 'communication.notifications.read_yes'
-                      : 'communication.notifications.read_no'
-                    ) | translate
-                  "
+            <td mat-cell *matCellDef="let notification" class="end">
+              @if (notification.isFailed) {
+                <button
+                  matIconButton
+                  type="button"
+                  [matTooltip]="'communication.notifications.retry' | translate"
+                  [attr.aria-label]="'communication.notifications.retry' | translate"
+                  [disabled]="store.saving()"
+                  (click)="retry(notification.id)"
                 >
-                  {{ notification.read ? 'drafts' : 'mail' }}
-                </mat-icon>
-              </td>
-              <td class="end">
-                @if (notification.isFailed) {
-                  <button
-                    matIconButton
-                    type="button"
-                    [matTooltip]="'communication.notifications.retry' | translate"
-                    [attr.aria-label]="'communication.notifications.retry' | translate"
-                    [disabled]="store.saving()"
-                    (click)="retry(notification.id)"
-                  >
-                    <mat-icon>refresh</mat-icon>
-                  </button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let notification; columns: columns"
+            [id]="'ntf-' + notification.id"
+          ></tr>
+        </table>
+      </div>
       <mat-paginator
         [length]="filtered().length"
         [pageSize]="pageSize"

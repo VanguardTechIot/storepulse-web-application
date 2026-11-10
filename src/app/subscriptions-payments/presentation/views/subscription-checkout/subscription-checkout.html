@@ -1,4 +1,4 @@
-<header class="page-head">
+<header id="checkout-header" class="page-head">
   <div>
     <div class="crumbs">
       <a routerLink="/subscription/plans">{{ 'subscriptions.tabs.plans' | translate }}</a> /
@@ -20,22 +20,23 @@
   <app-subscription-state />
 } @else if (plan(); as plan) {
   @if (store.error(); as error) {
-    <app-callout type="danger" icon="credit_card_off" role="alert">
+    <app-callout id="payment-error" type="danger" icon="credit_card_off" role="alert">
       {{ 'subscriptions.errors.' + error | translate }}
     </app-callout>
   }
 
-  <div class="checkout">
-    <section class="card" aria-labelledby="card-title">
+  <div id="checkout" class="checkout">
+    <mat-card id="payment-card" appearance="outlined" aria-labelledby="payment-title">
       <div class="card-head">
         <div>
-          <h2 id="card-title">{{ 'subscriptions.checkout.card_title' | translate }}</h2>
+          <h2 id="payment-title">{{ 'subscriptions.checkout.card_title' | translate }}</h2>
           <p>{{ 'subscriptions.checkout.card_subtitle' | translate }}</p>
         </div>
       </div>
 
-      <form [formGroup]="form" (ngSubmit)="pay()" novalidate>
+      <form id="payment-form" class="card-pad" [formGroup]="form" (ngSubmit)="pay()" novalidate>
         <mat-radio-group
+          id="method-group"
           formControlName="paymentMethod"
           [attr.aria-label]="'subscriptions.checkout.method' | translate"
         >
@@ -48,7 +49,7 @@
 
         <mat-form-field>
           <mat-label>{{ 'subscriptions.checkout.card_holder' | translate }}</mat-label>
-          <input matInput formControlName="cardHolder" autocomplete="cc-name" />
+          <input matInput id="card-holder" formControlName="cardHolder" autocomplete="cc-name" />
           @if (form.controls.cardHolder.hasError('required')) {
             <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
           }
@@ -58,6 +59,7 @@
           <mat-label>{{ 'subscriptions.checkout.card_number' | translate }}</mat-label>
           <input
             matInput
+            id="card-number"
             formControlName="cardNumber"
             inputmode="numeric"
             autocomplete="cc-number"
@@ -76,6 +78,7 @@
             <mat-label>{{ 'subscriptions.checkout.card_expiry' | translate }}</mat-label>
             <input
               matInput
+              id="card-expiry"
               formControlName="cardExpiry"
               placeholder="MM/AA"
               autocomplete="cc-exp"
@@ -90,6 +93,7 @@
             <mat-label>CVV</mat-label>
             <input
               matInput
+              id="card-cvv"
               formControlName="cardCvv"
               type="password"
               inputmode="numeric"
@@ -107,10 +111,10 @@
         </p>
 
         <div class="form-actions">
-          <a matButton routerLink="/subscription/plans">{{
+          <a id="back-link" matButton routerLink="/subscription/plans">{{
               'subscriptions.checkout.back' | translate
             }}</a>
-          <button matButton="filled" type="submit" [disabled]="store.processing()">
+          <button id="pay-button" matButton="filled" type="submit" [disabled]="store.processing()">
             @if (store.processing()) {
               <mat-spinner diameter="18" aria-hidden="true" />
               {{ 'subscriptions.checkout.processing' | translate }}
@@ -120,43 +124,48 @@
           </button>
         </div>
       </form>
-    </section>
+    </mat-card>
 
-    <aside class="card" aria-labelledby="summary-title">
+    <mat-card id="summary-card" appearance="outlined" aria-labelledby="summary-title">
       <div class="card-head">
         <h2 id="summary-title">{{ 'subscriptions.checkout.summary' | translate }}</h2>
       </div>
-      <mat-button-toggle-group
-        [formControl]="form.controls.billingCycle"
-        [attr.aria-label]="'subscriptions.plans_page.cycle' | translate"
-      >
-        @for (option of cycles; track option) {
-          <mat-button-toggle [value]="option">{{
-              'subscriptions.cycle_options.' + option | translate
-            }}</mat-button-toggle>
-        }
-      </mat-button-toggle-group>
-      <div class="summary-line">
-        <span>{{ 'subscriptions.plans.' + plan.code + '.name' | translate }}</span>
-        <span>
-          @if (plan.isUnlimited) {
-            {{ 'subscriptions.plan_card.unlimited_units' | translate }}
-          } @else {
-            {{
-              'subscriptions.plan_card.up_to_units'
-                | translate: { count: plan.monitoredUnitLimit ?? 0 }
-            }}
+      <div class="card-pad summary">
+        <mat-button-toggle-group
+          id="cycle-toggle"
+          class="tabs"
+          [hideSingleSelectionIndicator]="true"
+          [formControl]="form.controls.billingCycle"
+          [attr.aria-label]="'subscriptions.plans_page.cycle' | translate"
+        >
+          @for (option of cycles; track option) {
+            <mat-button-toggle [value]="option">{{
+                'subscriptions.cycle_options.' + option | translate
+              }}</mat-button-toggle>
           }
-        </span>
+        </mat-button-toggle-group>
+        <div id="summary-plan" class="summary-line">
+          <span>{{ 'subscriptions.plans.' + plan.code + '.name' | translate }}</span>
+          <span>
+            @if (plan.isUnlimited) {
+              {{ 'subscriptions.plan_card.unlimited_units' | translate }}
+            } @else {
+              {{
+                'subscriptions.plan_card.up_to_units'
+                  | translate: { count: plan.monitoredUnitLimit ?? 0 }
+              }}
+            }
+          </span>
+        </div>
+        <div id="summary-total" class="summary-line total">
+          <span>{{ 'subscriptions.checkout.total_today' | translate }}</span>
+          <span>S/ {{ total()?.amount ?? 0 | localizedNumber: 2 }}</span>
+        </div>
       </div>
-      <div class="summary-line total">
-        <span>{{ 'subscriptions.checkout.total_today' | translate }}</span>
-        <span>S/ {{ total()?.amount ?? 0 | localizedNumber: 2 }}</span>
-      </div>
-    </aside>
+    </mat-card>
   </div>
 } @else {
-  <app-callout type="danger" icon="error" role="alert">{{
+  <app-callout id="plan-not-found" type="danger" icon="error" role="alert">{{
       'subscriptions.errors.plan_not_found' | translate
     }}</app-callout>
 }

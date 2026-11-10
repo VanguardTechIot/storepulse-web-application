@@ -13,25 +13,26 @@ import { UnitFormDialog, UnitFormData } from './components/unit-form-dialog/unit
 /**
  * Actions on a unit shared by the list and the detail: they open the dialogs, ask for
  * confirmation and report the outcome. Each one resolves to `true` when the unit changed.
+ * Views provide it, so its dialogs open with the layout defaults.
  */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class UnitActions {
   private readonly store = inject(PropertyManagementStore);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(TranslationService);
 
-  /** US-09 and US-57. */
+  /** Registers a store or a common area. */
   async register(type: UnitType = UnitType.Store): Promise<boolean> {
     return this.openForm({ type }, 'property.unit_form.registered');
   }
 
-  /** US-10. */
+  /** Edits the data of a unit. */
   async edit(unit: CommercialUnit): Promise<boolean> {
     return this.openForm({ unit }, 'property.unit_form.updated');
   }
 
-  /** US-12. */
+  /** Invites the tenant of a store without tenant. */
   async invite(unit: CommercialUnit): Promise<boolean> {
     const ref = this.dialog.open<InviteTenantDialog, CommercialUnit, boolean>(InviteTenantDialog, {
       data: unit,
@@ -65,7 +66,7 @@ export class UnitActions {
     return ok;
   }
 
-  /** US-11: logical removal, refused while devices are linked or a tenant occupies it. */
+  /** Logical removal, refused while devices are linked or a tenant occupies it. */
   async remove(unit: CommercialUnit): Promise<boolean> {
     const confirmed = await confirmAction(this.dialog, {
       title: this.i18n.t('property.remove.title', { unit: unit.code }),

@@ -1,27 +1,30 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { StatusChip } from '../../../../shared/presentation/components/status-chip/status-chip';
+import { Tone } from '../../../../shared/presentation/components/tone-icon/tone-icon';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
 import { CommercialUnit } from '../../../domain/model/commercial-unit.entity';
 import { UnitStatus } from '../../../domain/model/unit-status.enum';
 
-const tones: Record<UnitStatus, string> = {
-  [UnitStatus.Available]: 'badge--success',
-  [UnitStatus.Occupied]: 'badge--violet',
-  [UnitStatus.Maintenance]: 'badge--warning',
+const tones: Record<UnitStatus, Tone> = {
+  [UnitStatus.Available]: 'success',
+  [UnitStatus.Occupied]: 'violet',
+  [UnitStatus.Maintenance]: 'warning',
 };
 
 /** Status of a unit; common areas show their kind, since they are never occupied. */
 @Component({
   selector: 'app-unit-status-badge',
-  imports: [TranslatePipe],
-  template: `<span [class]="'badge ' + tone()">{{ label() | translate }}</span>`,
+  imports: [StatusChip, TranslatePipe],
+  templateUrl: './unit-status-badge.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitStatusBadge {
   readonly unit = input.required<CommercialUnit>();
 
-  protected readonly tone = computed(() => {
+  protected readonly tone = computed<Tone>(() => {
     const unit = this.unit();
-    if (!unit.active) return 'badge--neutral';
-    if (unit.isCommonArea && !unit.isUnderMaintenance) return 'badge--neutral';
+    if (!unit.active) return 'neutral';
+    if (unit.isCommonArea && !unit.isUnderMaintenance) return 'neutral';
     return tones[unit.status];
   });
 

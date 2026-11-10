@@ -1,0 +1,27 @@
+@if (user(); as user) {
+  <button matButton type="button" [matMenuTriggerFor]="accountMenu" [attr.aria-label]="'iam.account_menu.open' | translate">
+    <mat-icon aria-hidden="true">account_circle</mat-icon>
+    <span class="account-email">{{ user.email }}</span>
+    <mat-icon iconPositionEnd aria-hidden="true">expand_more</mat-icon>
+  </button>
+
+  <mat-menu #accountMenu="matMenu" xPosition="before">
+    <mat-list>
+      <mat-list-item>
+        <mat-icon matListItemIcon aria-hidden="true">account_circle</mat-icon>
+        <span matListItemTitle>{{ user.email }}</span>
+        <span matListItemLine>{{ 'iam.roles.' + user.role | translate }}</span>
+      </mat-list-item>
+    </mat-list>
+    <mat-divider />
+    <a mat-menu-item [routerLink]="appNav.profile">
+      <mat-icon aria-hidden="true">person</mat-icon>
+      <span>{{ 'iam.account_menu.my_profile' | translate }}</span>
+    </a>
+    <mat-divider />
+    <button mat-menu-item (click)="signOut()">
+      <mat-icon aria-hidden="true">logout</mat-icon>
+      <span>{{ 'iam.account_menu.sign_out' | translate }}</span>
+    </button>
+  </mat-menu>
+}

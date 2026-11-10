@@ -1,0 +1,17 @@
+.search {
+  flex: 1 1 260px;
+  max-width: 360px;
+}
+
+.warn {
+  color: var(--sp-warning);
+}
+
+.danger-button {
+  --mat-button-text-label-text-color: var(--sp-danger);
+}
+
+mat-paginator {
+  border-top: 1px solid var(--sp-border);
+  background: transparent;
+}

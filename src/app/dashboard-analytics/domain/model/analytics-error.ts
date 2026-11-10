@@ -4,7 +4,12 @@
  */
 export enum AnalyticsErrorCode {
   InvalidConsumptionValue = 'invalid_consumption_value',
-  NotificationNotFound = 'notification_not_found',
+  AlertNotFound = 'alert_not_found',
+  AlertCannotBeAcknowledged = 'alert_cannot_be_acknowledged',
+  AlertCannotBeResolved = 'alert_cannot_be_resolved',
+  InvalidResolutionNote = 'invalid_resolution_note',
+  AccessDenied = 'access_denied',
+  Network = 'network',
   Unexpected = 'unexpected',
 }
 

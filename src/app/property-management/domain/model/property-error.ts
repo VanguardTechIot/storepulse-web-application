@@ -20,14 +20,16 @@ export enum PropertyErrorCode {
   UnitNotAvailable = 'unit_not_available',
   CommonAreaWithoutTenant = 'common_area_without_tenant',
   InvalidEmail = 'invalid_email',
+  InvitationNotFound = 'invitation_not_found',
   InvitationNotPending = 'invitation_not_pending',
+  AdministratorNotAuthenticated = 'administrator_not_authenticated',
   Unexpected = 'unexpected',
 }
 
 export class PropertyError extends Error {
   constructor(
     readonly code: PropertyErrorCode,
-    /** Extra values for the message, such as the devices that block a removal (TS-09). */
+    /** Extra values for the message, such as the devices that block a removal. */
     readonly details: Record<string, string | number> = {},
   ) {
     super(code);

@@ -1,62 +1,86 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { map } from 'rxjs';
-import { UtilityBillingStore } from '../../../application/utility-billing.store';
-import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { RouterLink } from '@angular/router';
+import { TranslationService } from '../../../../shared/infrastructure/i18n/translation.service';
+import { Callout } from '../../../../shared/presentation/components/callout/callout';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
+import { ToastService } from '../../../../shared/presentation/components/toast-host/toast.service';
+import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
+import { LocalizedNumberPipe } from '../../../../shared/presentation/pipes/localized-number.pipe';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
-import { errorKeyOf } from '../../utils/error-key';
+import { UtilityBillingStore } from '../../../application/utility-billing.store';
+import { BillingDisputeStatus } from '../../../domain/enums/billing-dispute-status.enum';
+import { DISPUTE_TEXT_MAX_LENGTH } from '../../../domain/model/billing-dispute.entity';
+import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
 
+/** Dispute of a tenant: the administrator reviews it and then resolves it. */
 @Component({
   selector: 'app-billing-dispute-detail',
-  imports: [FormsModule, RouterLink, CurrencyPipe, DatePipe, TranslatePipe, BillingStatusBadge],
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatInputModule,
+    RouterLink,
+    BillingStatusBadge,
+    Callout,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
+    PageState,
+    TranslatePipe,
+  ],
   templateUrl: './billing-dispute-detail.html',
-  styleUrl: '../../styles/billing.css',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+    '../billing.css',
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingDisputeDetail implements OnInit {
+export class BillingDisputeDetail {
   protected readonly store = inject(UtilityBillingStore);
-  private readonly route = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
+  private readonly i18n = inject(TranslationService);
 
-  private readonly disputeId = toSignal(
-    this.route.paramMap.pipe(map((params) => params.get('disputeId') ?? '')),
-    { initialValue: '' },
-  );
+  /** Route parameter. */
+  readonly disputeId = input.required<string>();
+
+  protected readonly status = BillingDisputeStatus;
+  protected readonly maxLength = DISPUTE_TEXT_MAX_LENGTH;
+  protected readonly reviewNotes = signal('');
+  protected readonly resolution = signal('');
 
   protected readonly dispute = computed(() => this.store.findDispute(this.disputeId()));
-
   protected readonly bill = computed(() => {
-    const current = this.dispute();
-    return current ? this.store.findBill(current.billId) : undefined;
+    const dispute = this.dispute();
+    return dispute ? this.store.findBill(dispute.utilityBillId) : undefined;
   });
 
-  protected reviewNotes = '';
-  protected resolutionText = '';
-  protected readonly busy = signal(false);
-  protected readonly actionError = signal<string | null>(null);
-
-  ngOnInit(): void {
-    void this.store.load();
+  constructor() {
+    this.store.clearError();
+    this.store.load().catch(() => undefined);
   }
 
-  protected async startReview(): Promise<void> {
-    await this.run(() => this.store.startDisputeReview(this.disputeId(), this.reviewNotes));
+  protected refresh(): void {
+    this.store.load(true).catch(() => undefined);
+  }
+
+  protected async review(): Promise<void> {
+    const dispute = this.dispute();
+    if (dispute && (await this.store.review(dispute, this.reviewNotes()))) {
+      this.toast.show('success', this.i18n.t('billing.dispute.reviewed'));
+    }
   }
 
   protected async resolve(): Promise<void> {
-    await this.run(() => this.store.resolveDispute(this.disputeId(), this.resolutionText));
-  }
-
-  private async run(action: () => Promise<void>): Promise<void> {
-    this.busy.set(true);
-    this.actionError.set(null);
-    try {
-      await action();
-    } catch (error) {
-      this.actionError.set(errorKeyOf(error));
-    } finally {
-      this.busy.set(false);
+    const dispute = this.dispute();
+    if (dispute && (await this.store.resolve(dispute, this.resolution()))) {
+      this.toast.show('success', this.i18n.t('billing.dispute.resolved'));
     }
   }
 }

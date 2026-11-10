@@ -1,19 +1,19 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { runCommand } from '../../shared/application/run-command';
 import { GalleryReference } from '../domain/model/gallery-reference';
 import { Payment } from '../domain/model/payment.entity';
-import { PaymentCard } from '../domain/model/payment-card.value-object';
-import { RegisterPaymentCommand } from '../domain/model/register-payment.command';
+import { PaymentCard } from '../domain/value-objects/payment-card.value-object';
 import { RequestSubscriptionCommand } from '../domain/model/request-subscription.command';
 import { Subscription } from '../domain/model/subscription.entity';
 import { SubscriptionPlan } from '../domain/model/subscription-plan.entity';
 import { SubscriptionsError, SubscriptionsErrorCode } from '../domain/model/subscriptions-error';
 import { IamContextFacade } from '../infrastructure/acl/iam-context-facade';
 import { PropertyContextFacade } from '../infrastructure/acl/property-context-facade';
-import { SUBSCRIPTIONS_REPOSITORY } from '../infrastructure/subscriptions.token';
+import { SUBSCRIPTIONS_REPOSITORY } from '../infrastructure/repositories/subscriptions.token';
 
 /**
  * Application service of Subscriptions and Payments: coordinates the use cases of the gallery
- * subscription (US-44 to US-47) and keeps its state.
+ * subscription and keeps its state.
  *
  * Each command resolves to `true` when it succeeds. On failure it resolves to `false` and exposes
  * the reason in `error` (a `SubscriptionsErrorCode`, translated as `subscriptions.errors.<code>`).
@@ -48,7 +48,7 @@ export class SubscriptionsStore {
 
   readonly monitoredUnitCount = computed(() => this.galleryState()?.monitoredUnitCount ?? 0);
 
-  /** US-45: the renewal is near (or the automatic renewal was turned off and it will expire). */
+  /** The renewal is near, or the automatic renewal was turned off and it will expire. */
   readonly isExpiringSoon = computed(() => this.subscriptionState()?.isExpiringSoon() ?? false);
 
   planById(planId: string): SubscriptionPlan | undefined {
@@ -59,29 +59,24 @@ export class SubscriptionsStore {
   /** Gallery, plan catalog, subscription and payment history. */
   load(): Promise<boolean> {
     return this.execute(this.loading, async () => {
-      const administratorId = this.iamContext.currentAdministratorId();
-      if (!administratorId)
+      if (!this.iamContext.currentAdministratorId())
         throw new SubscriptionsError(SubscriptionsErrorCode.GalleryNotRegistered);
       const [gallery, plans] = await Promise.all([
-        this.propertyContext.getGalleryOf(administratorId),
+        this.propertyContext.getGallery(),
         this.repository.listPlans(),
       ]);
       this.plansState.set(plans);
       this.galleryState.set(gallery);
       if (!gallery) throw new SubscriptionsError(SubscriptionsErrorCode.GalleryNotRegistered);
-      const subscription = await this.repository.findSubscriptionByGallery(gallery.galleryId);
-      this.subscriptionState.set(subscription);
-      this.paymentsState.set(
-        subscription ? await this.repository.listPayments(subscription.id) : [],
-      );
+      await this.reloadSubscription(gallery.galleryId);
       this.loaded.set(true);
     });
   }
 
   // ---------- Commands ----------
   /**
-   * US-44: contracts the plan (or changes to it) and pays it. The subscription is activated only
-   * when the gateway accepts the charge; a rejected charge leaves the current state untouched.
+   * Contracts the plan (or changes to it) and pays it. The platform activates the subscription
+   * only when the gateway accepts the charge; a rejected charge is still recorded in the history.
    */
   subscribe(command: RequestSubscriptionCommand): Promise<boolean> {
     return this.execute(this.processing, async () => {
@@ -91,59 +86,50 @@ export class SubscriptionsStore {
       if (!plan.allowsUnits(gallery.monitoredUnitCount)) {
         throw new SubscriptionsError(SubscriptionsErrorCode.UnitLimitExceeded);
       }
-      const card = new PaymentCard(command.cardNumber, command.cardExpiry);
-
-      let subscription = this.subscriptionState();
-      if (!subscription) {
-        subscription = await this.repository.saveSubscription(
-          Subscription.request({
-            id: crypto.randomUUID(),
-            galleryId: gallery.galleryId,
-            galleryAdministratorId: this.iamContext.currentAdministratorId() ?? '',
-            plan,
-            billingCycle: command.billingCycle,
-            monitoredUnitCount: gallery.monitoredUnitCount,
-          }),
-        );
+      // Validates the card before it leaves the browser.
+      new PaymentCard(command.cardNumber, command.cardExpiry);
+      try {
+        const subscription = await this.repository.requestSubscription(gallery, command);
         this.subscriptionState.set(subscription);
+        this.paymentsState.set(await this.repository.listPayments(subscription.id));
+      } catch (error) {
+        if (
+          error instanceof SubscriptionsError &&
+          error.code === SubscriptionsErrorCode.PaymentRejected
+        ) {
+          await this.reloadSubscription(gallery.galleryId);
+        }
+        throw error;
       }
-
-      const payment = await this.repository.registerPayment(
-        new RegisterPaymentCommand({
-          subscriptionId: subscription.id,
-          planId: plan.id,
-          billingCycle: command.billingCycle,
-          amount: plan.priceFor(command.billingCycle),
-          method: command.paymentMethod,
-          card,
-        }),
-      );
-      this.paymentsState.update((payments) => [payment, ...payments]);
-      if (!payment.isAccepted) throw new SubscriptionsError(SubscriptionsErrorCode.PaymentRejected);
-
-      const activated = subscription.activate(plan, command.billingCycle, card.label);
-      this.subscriptionState.set(await this.repository.saveSubscription(activated));
     });
   }
 
-  /** US-46: turns off the automatic renewal; the subscription stays valid until it expires. */
+  /** Turns off the automatic renewal; the subscription stays valid until it expires. */
   cancelRenewal(): Promise<boolean> {
     return this.execute(this.processing, async () => {
-      const updated = this.requireSubscription().cancelRenewal();
-      this.subscriptionState.set(await this.repository.saveSubscription(updated));
+      const subscription = this.requireSubscription();
+      subscription.cancelRenewal();
+      this.subscriptionState.set(await this.repository.cancelRenewal(subscription.id));
     });
   }
 
-  /** US-47: turns the automatic renewal back on while the subscription is still valid. */
+  /** Turns the automatic renewal back on while the subscription is still valid. */
   reactivateRenewal(): Promise<boolean> {
     return this.execute(this.processing, async () => {
-      const updated = this.requireSubscription().reactivateRenewal();
-      this.subscriptionState.set(await this.repository.saveSubscription(updated));
+      const subscription = this.requireSubscription();
+      subscription.reactivateRenewal();
+      this.subscriptionState.set(await this.repository.reactivateRenewal(subscription.id));
     });
   }
 
   clearError(): void {
     this.error.set(null);
+  }
+
+  private async reloadSubscription(galleryId: string): Promise<void> {
+    const subscription = await this.repository.findSubscriptionByGallery(galleryId);
+    this.subscriptionState.set(subscription);
+    this.paymentsState.set(subscription ? await this.repository.listPayments(subscription.id) : []);
   }
 
   private requireGallery(): GalleryReference {
@@ -159,21 +145,11 @@ export class SubscriptionsStore {
   }
 
   private async execute(
-    flag: WritableSignal<boolean>,
-    operation: () => Promise<void>,
+    busy: WritableSignal<boolean>,
+    command: () => Promise<void>,
   ): Promise<boolean> {
-    flag.set(true);
-    this.error.set(null);
-    try {
-      await operation();
-      return true;
-    } catch (error) {
-      this.error.set(
-        error instanceof SubscriptionsError ? error.code : SubscriptionsErrorCode.Unexpected,
-      );
-      return false;
-    } finally {
-      flag.set(false);
-    }
+    const toCode = (failure: unknown) =>
+      failure instanceof SubscriptionsError ? failure.code : SubscriptionsErrorCode.Unexpected;
+    return (await runCommand(busy, this.error, toCode, command)) !== null;
   }
 }

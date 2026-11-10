@@ -1,0 +1,22 @@
+<nav
+  mat-tab-nav-bar
+  mat-stretch-tabs="false"
+  [tabPanel]="panel"
+  [attr.aria-label]="label() | translate"
+>
+  @for (tab of tabs(); track tab.path) {
+    <a
+      mat-tab-link
+      [id]="tab.path.split('/').pop() + '-tab'"
+      [routerLink]="tab.path"
+      routerLinkActive
+      [routerLinkActiveOptions]="{ exact: tab.exact ?? false }"
+      #link="routerLinkActive"
+      [active]="link.isActive"
+    >
+      <mat-icon aria-hidden="true">{{ tab.icon }}</mat-icon>
+      {{ tab.label | translate }}
+    </a>
+  }
+</nav>
+<mat-tab-nav-panel #panel />

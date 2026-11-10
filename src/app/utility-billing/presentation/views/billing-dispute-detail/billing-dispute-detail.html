@@ -1,109 +1,192 @@
-@if (dispute(); as current) {
-  <header class="page-header">
-    <div>
-      <a class="link" routerLink="/billing/disputes">← {{ 'billing.actions.back' | translate }}</a>
-      <h1 class="page-title">{{ 'billing.dispute.title' | translate }} {{ current.code }}</h1>
-      <p class="page-subtitle">{{ ('billing.reason.' + current.reason) | translate }}</p>
+<header id="dispute-header" class="page-head">
+  <div>
+    <div class="crumbs">
+      <a routerLink="/billing">{{ 'billing.list.crumb' | translate }}</a> /
+      <a routerLink="/billing/disputes">{{ 'billing.disputes.crumb' | translate }}</a> /
+      {{ 'billing.dispute.number' | translate: { id: disputeId() } }}
     </div>
-    <app-billing-status-badge [status]="current.status" kind="dispute" />
-  </header>
+    <h1>{{ 'billing.dispute.page_title' | translate: { id: disputeId() } }}</h1>
+    @if (dispute(); as dispute) {
+      <p>{{ 'billing.reasons.' + dispute.reason | translate }}</p>
+    }
+  </div>
+  @if (dispute(); as dispute) {
+    <div class="actions">
+      <app-billing-status-badge [dispute]="dispute.status" />
+    </div>
+  }
+</header>
 
-  @if (actionError(); as key) {
-    <div class="alert alert--danger">{{ key | translate }}</div>
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
+  </mat-card>
+} @else if (dispute(); as dispute) {
+  @if (store.error(); as error) {
+    <app-callout id="dispute-error" type="danger" icon="error" role="alert">
+      {{ 'billing.errors.' + error | translate }}
+    </app-callout>
   }
 
-  <div class="detail-layout">
+  <div class="side-layout">
     <div class="stack">
-      <section class="card">
-        <h2 class="card__title">{{ 'billing.dispute.description' | translate }}</h2>
-        <p class="hint" style="margin: 0; color: var(--sp-text)">{{ current.description }}</p>
-      </section>
+      <mat-card id="description-card" appearance="outlined" aria-labelledby="description-title">
+        <div class="card-head">
+          <div>
+            <h2 id="description-title">{{ 'billing.dispute.description' | translate }}</h2>
+            <p>
+              {{
+                'billing.dispute.created'
+                  | translate: { date: (dispute.createdAt | localizedDate: 'dateTime') }
+              }}
+            </p>
+          </div>
+        </div>
+        <p class="card-pad text">{{ dispute.description || '—' }}</p>
+      </mat-card>
 
-      <section class="card">
-        <h2 class="card__title">{{ 'billing.dispute.review_title' | translate }}</h2>
-
-        @if (current.status === 'OPEN') {
-          <label class="field">
-            <span class="field__label">{{ 'billing.dispute.review_notes' | translate }}</span>
-            <textarea
-              class="input"
-              rows="4"
-              [(ngModel)]="reviewNotes"
-              [placeholder]="'billing.dispute.review_placeholder' | translate"
-            ></textarea>
-          </label>
-          <button type="button" class="btn btn--primary" [disabled]="busy()" (click)="startReview()">
-            {{ 'billing.dispute.start_review' | translate }}
-          </button>
+      <mat-card id="review-card" appearance="outlined" aria-labelledby="review-title">
+        <div class="card-head">
+          <h2 id="review-title">{{ 'billing.dispute.review_title' | translate }}</h2>
+        </div>
+        @if (dispute.status === status.Open) {
+          <div class="card-pad form">
+            <mat-form-field>
+              <mat-label>{{ 'billing.dispute.review_notes' | translate }}</mat-label>
+              <textarea
+                matInput
+                id="review-notes"
+                rows="3"
+                [maxlength]="maxLength"
+                [placeholder]="'billing.dispute.review_placeholder' | translate"
+                [ngModel]="reviewNotes()"
+                (ngModelChange)="reviewNotes.set($event)"
+              ></textarea>
+              <mat-hint>{{ 'billing.dispute.optional' | translate }}</mat-hint>
+              <mat-hint align="end">{{ reviewNotes().length }} / {{ maxLength }}</mat-hint>
+            </mat-form-field>
+            <div class="form-actions">
+              <button
+                id="review-button"
+                matButton="filled"
+                type="button"
+                [disabled]="store.processing()"
+                (click)="review()"
+              >
+                <mat-icon aria-hidden="true">manage_search</mat-icon
+                >{{ 'billing.actions.review' | translate }}
+              </button>
+            </div>
+          </div>
         } @else {
-          <p class="hint" style="margin: 0; color: var(--sp-text)">{{ current.reviewNotes ?? '—' }}</p>
-        }
-      </section>
-
-      <section class="card">
-        <h2 class="card__title">{{ 'billing.dispute.resolution_title' | translate }}</h2>
-
-        @if (current.status === 'RESOLVED') {
-          <p class="hint" style="margin: 0; color: var(--sp-text)">{{ current.resolution }}</p>
-          <p class="hint" style="margin: 8px 0 0">
-            {{ 'billing.dispute.resolved_at' | translate }} {{ current.resolvedAt | date: 'dd/MM/yyyy HH:mm' }}
+          <p class="card-pad text">
+            {{ dispute.reviewNotes ?? ('billing.dispute.no_notes' | translate) }}
           </p>
-        } @else {
-          <label class="field">
-            <span class="field__label">{{ 'billing.dispute.resolution' | translate }}</span>
-            <textarea
-              class="input"
-              rows="4"
-              [(ngModel)]="resolutionText"
-              [placeholder]="'billing.dispute.resolution_placeholder' | translate"
-            ></textarea>
-          </label>
-          <button type="button" class="btn btn--primary" [disabled]="busy()" (click)="resolve()">
-            {{ 'billing.actions.resolve' | translate }}
-          </button>
         }
-      </section>
+      </mat-card>
+
+      <mat-card id="resolution-card" appearance="outlined" aria-labelledby="resolution-title">
+        <div class="card-head">
+          <div>
+            <h2 id="resolution-title">{{ 'billing.dispute.resolution_title' | translate }}</h2>
+            @if (dispute.resolvedAt; as resolvedAt) {
+              <p>
+                {{
+                  'billing.dispute.resolved_at'
+                    | translate: { date: (resolvedAt | localizedDate: 'dateTime') }
+                }}
+              </p>
+            }
+          </div>
+        </div>
+        @if (dispute.isOpen) {
+          <div class="card-pad form">
+            <mat-form-field>
+              <mat-label>{{ 'billing.dispute.resolution' | translate }}</mat-label>
+              <textarea
+                matInput
+                id="resolution-text"
+                rows="3"
+                [maxlength]="maxLength"
+                [placeholder]="'billing.dispute.resolution_placeholder' | translate"
+                [ngModel]="resolution()"
+                (ngModelChange)="resolution.set($event)"
+              ></textarea>
+              <mat-hint align="end">{{ resolution().length }} / {{ maxLength }}</mat-hint>
+            </mat-form-field>
+            <div class="form-actions">
+              <button
+                id="resolve-button"
+                matButton="filled"
+                type="button"
+                [disabled]="store.processing()"
+                (click)="resolve()"
+              >
+                <mat-icon aria-hidden="true">task_alt</mat-icon
+                >{{ 'billing.actions.resolve' | translate }}
+              </button>
+            </div>
+          </div>
+        } @else {
+          <p class="card-pad text">{{ dispute.resolution }}</p>
+        }
+      </mat-card>
     </div>
 
-    <div class="stack">
-      <section class="card">
-        <h2 class="card__title">{{ 'billing.dispute.linked_bill' | translate }}</h2>
-        @if (bill(); as linked) {
-          <dl class="info-grid" style="grid-template-columns: 1fr">
-            <div>
-              <dt>{{ 'billing.table.code' | translate }}</dt>
-              <dd><a class="link" [routerLink]="['/billing/bills', linked.id]">{{ linked.code }}</a></dd>
-            </div>
-            <div>
-              <dt>{{ 'billing.table.unit' | translate }}</dt>
-              <dd>{{ linked.unitCode }} · {{ linked.unitName }}</dd>
-            </div>
-            <div>
-              <dt>{{ 'billing.table.total' | translate }}</dt>
-              <dd>{{ linked.totalAmount | currency: 'PEN' : 'S/ ' : '1.2-2' }}</dd>
-            </div>
-          </dl>
-        } @else {
-          <p class="muted">{{ 'billing.detail.not_found' | translate }}</p>
-        }
-      </section>
-
-      <section class="card">
-        <dl class="info-grid" style="grid-template-columns: 1fr">
+    <mat-card id="bill-card" appearance="outlined" aria-labelledby="bill-title">
+      <div class="card-head">
+        <h2 id="bill-title">{{ 'billing.dispute.linked_bill' | translate }}</h2>
+      </div>
+      @if (bill(); as bill) {
+        <dl class="card-pad facts single">
           <div>
-            <dt>{{ 'billing.table.tenant' | translate }}</dt>
-            <dd>{{ current.tenantName }}</dd>
+            <dt>{{ 'billing.columns.code' | translate }}</dt>
+            <dd>
+              <a id="bill-link" class="link mono" [routerLink]="['/billing/bills', bill.id]">{{
+                  bill.code
+                }}</a>
+            </dd>
           </div>
           <div>
-            <dt>{{ 'billing.table.created' | translate }}</dt>
-            <dd>{{ current.createdAt | date: 'dd/MM/yyyy HH:mm' }}</dd>
+            <dt>{{ 'billing.columns.unit' | translate }}</dt>
+            <dd>{{ bill.unitCode }} · {{ bill.tenantName }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.columns.period' | translate }}</dt>
+            <dd class="capitalize">{{ bill.period.start | localizedDate: 'monthYear' }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.columns.total' | translate }}</dt>
+            <dd>S/ {{ bill.totalAmount | localizedNumber: 2 : false : 2 }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'billing.columns.status' | translate }}</dt>
+            <dd><app-billing-status-badge [bill]="bill.status" /></dd>
           </div>
         </dl>
-      </section>
-    </div>
+      } @else {
+        <app-page-state
+          id="detail-not-found"
+          icon="search_off"
+          [title]="'billing.detail.not_found' | translate"
+        />
+      }
+    </mat-card>
   </div>
-} @else if (store.loading()) {
-  <p class="empty">{{ 'billing.common.loading' | translate }}</p>
 } @else {
-  <p class="empty">{{ 'billing.dispute.not_found' | translate }}</p>
+  <mat-card id="not-found-card" appearance="outlined">
+    <app-page-state
+      id="dispute-not-found"
+      icon="search_off"
+      [title]="'billing.dispute.not_found' | translate"
+    >
+      <a matButton="outlined" routerLink="/billing/disputes">{{
+          'billing.actions.back' | translate
+        }}</a>
+    </app-page-state>
+  </mat-card>
 }

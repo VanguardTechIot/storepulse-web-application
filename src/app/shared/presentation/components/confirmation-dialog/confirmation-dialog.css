@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.title .mat-icon {
+  color: var(--sp-primary);
+}
+
+.title .mat-icon.danger {
+  color: var(--sp-danger);
+}
+
+.message {
+  margin: 0;
+  color: var(--sp-text-muted);
+  line-height: 1.5;
+}
+
+.danger-button {
+  --mat-button-filled-container-color: var(--sp-danger);
+}

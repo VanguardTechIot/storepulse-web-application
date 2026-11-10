@@ -1,55 +1,60 @@
-﻿<app-confirm-dialog
-  [open]="open()"
-  [title]="'devices.register.title' | translate"
-  [message]="'devices.register.subtitle' | translate"
-  [confirmLabel]="'devices.register.confirm' | translate"
-  icon="chip"
-  [busy]="busy()"
-  (confirmed)="register()"
-  (cancelled)="close()"
->
-  <label class="field">
-    <span>{{ 'devices.register.identifier' | translate }} *</span>
-    <input class="input" type="text" placeholder="SP-ESP32-0000"
-           [class.error]="serialMissing() || duplicated()"
-           [value]="serialNumber()" (input)="setSerialNumber($any($event.target).value)" />
-    <span class="hint">{{ 'devices.register.identifierHint' | translate }}</span>
-    @if (duplicated()) {
-      <span class="err" role="alert">
-        <app-icon name="alert" [size]="14" />
-        {{ 'devices.register.duplicated' | translate: { id: serialNumber().trim().toUpperCase() } }}
-      </span>
-    } @else if (serialMissing()) {
-      <span class="err" role="alert">{{ 'common.validation.required' | translate }}</span>
-    }
-  </label>
-
-  <label class="field">
-    <span>{{ 'devices.register.type' | translate }} *</span>
-    <select class="select" (change)="setType($any($event.target).value)">
-      @for (option of types; track option) {
-        <option [value]="option" [selected]="option === type()">{{ 'devices.types.' + option | translate }}</option>
+﻿<h2 mat-dialog-title>{{ 'devices.register.title' | translate }}</h2>
+<form [formGroup]="form" (ngSubmit)="register()" novalidate>
+  <mat-dialog-content>
+    <div class="body">
+      <p class="lead">{{ 'devices.register.subtitle' | translate }}</p>
+      @if (duplicated(); as serial) {
+        <app-callout type="danger" icon="error" role="alert">
+          {{ 'devices.register.duplicated' | translate: { id: serial } }}
+        </app-callout>
       }
-    </select>
-  </label>
-
-  <label class="field">
-    <span>{{ 'devices.register.location' | translate }} *</span>
-    <select class="select" [class.error]="resourceMissing()" (change)="resourceId.set($any($event.target).value)">
-      <option value="" [selected]="!resourceId()">{{ 'devices.register.selectLocation' | translate }}</option>
-      @for (resource of store.resources(); track resource.id) {
-        <option [value]="resource.id" [selected]="resource.id === resourceId()">
-          {{ resource.name }} · {{ resource.description }}
-        </option>
+      @if (unlinked()) {
+        <app-callout type="danger" icon="error" role="alert">
+          {{ 'devices.register.unlinked' | translate }}
+        </app-callout>
       }
-    </select>
-    @if (resourceMissing()) {
-      <span class="err" role="alert">{{ 'common.validation.required' | translate }}</span>
-    }
-  </label>
-
-  <div class="callout info">
-    <app-icon name="shieldok" />
-    <span>{{ 'devices.register.notice' | translate }}</span>
-  </div>
-</app-confirm-dialog>
+      <mat-form-field>
+        <mat-label>{{ 'devices.register.identifier' | translate }}</mat-label>
+        <input
+          id="serial-input"
+          matInput
+          formControlName="serialNumber"
+          placeholder="SP-ESP32-0000"
+          required
+          cdkFocusInitial
+        />
+        <mat-hint>{{ 'devices.register.identifierHint' | translate }}</mat-hint>
+        <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ 'devices.register.type' | translate }}</mat-label>
+        <mat-select id="type-select" formControlName="type">
+          @for (option of types; track option) {
+            <mat-option [value]="option">{{ 'devices.types.' + option | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ 'devices.register.location' | translate }}</mat-label>
+        <mat-select id="location-select" formControlName="resourceId" required>
+          @for (resource of store.resources(); track resource.id) {
+            <mat-option [value]="resource.id">
+              {{ resource.name }} · {{ resource.description }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+      </mat-form-field>
+      <app-callout icon="verified_user">{{ 'devices.register.notice' | translate }}</app-callout>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close [disabled]="busy()">
+      {{ 'common.actions.cancel' | translate }}
+    </button>
+    <button id="register-button" matButton="filled" type="submit" [disabled]="busy()">
+      <mat-icon aria-hidden="true">memory</mat-icon>
+      {{ 'devices.register.confirm' | translate }}
+    </button>
+  </mat-dialog-actions>
+</form>

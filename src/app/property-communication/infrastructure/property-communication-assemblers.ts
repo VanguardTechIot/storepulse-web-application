@@ -1,4 +1,3 @@
-import { BaseAssembler } from '../../shared/infrastructure/base-assembler';
 import { AssignmentStatus } from '../domain/model/assignment-status.enum';
 import { Attachment } from '../domain/model/attachment';
 import { CommunicationAction } from '../domain/model/communication-action.enum';
@@ -9,14 +8,22 @@ import { Message } from '../domain/model/message.entity';
 import { NotificationChannel } from '../domain/model/notification-channel.enum';
 import { NotificationStatus } from '../domain/model/notification-status.enum';
 import { NotificationType } from '../domain/model/notification-type.enum';
+import { NotifyTenantCommand } from '../domain/model/notify-tenant.command';
+import { PublishAnnouncementCommand } from '../domain/model/publish-announcement.command';
 import { ReferenceType } from '../domain/model/reference-type.enum';
 import { SenderRole } from '../domain/model/sender-role.enum';
+import { Tenant } from '../domain/model/tenant';
 import { TenantAssignment } from '../domain/model/tenant-assignment.entity';
 import { TenantNotification } from '../domain/model/tenant-notification.entity';
 import {
+  AssignTenantResource,
   CommunicationLogResource,
   ConversationResource,
   MessageResource,
+  NotifyTenantResource,
+  PublishAnnouncementResource,
+  SendMessageResource,
+  StartConversationResource,
   TenantAssignmentResource,
   TenantNotificationResource,
 } from './property-communication-responses';
@@ -25,13 +32,21 @@ function toDate(value: string | null): Date | null {
   return value ? new Date(value) : null;
 }
 
-export class ConversationAssembler implements BaseAssembler<Conversation, ConversationResource> {
+function toId(value: number | null): string | null {
+  return value === null ? null : String(value);
+}
+
+function toNumber(value: string | null): number | null {
+  return value === null ? null : Number(value);
+}
+
+export class ConversationAssembler {
   toEntityFromResource(r: ConversationResource): Conversation {
     return new Conversation({
-      id: r.id,
-      tenantId: r.tenantId,
-      commercialUnitId: r.commercialUnitId,
-      galleryAdministratorId: r.galleryAdministratorId,
+      id: String(r.id),
+      tenantId: String(r.tenantId),
+      commercialUnitId: toId(r.commercialUnitId),
+      galleryAdministratorId: String(r.galleryAdministratorId),
       subject: r.subject,
       status: r.status as ConversationStatus,
       startedAt: new Date(r.startedAt),
@@ -40,27 +55,17 @@ export class ConversationAssembler implements BaseAssembler<Conversation, Conver
     });
   }
 
-  toResourceFromEntity(e: Conversation): ConversationResource {
-    return {
-      id: e.id,
-      tenantId: e.tenantId,
-      commercialUnitId: e.commercialUnitId,
-      galleryAdministratorId: e.galleryAdministratorId,
-      subject: e.subject,
-      status: e.status,
-      startedAt: e.startedAt.toISOString(),
-      lastMessageAt: e.lastMessageAt.toISOString(),
-      resolvedAt: e.resolvedAt?.toISOString() ?? null,
-    };
+  toRequestFromEntity(e: Conversation): StartConversationResource {
+    return { tenantId: Number(e.tenantId), subject: e.subject };
   }
 }
 
-export class MessageAssembler implements BaseAssembler<Message, MessageResource> {
+export class MessageAssembler {
   toEntityFromResource(r: MessageResource): Message {
     return new Message(
-      r.id,
-      r.conversationId,
-      r.senderId,
+      String(r.id),
+      String(r.conversationId),
+      String(r.senderId),
       r.senderRole as SenderRole,
       r.content,
       (r.attachments ?? []).map((attachment) => new Attachment(attachment)),
@@ -68,12 +73,8 @@ export class MessageAssembler implements BaseAssembler<Message, MessageResource>
     );
   }
 
-  toResourceFromEntity(e: Message): MessageResource {
+  toRequestFromEntity(e: Message): SendMessageResource {
     return {
-      id: e.id,
-      conversationId: e.conversationId,
-      senderId: e.senderId,
-      senderRole: e.senderRole,
       content: e.content,
       attachments: e.attachments.map(({ fileName, url, mimeType, sizeBytes }) => ({
         fileName,
@@ -81,21 +82,17 @@ export class MessageAssembler implements BaseAssembler<Message, MessageResource>
         mimeType,
         sizeBytes,
       })),
-      sentAt: e.sentAt.toISOString(),
     };
   }
 }
 
-export class TenantNotificationAssembler implements BaseAssembler<
-  TenantNotification,
-  TenantNotificationResource
-> {
+export class TenantNotificationAssembler {
   toEntityFromResource(r: TenantNotificationResource): TenantNotification {
     return new TenantNotification({
-      id: r.id,
-      tenantId: r.tenantId,
-      commercialUnitId: r.commercialUnitId,
-      galleryAdministratorId: r.galleryAdministratorId,
+      id: String(r.id),
+      tenantId: String(r.tenantId),
+      commercialUnitId: toId(r.commercialUnitId),
+      galleryAdministratorId: String(r.galleryAdministratorId),
       type: r.type as NotificationType,
       title: r.title,
       body: r.body,
@@ -103,86 +100,78 @@ export class TenantNotificationAssembler implements BaseAssembler<
       status: r.status as NotificationStatus,
       read: r.read,
       createdAt: new Date(r.createdAt),
-      referenceId: r.referenceId,
+      referenceId: toId(r.referenceId),
     });
   }
 
-  toResourceFromEntity(e: TenantNotification): TenantNotificationResource {
+  toRequestFromCommand(c: NotifyTenantCommand): NotifyTenantResource {
     return {
-      id: e.id,
-      tenantId: e.tenantId,
-      commercialUnitId: e.commercialUnitId,
-      galleryAdministratorId: e.galleryAdministratorId,
-      type: e.type,
-      title: e.title,
-      body: e.body,
-      channel: e.channel,
-      status: e.status,
-      read: e.read,
-      createdAt: e.createdAt.toISOString(),
-      referenceId: e.referenceId,
+      tenantId: Number(c.tenantId),
+      commercialUnitId: toNumber(c.commercialUnitId),
+      type: c.type,
+      title: c.title.trim(),
+      body: c.body.trim(),
+      channel: c.channel,
+      referenceId: toNumber(c.referenceId),
+    };
+  }
+
+  toAnnouncementRequestFromCommand(c: PublishAnnouncementCommand): PublishAnnouncementResource {
+    return {
+      type: c.type,
+      unitIds: c.wholeGallery ? [] : c.unitIds.map(Number),
+      wholeGallery: c.wholeGallery,
+      title: c.title.trim(),
+      body: c.body.trim(),
+      channel: c.channel,
     };
   }
 }
 
-export class CommunicationLogAssembler implements BaseAssembler<
-  CommunicationLog,
-  CommunicationLogResource
-> {
+export class CommunicationLogAssembler {
   toEntityFromResource(r: CommunicationLogResource): CommunicationLog {
     return new CommunicationLog(
-      r.id,
-      r.referenceId,
+      String(r.id),
+      String(r.referenceId),
       r.referenceType as ReferenceType,
       r.action as CommunicationAction,
-      r.tenantId,
-      r.galleryAdministratorId,
+      String(r.tenantId),
+      String(r.galleryAdministratorId),
       r.channel as NotificationChannel,
       r.detail,
       new Date(r.loggedAt),
     );
   }
-
-  toResourceFromEntity(e: CommunicationLog): CommunicationLogResource {
-    return {
-      id: e.id,
-      referenceId: e.referenceId,
-      referenceType: e.referenceType,
-      action: e.action,
-      tenantId: e.tenantId,
-      galleryAdministratorId: e.galleryAdministratorId,
-      channel: e.channel,
-      detail: e.detail,
-      loggedAt: e.loggedAt.toISOString(),
-    };
-  }
 }
 
-export class TenantAssignmentAssembler implements BaseAssembler<
-  TenantAssignment,
-  TenantAssignmentResource
-> {
+export class TenantAssignmentAssembler {
   toEntityFromResource(r: TenantAssignmentResource): TenantAssignment {
     return new TenantAssignment({
-      id: r.id,
-      tenantId: r.tenantId,
-      commercialUnitId: r.commercialUnitId,
-      galleryAdministratorId: r.galleryAdministratorId,
+      id: String(r.id),
+      tenantId: String(r.tenantId),
+      commercialUnitId: String(r.commercialUnitId),
+      galleryAdministratorId: String(r.galleryAdministratorId),
       status: r.status as AssignmentStatus,
       assignedAt: new Date(r.assignedAt),
       terminatedAt: toDate(r.terminatedAt),
     });
   }
 
-  toResourceFromEntity(e: TenantAssignment): TenantAssignmentResource {
-    return {
-      id: e.id,
-      tenantId: e.tenantId,
-      commercialUnitId: e.commercialUnitId,
-      galleryAdministratorId: e.galleryAdministratorId,
-      status: e.status,
-      assignedAt: e.assignedAt.toISOString(),
-      terminatedAt: e.terminatedAt?.toISOString() ?? null,
-    };
+  toRequestFromEntity(e: TenantAssignment): AssignTenantResource {
+    return { tenantId: Number(e.tenantId), commercialUnitId: Number(e.commercialUnitId) };
+  }
+}
+
+/** Tenants of the gallery, one per tenant of the assignments. */
+export class TenantAssembler {
+  toEntitiesFromResources(resources: readonly TenantAssignmentResource[]): Tenant[] {
+    const tenants = new Map<string, Tenant>();
+    for (const r of resources) {
+      const id = String(r.tenantId);
+      if (tenants.has(id)) continue;
+      const email = r.tenantEmail ?? '';
+      tenants.set(id, { id, fullName: r.tenantFullName || email || id, email });
+    }
+    return [...tenants.values()].sort((a, b) => a.fullName.localeCompare(b.fullName));
   }
 }

@@ -1,0 +1,72 @@
+<header id="alerts-header" class="page-head">
+  <div>
+    <div class="crumbs">
+      <a routerLink="/dashboard">{{ 'analytics.dashboard.crumb' | translate }}</a> /
+      {{ 'analytics.alerts.crumb' | translate }}
+    </div>
+    <h1>{{ 'analytics.alerts.page_title' | translate }}</h1>
+    <p>{{ 'analytics.alerts.subtitle' | translate: { count: store.openAlerts().length } }}</p>
+  </div>
+  <div class="actions">
+    <button
+      id="refresh-button"
+      matButton="outlined"
+      type="button"
+      [disabled]="store.isLoading()"
+      (click)="refresh()"
+    >
+      <mat-icon aria-hidden="true">refresh</mat-icon>{{ 'common.actions.refresh' | translate }}
+    </button>
+  </div>
+</header>
+
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
+  </mat-card>
+} @else {
+  <mat-card id="alerts-card" appearance="outlined">
+    <div class="card-head">
+      <mat-button-toggle-group
+        id="status-toggle"
+        class="tabs"
+        [hideSingleSelectionIndicator]="true"
+        [value]="filter()"
+        (change)="filter.set($event.value)"
+        [attr.aria-label]="'analytics.alerts.filter' | translate"
+      >
+        @for (option of filters; track option) {
+          <mat-button-toggle [value]="option">
+            {{ 'analytics.alerts.filters.' + option | translate }} ({{ count(option) }})
+          </mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
+
+    @for (day of days(); track day.key) {
+      <h3 [id]="'day-' + day.key" class="day">
+        {{ dayLabel(day.date) ?? (day.date | localizedDate: 'date') }}
+      </h3>
+      @for (alert of day.alerts; track alert.id) {
+        <app-alert-item
+          [id]="'alert-' + alert.id"
+          [alert]="alert"
+          [actionable]="true"
+          [busy]="store.processing()"
+          (acknowledged)="acknowledge($event)"
+          (resolved)="resolve($event)"
+        />
+      }
+    } @empty {
+      <app-page-state
+        id="alerts-empty"
+        icon="verified_user"
+        [title]="'analytics.alerts.empty' | translate"
+      />
+    }
+  </mat-card>
+}

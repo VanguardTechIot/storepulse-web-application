@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--sp-font-data);
+}
+
+.grid {
+  stroke: var(--sp-border);
+  stroke-dasharray: 3 4;
+}
+
+.grid.base {
+  stroke-dasharray: none;
+}
+
+.axis {
+  font-size: 11px;
+  fill: var(--sp-text-muted);
+}
+
+.bar {
+  fill: var(--sp-primary-soft);
+  stroke: var(--sp-primary);
+  stroke-width: 1;
+}
+
+.bar.selected {
+  fill: var(--sp-primary);
+}
+
+.selected-label {
+  fill: var(--sp-navy);
+  font-weight: 600;
+}
+
+.average {
+  stroke: var(--sp-text-muted);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 4;
+}

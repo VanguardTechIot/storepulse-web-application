@@ -1,93 +1,51 @@
-import { BillingCycle } from './billing-cycle.enum';
-import { Money } from './money.value-object';
-import { Subscription } from './subscription.entity';
-import { SubscriptionPlan } from './subscription-plan.entity';
-import { SubscriptionStatus } from './subscription-status.enum';
-import { SubscriptionsError, SubscriptionsErrorCode } from './subscriptions-error';
+import { BillingCycle } from '../enums/billing-cycle.enum';
+import { BillingPeriod } from '../value-objects/billing-period.value-object';
+import { Subscription, SubscriptionProps } from './subscription.entity';
+import { SubscriptionStatus } from '../enums/subscription-status.enum';
+import { SubscriptionsErrorCode } from './subscriptions-error';
 
 describe('Subscription', () => {
-  const basic = new SubscriptionPlan(
-    'pln-basic',
-    'BASIC',
-    30,
-    new Money(290),
-    new Money(2900),
-    [],
-    true,
-  );
-  const commercial = new SubscriptionPlan(
-    'pln-commercial',
-    'COMMERCIAL',
-    100,
-    new Money(690),
-    new Money(6900),
-    [],
-    true,
-  );
-
-  function request(units = 12): Subscription {
-    return Subscription.request({
-      id: 'sub-1',
+  function subscription(changes: Partial<SubscriptionProps> = {}): Subscription {
+    return Subscription.restore({
+      id: '1',
       galleryId: 'gal-001',
       galleryAdministratorId: 'usr-001',
-      plan: commercial,
+      planId: '2',
+      status: SubscriptionStatus.Active,
       billingCycle: BillingCycle.Monthly,
-      monitoredUnitCount: units,
+      billingPeriod: new BillingPeriod(
+        new Date('2026-10-15T05:00:00Z'),
+        new Date('2026-11-15T05:00:00Z'),
+      ),
+      monitoredUnitCount: 12,
+      autoRenewal: true,
+      paymentMethodLabel: 'Visa •••• 4821',
+      ...changes,
     });
   }
 
-  function errorOf(change: () => unknown): SubscriptionsErrorCode | null {
-    try {
-      change();
-      return null;
-    } catch (error) {
-      return error instanceof SubscriptionsError ? error.code : null;
-    }
-  }
-
-  it('is created pending until the gateway accepts the charge (US-44)', () => {
-    const subscription = request();
-
-    expect(subscription.status).toBe(SubscriptionStatus.PendingPayment);
-    expect(subscription.billingPeriod).toBeNull();
-  });
-
-  it('activates with a period of one cycle and automatic renewal on', () => {
-    const start = new Date('2026-10-15T05:00:00Z');
-    const active = request().activate(commercial, BillingCycle.Monthly, 'Visa •••• 4821', start);
-
-    expect(active.isActive).toBe(true);
-    expect(active.autoRenewal).toBe(true);
-    expect(active.billingPeriod?.endDate.toISOString()).toBe('2026-11-15T05:00:00.000Z');
-  });
-
-  it('rejects a plan that does not cover the monitored units', () => {
-    expect(errorOf(() => request(40).activate(basic, BillingCycle.Monthly, 'Visa'))).toBe(
-      SubscriptionsErrorCode.UnitLimitExceeded,
-    );
-  });
-
-  it('cancels the renewal keeping the validity, and reactivates it (US-46, US-47)', () => {
-    const active = request().activate(commercial, BillingCycle.Monthly, 'Visa');
-    const cancelled = active.cancelRenewal();
+  it('cancels the renewal keeping the validity, and reactivates it', () => {
+    const cancelled = subscription().cancelRenewal();
 
     expect(cancelled.isActive).toBe(true);
     expect(cancelled.autoRenewal).toBe(false);
-    expect(errorOf(() => cancelled.cancelRenewal())).toBe(
-      SubscriptionsErrorCode.RenewalAlreadyDisabled,
-    );
+    expect(() => cancelled.cancelRenewal()).toThrow(SubscriptionsErrorCode.RenewalAlreadyDisabled);
     expect(cancelled.reactivateRenewal().autoRenewal).toBe(true);
   });
 
-  it('reports the renewal as near within the last 10 days (US-45, scenario 2)', () => {
-    const active = request().activate(
-      commercial,
-      BillingCycle.Monthly,
-      'Visa',
-      new Date('2026-10-15T05:00:00Z'),
-    );
+  it('only changes the renewal of an active subscription', () => {
+    const pending = subscription({
+      status: SubscriptionStatus.PendingPayment,
+      billingPeriod: null,
+    });
+    const expired = subscription({ status: SubscriptionStatus.Expired, autoRenewal: false });
 
-    expect(active.isExpiringSoon(new Date('2026-11-01T05:00:00Z'))).toBe(false);
-    expect(active.isExpiringSoon(new Date('2026-11-06T05:00:00Z'))).toBe(true);
+    expect(() => pending.cancelRenewal()).toThrow(SubscriptionsErrorCode.SubscriptionNotActive);
+    expect(() => expired.reactivateRenewal()).toThrow(SubscriptionsErrorCode.SubscriptionExpired);
+  });
+
+  it('reports the renewal as near within the last 10 days', () => {
+    expect(subscription().isExpiringSoon(new Date('2026-11-01T05:00:00Z'))).toBe(false);
+    expect(subscription().isExpiringSoon(new Date('2026-11-06T05:00:00Z'))).toBe(true);
   });
 });

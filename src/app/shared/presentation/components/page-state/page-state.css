@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--sp-text-muted);
+}
+
+b {
+  font-size: 16px;
+  color: var(--sp-navy);
+}
+
+mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--sp-primary);
+}
+
+button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: inherit;
+}

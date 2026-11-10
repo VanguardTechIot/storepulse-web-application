@@ -14,8 +14,10 @@ interface CommercialUnitProps {
   floor: string;
   areaSquareMeters: number;
   businessName: string | null;
+  /** Monitored resource (Resource and Asset Management) whose consumption is billed to the unit. */
+  resourceId: string | null;
   status: UnitStatus;
-  /** `false` after a logical removal (US-11, TS-09): kept for traceability, no longer managed. */
+  /** `false` after a logical removal: kept for traceability, no longer managed. */
   active: boolean;
   createdAt: Date;
 }
@@ -25,11 +27,12 @@ interface UnitData {
   floor: string;
   areaSquareMeters: number;
   businessName: string | null;
+  resourceId: string | null;
 }
 
 /**
  * Space inside a gallery (Aggregate Root): a store rented to a tenant or a common area such as a
- * corridor (US-09 to US-11, US-57). The unit number, or the name of a common area, is unique among
+ * corridor. The unit number, or the name of a common area, is unique among
  * the active units of the gallery.
  *
  * Changes return a new unit, so a rejected change never alters the current one.
@@ -97,6 +100,10 @@ export class CommercialUnit implements BaseEntity {
     return this.props.businessName;
   }
 
+  get resourceId(): string | null {
+    return this.props.resourceId;
+  }
+
   get status(): UnitStatus {
     return this.props.status;
   }
@@ -129,7 +136,7 @@ export class CommercialUnit implements BaseEntity {
     return this.props.status === UnitStatus.Maintenance;
   }
 
-  /** A store without tenant can receive an invitation or an assignment (US-12). */
+  /** A store without tenant can receive an invitation or an assignment. */
   canReceiveTenant(): boolean {
     return this.props.active && this.isStore && this.isAvailable;
   }
@@ -166,7 +173,7 @@ export class CommercialUnit implements BaseEntity {
   }
 
   /**
-   * Logical removal (US-11, TS-09). It is refused while IoT devices are linked to the unit or a
+   * Logical removal. It is refused while IoT devices are linked to the unit or a
    * tenant still occupies it.
    */
   remove(linkedDevices: readonly string[]): CommercialUnit {
@@ -225,6 +232,7 @@ export class CommercialUnit implements BaseEntity {
       areaSquareMeters: new UnitDimensions(data.areaSquareMeters).areaSquareMeters,
       // A common area has no tenant, so it has no business either.
       businessName: type === UnitType.Store ? businessName : null,
+      resourceId: data.resourceId,
     };
   }
 

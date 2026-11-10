@@ -3,9 +3,7 @@
 }
 
 .sidebar {
-  position: sticky;
-  top: 0;
-  height: 100dvh;
+  height: 100%;
   width: 240px;
   display: flex;
   flex-direction: column;
@@ -99,15 +97,4 @@
 
 .sidebar__label {
   flex: 1;
-}
-
-.sidebar__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--sp-primary);
-}
-
-.sidebar__link:has(.sidebar__dot):not(.is-active) .sidebar__dot {
-  background: var(--sp-danger);
 }

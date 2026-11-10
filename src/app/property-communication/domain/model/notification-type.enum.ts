@@ -1,6 +1,6 @@
 /**
  * Reason of a tenant notification. `Announcement` and `Incident` are the communications the
- * administrator publishes (US-34, US-35); the others are sent automatically by the platform.
+ * administrator publishes; the others are sent automatically by the platform.
  */
 export enum NotificationType {
   UtilityBillIssued = 'UTILITY_BILL_ISSUED',

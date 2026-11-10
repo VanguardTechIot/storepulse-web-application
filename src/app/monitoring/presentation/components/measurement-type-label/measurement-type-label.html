@@ -1,0 +1,4 @@
+<app-tone-icon [icon]="config[type()].icon" [tone]="config[type()].tone" [size]="iconBox()" />
+@if (showLabel()) {
+  <span>{{ 'monitoring.measurementTypes.' + type() | translate }}</span>
+}

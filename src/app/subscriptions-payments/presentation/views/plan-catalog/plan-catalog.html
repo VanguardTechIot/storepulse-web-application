@@ -1,4 +1,4 @@
-<header class="page-head">
+<header id="plans-header" class="page-head">
   <div>
     <h1>{{ 'subscriptions.plans_page.page_title' | translate }}</h1>
     <p>
@@ -7,6 +7,9 @@
   </div>
   <div class="actions">
     <mat-button-toggle-group
+      id="cycle-toggle"
+      class="tabs"
+      [hideSingleSelectionIndicator]="true"
       [value]="cycle()"
       (change)="cycle.set($event.value)"
       [attr.aria-label]="'subscriptions.plans_page.cycle' | translate"
@@ -23,9 +26,10 @@
 @if (!store.loaded()) {
   <app-subscription-state />
 } @else {
-  <div class="plans">
+  <div id="plans-list" class="plans">
     @for (plan of store.plans(); track plan.id) {
       <app-plan-card
+        [id]="plan.code.toLowerCase() + '-plan'"
         [plan]="plan"
         [cycle]="cycle()"
         [current]="isCurrent(plan)"

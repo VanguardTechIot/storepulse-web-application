@@ -1,0 +1,312 @@
+<header id="consumption-header" class="page-head">
+  <div>
+    <div class="crumbs">
+      {{ 'monitoring.nav.section' | translate }} / {{ 'monitoring.consumption.crumb' | translate }}
+    </div>
+    <h1>{{ 'monitoring.consumption.title' | translate }}</h1>
+    <p>{{ 'monitoring.consumption.subtitle' | translate }}</p>
+  </div>
+  @if (store.ready()) {
+    <div class="actions">
+      <mat-form-field class="period" subscriptSizing="dynamic">
+        <mat-label>{{ 'monitoring.consumption.period' | translate }}</mat-label>
+        <mat-icon matPrefix aria-hidden="true">calendar_month</mat-icon>
+        <mat-select
+          id="period-select"
+          [value]="period()"
+          (selectionChange)="period.set($event.value)"
+        >
+          @for (key of periodOptions(); track key) {
+            <mat-option [value]="key">{{
+                periodDate(key) | localizedDate: 'monthYear'
+              }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button
+        id="refresh-button"
+        matButton="outlined"
+        type="button"
+        [disabled]="store.isLoading()"
+        (click)="refresh()"
+      >
+        <mat-icon aria-hidden="true">refresh</mat-icon>{{ 'common.actions.refresh' | translate }}
+      </button>
+    </div>
+  }
+</header>
+
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
+  </mat-card>
+} @else if (!periodHasData()) {
+  <mat-card id="empty-card" appearance="outlined">
+    <app-page-state
+      id="consumption-empty"
+      icon="speed"
+      [title]="'monitoring.consumption.noData.title' | translate"
+      [message]="
+        'monitoring.consumption.noData.message'
+          | translate: { period: (periodDate(period()) | localizedDate: 'monthYear') }
+      "
+    />
+  </mat-card>
+} @else {
+  @if (openPeriodUntil(); as until) {
+    <app-callout id="open-period" icon="schedule">
+      {{
+        'monitoring.consumption.openPeriod'
+          | translate: { date: (until | localizedDate: 'dateTime') }
+      }}
+    </app-callout>
+  }
+
+  <div id="kpis" class="kpis">
+    @for (type of consumptionTypes; track type) {
+      <app-kpi-card
+        [id]="type.toLowerCase() + '-card'"
+        [icon]="typeIcons[type].icon"
+        [tone]="typeIcons[type].tone"
+        [label]="'monitoring.consumption.consolidated.' + type | translate"
+        [value]="totals()[type].records > 0 ? (totals()[type].value | localizedNumber: 1) : '—'"
+        [unit]="totals()[type].records > 0 ? units[type] : ''"
+      >
+        @if (totals()[type].records > 0) {
+          {{
+            'monitoring.consumption.locationsMeasured'
+              | translate: { count: totals()[type].records }
+          }}
+        } @else {
+          {{ 'monitoring.consumption.noMeasurementsForType' | translate }}
+        }
+      </app-kpi-card>
+    }
+    <app-kpi-card
+      id="no-data-card"
+      icon="wifi_off"
+      tone="violet"
+      [label]="'monitoring.consumption.withoutData' | translate"
+      [value]="'' + rowsWithoutData()"
+      [unit]="'/ ' + rows().length"
+    >
+      {{ 'monitoring.consumption.withoutDataHint' | translate }}
+    </app-kpi-card>
+  </div>
+
+  @if (selectedRow(); as row) {
+    <div class="main-grid">
+      <mat-card id="history-card" appearance="outlined">
+        <div class="card-head">
+          <div>
+            <h2>
+              {{
+                'monitoring.consumption.history.title' | translate: { location: row.resource.name }
+              }}
+            </h2>
+            <p>
+              {{ row.resource.description }} ·
+              {{
+                'monitoring.consumption.history.subtitle'
+                  | translate: { unit: units[selectedType()] }
+              }}
+            </p>
+          </div>
+          <div class="right">
+            <div class="legend" aria-hidden="true">
+              <span
+              ><i class="legend-bar"></i
+              >{{ 'monitoring.consumption.history.legendConsumption' | translate }}</span
+              >
+              <span
+              ><i class="legend-line"></i
+              >{{ 'monitoring.consumption.history.legendAverage' | translate }}</span
+              >
+            </div>
+            <mat-button-toggle-group
+              id="type-toggle"
+              class="tabs"
+              [hideSingleSelectionIndicator]="true"
+              [value]="selectedType()"
+              (change)="selectedType.set($event.value)"
+              [attr.aria-label]="'monitoring.fields.measurementType' | translate"
+            >
+              @for (type of consumptionTypes; track type) {
+                <mat-button-toggle [value]="type" [disabled]="!row.byType[type]">
+                  {{ 'monitoring.measurementTypes.' + type | translate }}
+                </mat-button-toggle>
+              }
+            </mat-button-toggle-group>
+          </div>
+        </div>
+        <div class="card-pad">
+          @if (selectedHistory().length > 0) {
+            <app-consumption-history-chart
+              [history]="selectedHistory()"
+              [selectedPeriod]="period()"
+              [average]="selectedBaseline()?.historicalAverage ?? null"
+              [unit]="units[selectedType()]"
+              [label]="
+                'monitoring.consumption.history.title' | translate: { location: row.resource.name }
+              "
+            />
+          } @else {
+            <app-page-state
+              id="history-empty"
+              icon="speed"
+              [title]="'monitoring.consumption.history.empty' | translate"
+            />
+          }
+        </div>
+      </mat-card>
+
+      <mat-card id="comparison-card" appearance="outlined">
+        <div class="card-head">
+          <div>
+            <h2>{{ 'monitoring.consumption.comparison.title' | translate }}</h2>
+            <p>{{ row.resource.name }} · {{ periodDate(period()) | localizedDate: 'monthYear' }}</p>
+          </div>
+        </div>
+        @if (selectedBaseline(); as baseline) {
+          <div class="card-pad comparison">
+            <div>
+              <span>{{ 'monitoring.consumption.comparison.accumulated' | translate }}</span>
+              <b>
+                @if (baseline.current; as current) {
+                  {{ current.totalValue | localizedNumber: 2 }} {{ current.unit }}
+                } @else {
+                  —
+                }
+              </b>
+            </div>
+            @if (baseline.isAvailable) {
+              <div>
+                <span>{{
+                    'monitoring.consumption.comparison.average'
+                      | translate: { count: baseline.previousPeriods.length }
+                  }}</span>
+                <b
+                >{{ baseline.historicalAverage | localizedNumber: 2 }}
+                  {{ units[selectedType()] }}</b
+                >
+              </div>
+              <div>
+                <span>{{ 'monitoring.consumption.comparison.deviation' | translate }}</span>
+                <b
+                  [class.warn]="(baseline.deviationPercent ?? 0) > 0"
+                  [class.up]="(baseline.deviationPercent ?? 0) < 0"
+                >
+                  @if (baseline.deviationPercent !== null) {
+                    {{ baseline.deviationPercent | localizedNumber: 1 : true }}%
+                  } @else {
+                    —
+                  }
+                </b>
+              </div>
+            }
+            @if (!baseline.current) {
+              <app-callout id="no-current" type="warn" icon="warning">
+                {{ 'monitoring.consumption.comparison.noCurrent' | translate }}
+              </app-callout>
+            }
+            @if (!baseline.isAvailable) {
+              <app-callout id="no-baseline" type="warn" icon="schedule">
+                {{
+                  'monitoring.consumption.comparison.notAvailable'
+                    | translate: { min: minBaselinePeriods, missing: baseline.missingPeriods }
+                }}
+              </app-callout>
+            } @else if (openPeriodUntil() && baseline.current) {
+              <p class="muted">
+                {{ 'monitoring.consumption.comparison.dailyRateHint' | translate }}
+              </p>
+            }
+          </div>
+        }
+      </mat-card>
+    </div>
+  }
+
+  <mat-card id="locations-card" appearance="outlined">
+    <div class="card-head">
+      <div>
+        <h2>{{ 'monitoring.consumption.table.title' | translate }}</h2>
+        <p>{{ 'monitoring.consumption.table.subtitle' | translate }}</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="consumption-table" mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>{{ 'monitoring.fields.location' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <strong>{{ row.resource.name }}</strong>
+            <small>{{ row.resource.description }}</small>
+          </td>
+        </ng-container>
+        @for (type of consumptionTypes; track type) {
+          <ng-container [matColumnDef]="type">
+            <th mat-header-cell *matHeaderCellDef class="end">
+              {{ 'monitoring.measurementTypes.' + type | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row" class="mono end">
+              @if (row.byType[type]; as baseline) {
+                @if (baseline.current; as current) {
+                  {{ current.totalValue | localizedNumber: 2 }} {{ current.unit }}
+                } @else {
+                  —
+                }
+              } @else {
+                <span class="muted">{{ 'monitoring.consumption.table.noMeter' | translate }}</span>
+              }
+            </td>
+          </ng-container>
+          <ng-container [matColumnDef]="type + '-deviation'">
+            <th mat-header-cell *matHeaderCellDef class="end">
+              {{ 'monitoring.consumption.table.deviation' | translate }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let row"
+              class="mono end"
+              [class.warn]="(row.byType[type]?.deviationPercent ?? 0) > 0"
+            >
+              @let deviation = row.byType[type]?.deviationPercent ?? null;
+              @if (deviation !== null) {
+                {{ deviation | localizedNumber: 1 : true }}%
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+        }
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'monitoring.fields.status' | translate }}</th>
+          <td mat-cell *matCellDef="let row">
+            <app-status-chip [tone]="statusTone(row.status)">
+              {{ 'monitoring.consumption.rowStatus.' + row.status | translate }}
+            </app-status-chip>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: columns"
+          [id]="'row-' + row.resource.resourceId"
+          class="selectable"
+          [class.selected]="selectedRow()?.resource?.resourceId === row.resource.resourceId"
+          tabindex="0"
+          [attr.aria-label]="
+            'monitoring.consumption.table.select' | translate: { location: row.resource.name }
+          "
+          (click)="selectedResourceId.set(row.resource.resourceId)"
+          (keydown.enter)="selectedResourceId.set(row.resource.resourceId)"
+        ></tr>
+      </table>
+    </div>
+  </mat-card>
+}

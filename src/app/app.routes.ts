@@ -1,19 +1,12 @@
 import { Routes } from '@angular/router';
-import {
-  authenticationGuard,
-  guestGuard,
-} from './identity-access-management/presentation/iam.guards';
-import { ComingSoon } from './shared/presentation/views/coming-soon/coming-soon';
+import { authenticationGuard, guestGuard } from './iam/presentation/iam.guards';
 
 export const routes: Routes = [
   // Public area: welcome, Log In, registration and password recovery.
   {
     path: 'iam',
     canActivate: [guestGuard],
-    loadChildren: () =>
-      import('./identity-access-management/identity-access-management.routes').then(
-        (m) => m.IDENTITY_ACCESS_MANAGEMENT_ROUTES,
-      ),
+    loadChildren: () => import('./iam/iam.routes').then((m) => m.IDENTITY_ACCESS_MANAGEMENT_ROUTES),
   },
   // Gallery administrator area: requires an active session.
   {
@@ -26,14 +19,11 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () =>
-          import('./dashboard-analytics/dashboard-analytics.routes').then(
-            (m) => m.DASHBOARD_ANALYTICS_ROUTES,
-          ),
+          import('./dashboard-analytics').then((m) => m.DASHBOARD_ANALYTICS_ROUTES),
       },
       {
         path: 'billing',
-        loadChildren: () =>
-          import('./utility-billing/utility-billing.routes').then((m) => m.UTILITY_BILLING_ROUTES),
+        loadChildren: () => import('./utility-billing').then((m) => m.UTILITY_BILLING_ROUTES),
       },
       {
         path: 'profile',
@@ -45,16 +35,12 @@ export const routes: Routes = [
       {
         path: 'monitoring',
         loadChildren: () =>
-          import('./service-execution-monitoring/presentation/monitoring.routes').then(
-            (m) => m.MONITORING_ROUTES,
-          ),
+          import('./monitoring/presentation/monitoring.routes').then((m) => m.monitoringRoutes),
       },
       {
         path: 'commercial-units',
         loadChildren: () =>
-          import('./property-management/property-management.routes').then(
-            (m) => m.PROPERTY_MANAGEMENT_ROUTES,
-          ),
+          import('./property-management').then((m) => m.PROPERTY_MANAGEMENT_ROUTES),
       },
       {
         path: 'devices',
@@ -64,8 +50,6 @@ export const routes: Routes = [
           ),
         data: { titleKey: 'nav.devices' },
       },
-      { path: 'utility-meters', component: ComingSoon, data: { titleKey: 'nav.utility_meters' } },
-      { path: 'security', component: ComingSoon, data: { titleKey: 'nav.security' } },
       {
         path: 'communication',
         loadChildren: () =>
@@ -76,9 +60,7 @@ export const routes: Routes = [
       {
         path: 'subscription',
         loadChildren: () =>
-          import('./subscriptions-payments/subscriptions-payments.routes').then(
-            (m) => m.SUBSCRIPTIONS_PAYMENTS_ROUTES,
-          ),
+          import('./subscriptions-payments').then((m) => m.SUBSCRIPTIONS_PAYMENTS_ROUTES),
       },
     ],
   },

@@ -1,46 +1,67 @@
-import { DatePipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { UtilityBillingStore } from '../../../application/utility-billing.store';
-import { BillingDisputeStatus } from '../../../domain/model/billing-dispute.model';
-import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
+import { PageState } from '../../../../shared/presentation/components/page-state/page-state';
+import { LocalizedDatePipe } from '../../../../shared/presentation/pipes/localized-date.pipe';
 import { TranslatePipe } from '../../../../shared/presentation/pipes/translate.pipe';
+import { UtilityBillingStore } from '../../../application/utility-billing.store';
+import { BillingDisputeStatus } from '../../../domain/enums/billing-dispute-status.enum';
+import { BillingStatusBadge } from '../../components/billing-status-badge/billing-status-badge';
 
-type DisputeFilter = BillingDisputeStatus | 'ALL';
+type StatusFilter = BillingDisputeStatus | 'ALL';
 
-const DISPUTE_FILTERS: readonly DisputeFilter[] = ['ALL', 'OPEN', 'UNDER_REVIEW', 'RESOLVED'];
-
+/** Disputes raised by the tenants over their bills, filtered by status. */
 @Component({
   selector: 'app-billing-dispute-list',
-  imports: [RouterLink, DatePipe, TranslatePipe, BillingStatusBadge],
+  imports: [
+    MatButtonToggleModule,
+    MatCardModule,
+    MatTableModule,
+    RouterLink,
+    BillingStatusBadge,
+    LocalizedDatePipe,
+    PageState,
+    TranslatePipe,
+  ],
   templateUrl: './billing-dispute-list.html',
-  styleUrl: '../../styles/billing.css',
+  styleUrls: [
+    '../../../../shared/presentation/styles/storepulse-theme.css',
+    '../../../../shared/presentation/styles/page.css',
+    '../billing.css',
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BillingDisputeList implements OnInit {
+export class BillingDisputeList {
   protected readonly store = inject(UtilityBillingStore);
-  protected readonly filters = DISPUTE_FILTERS;
-  protected readonly activeFilter = signal<DisputeFilter>('ALL');
+
+  protected readonly filters: StatusFilter[] = ['ALL', ...Object.values(BillingDisputeStatus)];
+  protected readonly filter = signal<StatusFilter>('ALL');
+  protected readonly columns = [
+    'dispute',
+    'bill',
+    'unit',
+    'reason',
+    'created',
+    'status',
+    'actions',
+  ];
 
   protected readonly visibleDisputes = computed(() => {
-    const filter = this.activeFilter();
-    const disputes = this.store.disputes();
-    return filter === 'ALL' ? disputes : disputes.filter((d) => d.status === filter);
+    const filter = this.filter();
+    return this.store.disputes().filter((d) => filter === 'ALL' || d.status === filter);
   });
 
-  ngOnInit(): void {
-    void this.store.load();
+  constructor() {
+    this.store.load().catch(() => undefined);
   }
 
-  protected setFilter(filter: DisputeFilter): void {
-    this.activeFilter.set(filter);
+  protected count(filter: StatusFilter): number {
+    return this.store.disputes().filter((d) => filter === 'ALL' || d.status === filter).length;
   }
 
-  protected billCodeOf(billId: string): string {
-    return this.store.findBill(billId)?.code ?? '—';
-  }
-
-  protected unitOf(billId: string): string {
-    const bill = this.store.findBill(billId);
-    return bill ? `${bill.unitCode} · ${bill.unitName}` : '—';
+  protected refresh(): void {
+    this.store.load(true).catch(() => undefined);
   }
 }

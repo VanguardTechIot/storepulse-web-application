@@ -11,7 +11,7 @@
   </div>
 </header>
 
-<app-communication-tabs />
+<app-section-tabs [tabs]="tabs" label="communication.tabs.label" />
 
 <div class="filters">
   <mat-form-field class="search" subscriptSizing="dynamic">
@@ -39,26 +39,23 @@
 </div>
 
 @if (store.loading() && store.conversations().length === 0) {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state id="page-state" status="loading" />
 } @else if (store.error(); as error) {
-  <div class="state" role="alert">
-    <mat-icon class="state-icon error" aria-hidden="true">error</mat-icon>
-    <b>{{ 'communication.errors.' + error | translate }}</b>
-    <button matButton="outlined" type="button" (click)="store.load()">
-      {{ 'common.actions.retry' | translate }}
-    </button>
-  </div>
+  <app-page-state
+    id="conversations-error"
+    status="error"
+    [title]="'communication.errors.' + error | translate"
+    (retry)="store.load()"
+  />
 } @else {
   <mat-card appearance="outlined">
     @if (visible().length === 0) {
-      <div class="state">
-        <mat-icon class="state-icon" aria-hidden="true">forum</mat-icon>
-        <b>{{ 'communication.conversations.empty' | translate }}</b>
-        <span>{{ 'communication.conversations.empty_hint' | translate }}</span>
-      </div>
+      <app-page-state
+        id="conversations-empty"
+        icon="forum"
+        [title]="'communication.conversations.empty' | translate"
+        [message]="'communication.conversations.empty_hint' | translate"
+      />
     } @else {
       <div class="conversations">
         @for (conversation of visible(); track conversation.id) {
@@ -73,8 +70,8 @@
             </div>
             <div class="side">
               <time [attr.datetime]="conversation.lastMessageAt.toISOString()">{{
-                conversation.lastMessageAt | localizedDate: 'dateTime'
-              }}</time>
+                  conversation.lastMessageAt | localizedDate: 'dateTime'
+                }}</time>
               <app-communication-status-badge [status]="conversation.status" />
             </div>
           </a>

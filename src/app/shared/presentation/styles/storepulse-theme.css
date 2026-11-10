@@ -1,0 +1,75 @@
+/* Plus Jakarta Sans and JetBrains Mono (latin) of the style guidelines; Inter is loaded globally. */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2)
+  format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2)
+  format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+/*
+ * StorePulse design tokens. A view that lists this file in `styleUrls` applies them to itself and
+ * to everything rendered inside it, Material controls included.
+ */
+:host {
+  --sp-navy: #0f172a;
+  --sp-accent: #0ea5e9;
+  --sp-primary: #0369a1;
+  --sp-primary-soft: #e0f2fe;
+  --sp-text: #0f172a;
+  --sp-text-muted: #5b6b82;
+  --sp-bg: #f8fafc;
+  --sp-surface: #ffffff;
+  --sp-border: #e2e8f0;
+  --sp-hover: #f1f5f9;
+  --sp-danger: #b91c1c;
+  --sp-danger-soft: #fef2f2;
+  --sp-warning: #b45309;
+  --sp-warning-soft: #fffbeb;
+  --sp-success: #047857;
+  --sp-success-soft: #ecfdf5;
+  --sp-info: #1d4ed8;
+  --sp-info-soft: #eff6ff;
+  --sp-violet: #6d28d9;
+  --sp-violet-soft: #f5f3ff;
+  --sp-neutral: var(--sp-text-muted);
+  --sp-neutral-soft: var(--sp-hover);
+  --sp-radius: 12px;
+  --sp-radius-sm: 8px;
+  --sp-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --sp-font: 'Plus Jakarta Sans', sans-serif;
+  --sp-font-data: 'Inter', sans-serif;
+  --sp-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --mat-sys-primary: var(--sp-primary);
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-on-surface: var(--sp-text);
+  --mat-sys-on-surface-variant: var(--sp-text-muted);
+  --mat-sys-outline: var(--sp-navy);
+  --mat-sys-outline-variant: var(--sp-border);
+  --mat-sys-surface: var(--sp-surface);
+  --mat-sys-label-large-font: var(--sp-font);
+  --mat-sys-body-medium-font: var(--sp-font);
+  --mat-card-outlined-container-shape: var(--sp-radius);
+  --mat-card-outlined-outline-color: var(--sp-border);
+  --mat-card-outlined-container-elevation: var(--sp-shadow);
+  --mat-button-outlined-label-text-weight: 600;
+  --mat-button-outlined-label-text-tracking: 0.02em;
+  --mat-button-outlined-container-shape: var(--sp-radius-sm);
+  --mat-button-outlined-outline-color: var(--sp-navy);
+  --mat-button-outlined-label-text-color: var(--sp-navy);
+  font-family: var(--sp-font);
+  color: var(--sp-text);
+}

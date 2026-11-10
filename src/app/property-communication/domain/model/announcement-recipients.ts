@@ -9,11 +9,11 @@ export interface AnnouncementRecipients {
 }
 
 /**
- * Domain service that decides who receives a communication of the administrator (US-34, US-35).
+ * Domain service that decides who receives a communication of the administrator.
  *
  * - Sent to the whole gallery, or about a common area: every tenant with an active assignment
- *   (US-35, scenario 2).
- * - Sent to some stores: the tenant of each one (US-34, scenario 2).
+ *.
+ * - Sent to some stores: the tenant of each one.
  */
 export function resolveAnnouncementRecipients(
   selectedUnits: readonly UnitReference[],

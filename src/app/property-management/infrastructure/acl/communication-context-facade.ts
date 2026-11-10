@@ -14,8 +14,8 @@ export class CommunicationContextFacade {
   readonly assignmentsRoute = ['/communication', 'assignments'];
 
   /** Active tenant of each unit of the administrator, by unit id. */
-  async tenantsByUnit(administratorId: string): Promise<Map<string, UnitTenant>> {
-    const assignments = await this.communication.activeAssignments(administratorId);
+  async tenantsByUnit(): Promise<Map<string, UnitTenant>> {
+    const assignments = await this.communication.activeAssignments();
     return new Map(
       assignments.map((assignment) => [
         assignment.commercialUnitId,

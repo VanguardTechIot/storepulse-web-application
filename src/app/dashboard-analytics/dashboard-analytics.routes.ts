@@ -11,11 +11,9 @@ export const DASHBOARD_ANALYTICS_ROUTES: Routes = [
       ),
   },
   {
-    path: 'notifications',
-    title: 'analytics.notifications.page_title',
+    path: 'alerts',
+    title: 'analytics.alerts.page_title',
     loadComponent: () =>
-      import('./presentation/views/notification-center/notification-center').then(
-        (m) => m.NotificationCenter,
-      ),
+      import('./presentation/views/alert-center/alert-center').then((m) => m.AlertCenter),
   },
 ];

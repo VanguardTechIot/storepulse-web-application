@@ -1,4 +1,11 @@
-import { Component, effect, inject, input, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  input,
+  untracked,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,7 +25,7 @@ import {
 } from '../../profiles.validators';
 
 /**
- * Edit details card of My profile (US-07). Invalid data shows its error and is not saved.
+ * Edit details card of My profile. Invalid data shows its error and is not saved.
  */
 @Component({
   selector: 'app-profile-details-form',
@@ -33,23 +40,35 @@ import {
   ],
   templateUrl: './profile-details-form.html',
   styleUrl: './profile-details-form.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileDetailsForm {
   protected readonly store = inject(ProfilesStore);
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(TranslationService);
 
+  /** Profile whose personal and contact details are edited by this form. */
   readonly profile = input.required<Profile>();
 
+  /** Maximum permitted length of the first and last name fields. */
   protected readonly nameMaxLength = Profile.nameMaxLength;
+  /** Form containing editable profile details. */
   protected readonly form = new FormGroup({
     firstName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, notBlankValidator, Validators.maxLength(Profile.nameMaxLength)],
+      validators: [
+        Validators.required,
+        notBlankValidator,
+        Validators.maxLength(Profile.nameMaxLength),
+      ],
     }),
     lastName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, notBlankValidator, Validators.maxLength(Profile.nameMaxLength)],
+      validators: [
+        Validators.required,
+        notBlankValidator,
+        Validators.maxLength(Profile.nameMaxLength),
+      ],
     }),
     email: new FormControl('', {
       nonNullable: true,
@@ -68,11 +87,17 @@ export class ProfileDetailsForm {
     });
   }
 
+  /** Discards unsaved edits and restores the current profile values. */
   protected discard(): void {
     this.store.clearError();
     this.fill(this.profile());
   }
 
+  /**
+   * Validates and saves the edited profile details.
+   *
+   * On success, the form is updated with the saved profile and a confirmation toast is shown.
+   */
   protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -87,6 +112,11 @@ export class ProfileDetailsForm {
     }
   }
 
+  /**
+   * Populates the form from a profile and marks it pristine.
+   *
+   * @param profile - Profile whose details should be displayed.
+   */
   private fill(profile: Profile): void {
     this.form.reset({
       firstName: profile.firstName,

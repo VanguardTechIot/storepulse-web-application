@@ -1,20 +1,22 @@
 import { Resource } from '../model/resource.entity';
-import { Asset } from '../model/asset.entity';
-import { IoTDevice } from '../model/iot-device.entity';
-import { Sensor } from '../model/sensor.entity';
-import { Meter } from '../model/meter.entity';
+import { IoTDevice, IoTDeviceType } from '../model/iot-device.entity';
 
-/** Abstracción de persistencia del contexto Resource and Asset Management. */
+/**
+ * Persistence abstraction of the Resource and Asset Management context.
+ * Failures arrive as a `ResourceAssetError`.
+ */
 export interface ResourceAssetRepository {
   listResources(): Promise<Resource[]>;
-  listAssets(): Promise<Asset[]>;
   listIoTDevices(): Promise<IoTDevice[]>;
-  listSensors(): Promise<Sensor[]>;
-  listMeters(): Promise<Meter[]>;
 
-  /** Registra un dispositivo nuevo junto con el asset que lo vincula a un resource. */
-  addIoTDevice(device: IoTDevice, asset: Asset): Promise<void>;
-  /** Guarda los cambios de un dispositivo existente (desactivar, reactivar). */
-  saveIoTDevice(device: IoTDevice): Promise<void>;
-  findIoTDeviceBySerialNumber(serialNumber: string): Promise<IoTDevice | null>;
+  /** Installs a new device on a resource; the serial number must be unique. */
+  registerIoTDevice(
+    serialNumber: string,
+    type: IoTDeviceType,
+    resourceId: string,
+  ): Promise<IoTDevice>;
+  /** Stops data reception of the device. */
+  deactivateIoTDevice(deviceId: string, reason: string): Promise<IoTDevice>;
+  /** Resumes data reception of an inactive device. */
+  reactivateIoTDevice(deviceId: string): Promise<IoTDevice>;
 }

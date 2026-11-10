@@ -1,0 +1,75 @@
+.toast-stack {
+  position: fixed;
+  z-index: 1100;
+  top: 80px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(380px, calc(100vw - 32px));
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #1f2937;
+  color: #fff;
+  box-shadow:
+    0 20px 48px rgba(16, 24, 40, 0.18),
+    0 4px 12px rgba(16, 24, 40, 0.08);
+  font-size: 13px;
+}
+
+.toast[data-tone='success'] .tone {
+  color: #4ade80;
+}
+
+.toast[data-tone='error'] .tone {
+  color: #f87171;
+}
+
+.toast[data-tone='warning'] .tone {
+  color: #fbbf24;
+}
+
+.toast[data-tone='info'] .tone {
+  color: #93c5fd;
+}
+
+.toast-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-text b {
+  display: block;
+}
+
+.toast small {
+  display: block;
+  color: #d1d5db;
+  font-size: 12px;
+}
+
+.close {
+  display: inline-flex;
+  padding: 4px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: #d1d5db;
+}
+
+.close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.close .mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}

@@ -1,11 +1,13 @@
-<div class="layout">
-  <app-sidebar-navigation />
+<mat-sidenav-container class="layout">
+  <mat-sidenav #sidenav [mode]="compact() ? 'over' : 'side'" [opened]="!compact()">
+    <app-sidebar-navigation (navigate)="compact() && sidenav.close()" />
+  </mat-sidenav>
 
-  <div class="layout__body">
-    <app-toolbar />
+  <mat-sidenav-content>
+    <app-toolbar (menu)="sidenav.toggle()" />
 
     <main class="layout__content" id="main-content" tabindex="-1">
       <router-outlet />
     </main>
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

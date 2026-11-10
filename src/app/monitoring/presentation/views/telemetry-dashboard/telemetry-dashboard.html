@@ -1,0 +1,287 @@
+<header id="overview-header" class="page-head">
+  <div>
+    <div class="crumbs">
+      {{ 'monitoring.nav.section' | translate }} / {{ 'monitoring.overview.crumb' | translate }}
+    </div>
+    <h1>{{ 'monitoring.overview.title' | translate }}</h1>
+    <p>{{ 'monitoring.overview.subtitle' | translate }}</p>
+  </div>
+  <div class="actions">
+    <button
+      id="refresh-button"
+      matButton="outlined"
+      type="button"
+      [disabled]="store.isLoading()"
+      (click)="refresh()"
+    >
+      <mat-icon aria-hidden="true">refresh</mat-icon>{{ 'common.actions.refresh' | translate }}
+    </button>
+  </div>
+</header>
+
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
+  </mat-card>
+} @else {
+  <div id="kpis" class="kpis">
+    <app-kpi-card
+      id="monitored-card"
+      icon="speed"
+      [label]="'monitoring.overview.kpis.monitored' | translate"
+      [value]="'' + monitoredCount()"
+      [unit]="'/ ' + store.resources().length"
+    >
+      {{ 'monitoring.overview.kpis.monitoredHint' | translate }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="motion-card"
+      icon="directions_run"
+      tone="warning"
+      [label]="'monitoring.overview.kpis.motion' | translate"
+      [value]="'' + motionDetectedCount()"
+    >
+      {{ 'monitoring.overview.kpis.motionHint' | translate }}
+    </app-kpi-card>
+    <app-kpi-card
+      id="unmonitored-card"
+      icon="wifi_off"
+      tone="violet"
+      [label]="'monitoring.overview.kpis.withoutMonitoring' | translate"
+      [value]="'' + withoutMonitoringCount()"
+    >
+      {{ 'monitoring.overview.kpis.withoutMonitoringHint' | translate }}
+    </app-kpi-card>
+  </div>
+
+  <mat-card id="locations-card" appearance="outlined">
+    <div class="card-head">
+      <div>
+        <h2>{{ 'monitoring.overview.locations.title' | translate }}</h2>
+        <p>{{ 'monitoring.overview.locations.subtitle' | translate }}</p>
+      </div>
+      <div class="right">
+        <mat-button-toggle-group
+          id="state-toggle"
+          class="tabs"
+          [hideSingleSelectionIndicator]="true"
+          [value]="stateFilter()"
+          (change)="stateFilter.set($event.value)"
+          [attr.aria-label]="'monitoring.overview.locations.title' | translate"
+        >
+          @for (filter of stateFilters; track filter) {
+            <mat-button-toggle [value]="filter">
+              {{ 'monitoring.overview.locations.filters.' + filter | translate }} ({{
+                stateCount(filter)
+              }})
+            </mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+    </div>
+    @if (visibleStatuses().length === 0) {
+      <app-page-state
+        id="locations-empty"
+        icon="verified_user"
+        [title]="'monitoring.overview.locations.empty' | translate"
+      />
+    } @else {
+      <div class="table-wrap">
+        <table id="locations-table" mat-table [dataSource]="visibleStatuses()">
+          <ng-container matColumnDef="location">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.fields.location' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let status">
+              <strong>{{ status.resource.name }}</strong>
+              <small>
+                {{ status.resource.description }} ·
+                {{ 'monitoring.fields.floor' | translate: { floor: status.resource.floor } }}
+              </small>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="device">
+            <th mat-header-cell *matHeaderCellDef>{{ 'monitoring.fields.device' | translate }}</th>
+            <td mat-cell *matCellDef="let status" class="mono">
+              {{ status.resource.deviceSerialNumber ?? '—' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="temperature">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.measurementTypes.TEMPERATURE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let status" class="mono">
+              @if (status.latest.TEMPERATURE; as m) {
+                {{ m.value | localizedNumber: 1 }} {{ m.unit }}
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="humidity">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.measurementTypes.HUMIDITY' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let status" class="mono">
+              @if (status.latest.HUMIDITY; as m) {
+                {{ m.value | localizedNumber: 1 }} {{ m.unit }}
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="motion">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.measurementTypes.MOTION' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let status">
+              @if (status.latest.MOTION; as m) {
+                {{
+                  'monitoring.overview.motion.' + (m.value === 1 ? 'DETECTED' : 'NONE') | translate
+                }}
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="lastTelemetry">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.fields.lastTelemetry' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let status" class="mono">
+              {{ status.lastTelemetryAt | localizedDate: 'dateTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'monitoring.fields.status' | translate }}</th>
+            <td mat-cell *matCellDef="let status">
+              <app-status-chip [tone]="stateTone(status.state)">
+                {{ 'monitoring.resourceStates.' + status.state | translate }}
+              </app-status-chip>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="locationColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let status; columns: locationColumns"
+            [id]="'loc-' + status.resource.resourceId"
+          ></tr>
+        </table>
+      </div>
+    }
+  </mat-card>
+
+  <mat-card id="measurements-card" appearance="outlined">
+    <div class="card-head">
+      <div>
+        <h2>{{ 'monitoring.overview.measurements.title' | translate }}</h2>
+        <p>{{ 'monitoring.overview.measurements.subtitle' | translate }}</p>
+      </div>
+    </div>
+    <div class="filters">
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>{{ 'monitoring.fields.measurementType' | translate }}</mat-label>
+        <mat-select
+          id="type-select"
+          [value]="typeFilter()"
+          (selectionChange)="typeFilter.set($event.value)"
+        >
+          <mat-option value="">{{ 'monitoring.filters.allTypes' | translate }}</mat-option>
+          @for (type of measurementTypes; track type) {
+            <mat-option [value]="type">
+              {{ 'monitoring.measurementTypes.' + type | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>{{ 'monitoring.fields.location' | translate }}</mat-label>
+        <mat-select
+          id="location-select"
+          [value]="resourceFilter()"
+          (selectionChange)="resourceFilter.set($event.value)"
+        >
+          <mat-option value="">{{ 'monitoring.filters.allLocations' | translate }}</mat-option>
+          @for (resource of store.resources(); track resource.resourceId) {
+            <mat-option [value]="resource.resourceId">
+              {{ resource.name }} · {{ resource.description }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    @if (filteredMeasurements().length === 0) {
+      <app-page-state
+        id="measurements-empty"
+        icon="speed"
+        [title]="'monitoring.overview.measurements.empty' | translate"
+      />
+    } @else {
+      <div class="table-wrap">
+        <table id="measurements-table" mat-table [dataSource]="pagedMeasurements()">
+          <ng-container matColumnDef="recordedAt">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.fields.recordedAt' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row" class="mono">
+              {{ row.measurement.recordedAt | localizedDate: 'dateTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="location">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.fields.location' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <strong>{{ row.resource?.name ?? '—' }}</strong>
+              <small class="mono">{{ row.resource?.deviceSerialNumber }}</small>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'monitoring.fields.measurementType' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <app-measurement-type-label [type]="row.measurement.type" [iconBox]="28" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef class="end">
+              {{ 'monitoring.fields.value' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row" class="mono end">
+              @if (row.measurement.type === 'MOTION') {
+                <strong>{{
+                    'monitoring.overview.motion.' +
+                    (row.measurement.value === 1 ? 'DETECTED' : 'NONE') | translate
+                  }}</strong>
+              } @else {
+                <strong>{{ row.measurement.value | localizedNumber: 3 }}</strong>
+                {{ row.measurement.unit }}
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="measurementColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: measurementColumns"
+            [id]="'msr-' + row.measurement.id"
+          ></tr>
+        </table>
+      </div>
+      <mat-paginator
+        id="measurements-paginator"
+        [length]="filteredMeasurements().length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex()"
+        [hidePageSize]="true"
+        (page)="pageIndex.set($event.pageIndex)"
+      />
+    }
+  </mat-card>
+}

@@ -5,7 +5,7 @@
   </div>
 </header>
 
-<app-communication-tabs />
+<app-section-tabs [tabs]="tabs" label="communication.tabs.label" />
 
 <div class="filters">
   <mat-form-field subscriptSizing="dynamic">
@@ -23,8 +23,8 @@
       <mat-option value="ALL">{{ 'communication.filters.all' | translate }}</mat-option>
       @for (option of referenceTypes; track option) {
         <mat-option [value]="option">{{
-          'communication.references.' + option | translate
-        }}</mat-option>
+            'communication.references.' + option | translate
+          }}</mat-option>
       }
     </mat-select>
   </mat-form-field>
@@ -44,45 +44,70 @@
 </div>
 
 @if (store.loading() && store.logs().length === 0) {
-  <div class="state" role="status">
-    <mat-spinner diameter="32" aria-hidden="true" />
-    <span>{{ 'common.states.loading' | translate }}</span>
-  </div>
+  <app-page-state id="page-state" status="loading" />
 } @else {
-  <mat-card appearance="outlined" class="table-card">
+  <mat-card id="logs-card" appearance="outlined">
     @if (filtered().length === 0) {
-      <div class="state">
-        <mat-icon class="state-icon" aria-hidden="true">history</mat-icon>
-        <b>{{ 'communication.logs.empty' | translate }}</b>
-      </div>
+      <app-page-state
+        id="logs-empty"
+        icon="history"
+        [title]="'communication.logs.empty' | translate"
+      />
     } @else {
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">{{ 'communication.fields.date' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.tenant' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.event' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.detail' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.channel' | translate }}</th>
-            <th scope="col">{{ 'communication.fields.reference' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (log of page(); track log.id) {
-            <tr>
-              <td>{{ log.loggedAt | localizedDate: 'dateTime' }}</td>
-              <td>{{ store.directory.tenantName(log.tenantId) }}</td>
-              <td>{{ 'communication.actions_log.' + log.action | translate }}</td>
-              <td>{{ log.detail }}</td>
-              <td>{{ 'communication.channels.' + log.channel | translate }}</td>
-              <td>
-                {{ 'communication.references.' + log.referenceType | translate }}
-                <small>{{ log.referenceId }}</small>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table id="logs-table" mat-table [dataSource]="page()">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>{{ 'communication.fields.date' | translate }}</th>
+            <td mat-cell *matCellDef="let log">
+              {{ log.loggedAt | localizedDate: 'dateTime' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tenant">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.tenant' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let log">
+              {{ store.directory.tenantName(log.tenantId) }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="event">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.event' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let log">
+              {{ 'communication.actions_log.' + log.action | translate }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="detail">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.detail' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let log" class="wrap">
+              {{ log.detail }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="channel">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.channel' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let log">
+              {{ 'communication.channels.' + log.channel | translate }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="reference">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'communication.fields.reference' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let log">
+              {{ 'communication.references.' + log.referenceType | translate }}
+              <small>{{ log.referenceId }}</small>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let log; columns: columns" [id]="'log-' + log.id"></tr>
+        </table>
+      </div>
       <mat-paginator
         [length]="filtered().length"
         [pageSize]="pageSize"

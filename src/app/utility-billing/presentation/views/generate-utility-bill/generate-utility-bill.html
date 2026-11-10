@@ -1,91 +1,103 @@
-<header class="page-header">
+<header id="generate-header" class="page-head">
   <div>
-    <h1 class="page-title">{{ 'billing.generate.title' | translate }}</h1>
-    <p class="page-subtitle">{{ 'billing.generate.subtitle' | translate }}</p>
+    <div class="crumbs">
+      <a routerLink="/billing">{{ 'billing.list.crumb' | translate }}</a> /
+      {{ 'billing.generate.crumb' | translate }}
+    </div>
+    <h1>{{ 'billing.generate.page_title' | translate }}</h1>
+    <p>{{ 'billing.generate.subtitle' | translate }}</p>
   </div>
-  <a class="btn btn--ghost" routerLink="/billing">{{ 'billing.actions.back' | translate }}</a>
 </header>
 
-<div class="two-columns">
-  <section class="card">
-    <h2 class="card__title">{{ 'billing.generate.setup' | translate }}</h2>
+@if (!store.ready()) {
+  <mat-card id="state-card" appearance="outlined">
+    <app-page-state
+      id="page-state"
+      [status]="store.hasError() ? 'error' : 'loading'"
+      (retry)="refresh()"
+    />
+  </mat-card>
+} @else {
+  @if (store.error(); as error) {
+    <app-callout id="generate-error" type="danger" icon="error" role="alert">
+      {{ 'billing.errors.' + error | translate }}
+    </app-callout>
+  }
 
-    <label class="field">
-      <span class="field__label">{{ 'billing.generate.unit' | translate }}</span>
-      <select class="input" [ngModel]="unitId" (ngModelChange)="onUnitChange($event)">
-        <option value="">{{ 'billing.generate.select_unit' | translate }}</option>
-        @for (unit of store.units(); track unit.id) {
-          <option [value]="unit.id">{{ unit.code }} · {{ unit.name }}</option>
-        }
-      </select>
-    </label>
-
-    <label class="field">
-      <span class="field__label">{{ 'billing.generate.period' | translate }}</span>
-      <select class="input" [ngModel]="month" (ngModelChange)="onMonthChange($event)">
-        @for (option of monthOptions; track option.key) {
-          <option [value]="option.key">{{ option.labelKey | translate }}</option>
-        }
-      </select>
-    </label>
-
-    @if (errorKey(); as key) {
-      <div class="alert alert--danger">{{ key | translate }}</div>
-    }
-
-    <button
-      type="button"
-      class="btn btn--primary btn--block"
-      [disabled]="!summary() || submitting()"
-      (click)="generate()"
-    >
-      {{ 'billing.actions.generate' | translate }}
-    </button>
-  </section>
-
-  <section class="card">
-    <h2 class="card__title">{{ 'billing.generate.preview' | translate }}</h2>
-
-    @if (summary(); as current) {
-      @if (completeness() < fullCompleteness) {
-        <div class="alert alert--warning">{{ 'billing.generate.incomplete_warning' | translate }}</div>
-      }
-
-      <div class="field__label">{{ 'billing.generate.completeness' | translate }}: {{ completeness() }} %</div>
-      <div class="progress" role="progressbar" [attr.aria-valuenow]="completeness()">
-        <span [style.width.%]="completeness()"></span>
+  <div class="side-layout">
+    <mat-card id="generate-card" appearance="outlined" aria-labelledby="generate-title">
+      <div class="card-head">
+        <div>
+          <h2 id="generate-title">{{ 'billing.generate.card_title' | translate }}</h2>
+          <p>{{ 'billing.generate.card_subtitle' | translate }}</p>
+        </div>
       </div>
 
-      <div class="table-wrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>{{ 'billing.table.service' | translate }}</th>
-              <th class="num">{{ 'billing.table.consumption' | translate }}</th>
-              <th class="num">{{ 'billing.table.baseline' | translate }}</th>
-              <th class="num">{{ 'billing.table.variance' | translate }}</th>
-              <th class="num">{{ 'billing.table.readings' | translate }}</th>
-              <th class="num">{{ 'billing.table.estimated' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (u of current.utilities; track u.utilityType) {
-              <tr>
-                <td>{{ ('billing.utility.' + u.utilityType) | translate }}</td>
-                <td class="num">{{ u.consumption | number: '1.0-1' }} {{ u.unitOfMeasure }}</td>
-                <td class="num">{{ u.baseline | number: '1.0-1' }} {{ u.unitOfMeasure }}</td>
-                <td class="num" [class.variance--up]="ratioOf(u) > threshold">
-                  {{ ratioOf(u) | percent: '1.0-0' }}
-                </td>
-                <td class="num">{{ u.receivedReadings }}/{{ u.expectedReadings }}</td>
-                <td class="num">{{ (u.consumption * u.rate) | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
-              </tr>
+      <form id="generate-form" class="card-pad form" [formGroup]="form" (ngSubmit)="generate()">
+        <mat-form-field>
+          <mat-label>{{ 'billing.generate.unit' | translate }}</mat-label>
+          <mat-select id="unit-select" formControlName="unitId">
+            @for (unit of store.units(); track unit.id) {
+              <mat-option [value]="unit.id"
+              >{{ unit.code }}{{ unit.businessName ? ' · ' + unit.businessName : '' }}</mat-option
+              >
             }
-          </tbody>
-        </table>
+          </mat-select>
+          @if (form.controls.unitId.hasError('required')) {
+            <mat-error>{{ 'common.validation.required' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'billing.generate.period' | translate }}</mat-label>
+          <mat-select id="period-select" formControlName="period">
+            @for (month of months; track month.value) {
+              <mat-option [value]="month.value" class="capitalize">
+                {{ month.start | localizedDate: 'monthYear' }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <a id="cancel-button" matButton routerLink="/billing">
+            {{ 'common.actions.cancel' | translate }}
+          </a>
+          <button
+            id="generate-button"
+            matButton="filled"
+            type="submit"
+            [disabled]="store.processing()"
+          >
+            <mat-icon aria-hidden="true">receipt_long</mat-icon>
+            {{ 'billing.actions.generate' | translate }}
+          </button>
+        </div>
+      </form>
+    </mat-card>
+
+    <mat-card id="rules-card" appearance="outlined" aria-labelledby="rules-title">
+      <div class="card-head">
+        <h2 id="rules-title">{{ 'billing.generate.rules_title' | translate }}</h2>
       </div>
-    } @else {
-      <p class="empty">{{ 'billing.generate.empty' | translate }}</p>
-    }
-  </section>
-</div>
+      <ul class="card-pad rules">
+        <li>
+          <mat-icon aria-hidden="true">sensors</mat-icon
+          >{{ 'billing.generate.rule_consumption' | translate }}
+        </li>
+        <li>
+          <mat-icon aria-hidden="true">timeline</mat-icon
+          >{{ 'billing.generate.rule_baseline' | translate }}
+        </li>
+        <li>
+          <mat-icon aria-hidden="true">sell</mat-icon
+          >{{ 'billing.generate.rule_tariff' | translate }}
+        </li>
+        <li>
+          <mat-icon aria-hidden="true">rule</mat-icon
+          >{{ 'billing.generate.rule_completeness' | translate }}
+        </li>
+      </ul>
+    </mat-card>
+  </div>
+}

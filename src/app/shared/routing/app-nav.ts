@@ -6,11 +6,11 @@
 export const appNav = {
   /** Landing page after signing in. */
   dashboard: ['/dashboard'],
-  /** Gallery registration of Property Management, where sign-up continues (mock-up 03b, US-08). */
+  /** Gallery registration of Property Management, where sign-up continues. */
   galleryRegistration: ['/commercial-units/gallery'],
   /** Profile of the signed-in user (Profiles and Preferences), opened from the account menu. */
   profile: ['/profile'],
   termsAndConditions: ['/terms-and-conditions'],
-  /** Notification Center of Dashboard and Analytics (US-49), opened from the toolbar bell. */
-  notifications: ['/dashboard/notifications'],
+  /** Alert Center of Dashboard and Analytics, opened from the toolbar bell. */
+  alerts: ['/dashboard/alerts'],
 } as const;
