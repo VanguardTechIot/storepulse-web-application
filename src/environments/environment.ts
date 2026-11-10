@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  // StorePulse REST API deployed on Render.
-  platformProviderApiBaseUrl: 'https://storepulse-web-application.onrender.com/api/v1',
+  // StorePulse REST API deployed on Railway.
+  platformProviderApiBaseUrl: 'https://storepulse-platform-production.up.railway.app/api/v1',
 
   // Profiles and Preferences: the profile is read and updated at /users/{userId}/profile.
   platformProviderUserProfileEndpointPath: '/users/{userId}/profile',
