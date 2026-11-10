@@ -110,7 +110,6 @@ export class MonitoringStore {
     }
   }
 
-  /** Each resource with its device; the monitored types are the ones its device reported. */
   private toMonitoredResources(
     resources: Resource[],
     devices: IoTDevice[],

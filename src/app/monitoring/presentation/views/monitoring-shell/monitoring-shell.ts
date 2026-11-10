@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { SectionTabs } from '../../../../shared/presentation/components/section-tabs/section-tabs';
 import { monitoringTabs } from '../../monitoring.tabs';
 
-/** Monitoring sections with their tabs. */
 @Component({
   selector: 'app-monitoring-shell',
   imports: [RouterOutlet, SectionTabs],
